@@ -1,0 +1,1 @@
+rootProject.name = "Drop-Project-for-Intellij-Idea"
