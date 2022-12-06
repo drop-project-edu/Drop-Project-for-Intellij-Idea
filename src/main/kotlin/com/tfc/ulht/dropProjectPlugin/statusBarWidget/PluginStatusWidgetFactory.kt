@@ -40,8 +40,14 @@ class PluginStatusWidgetFactory : StatusBarWidgetFactory {
         if (widget.ID() == Globals.PLUGIN_ID) Disposer.dispose(widget)
     }
 
-    private fun runInEdt(disposable: Disposable, action: () -> Unit) {
-        ApplicationManager.getApplication().invokeLater(action, { Disposer.isDisposed(disposable) })
+    /*private fun runInEdt(disposable: Disposable, action: () -> Unit) {
+        //ApplicationManager.getApplication().invokeLater(action, { Disposer.isDisposed(disposable) })
+        ApplicationManager.getApplication().invokeLater(action)
     }
+
+    private fun runInEdt(action: () -> Unit) {
+        //ApplicationManager.getApplication().invokeLater(action, { Disposer.isDisposed(disposable) })
+        ApplicationManager.getApplication().invokeLater(action)
+    }*/
 
 }

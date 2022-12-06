@@ -30,7 +30,7 @@ class ToolbarPanel(private val tabelModel:AssignmentTableModel, private val resu
 
         actionGroup.add(MainLogin(tabelModel, resultsTable))
         actionGroup.add(SubmitAssignment())
-        actionGroup.add(Logout(tabelModel))
+        actionGroup.add(Logout(tabelModel,resultsTable))
 
 
 

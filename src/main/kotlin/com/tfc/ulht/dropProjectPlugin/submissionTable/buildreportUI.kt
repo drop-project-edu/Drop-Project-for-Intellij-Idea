@@ -213,19 +213,30 @@ class buildreportUI(fullBuildReport: FullBuildReport) : JPanel() {
 
         //---- jUnitSummaryTeacherLabel ----
         if (fullBuildReport.structureErrors != null) {
-            jUnitSummaryTeacherLabel.text = fullBuildReport.structureErrors
+            jUnitSummaryTeacherLabel.text = "You're code has ${fullBuildReport.structureErrors.size} structure error${if (fullBuildReport.structureErrors.size!=1){"s"} else {
+                ""
+            }
+            }"
         } else if (fullBuildReport.buildReport?.compilationErrors !=null){
-            jUnitSummaryTeacherLabel.text = "You're code is not compiling"
+            val size = fullBuildReport.buildReport.compilationErrors.filter { it.startsWith("[TEST]") }.size
+            jUnitSummaryTeacherLabel.text = "You're code has $size compilation error${if (size!=1){"s"} else {
+                ""
+            }
+            }"
         } else if(fullBuildReport.buildReport?.checkstyleErrors !=null) {
-            jUnitSummaryTeacherLabel.text = "You're code has quality issues"
+            val size = fullBuildReport.buildReport.checkstyleErrors.size
+            jUnitSummaryTeacherLabel.text = "You're code has ${size} code quality error${if (size!=1){"s"} else {
+                ""
+            }
+            }"
         } else {
             jUnitSummaryTeacherLabel.text = fullBuildReport.buildReport?.junitSummaryTeacher
         }
 
         //---- jUnitSummaryTeacherLabel ----
-        jUnitSummaryTeacherLabel.font = Font("Segoe UI", Font.PLAIN, 14)
+        jUnitSummaryTeacherLabel.font = Font("Segoe UI", Font.BOLD, 14)
         add(jUnitSummaryTeacherLabel, "cell 0 20,width 30,height 30")
-        add(separator10, "cell 0 21 14 1")
+        //add(separator10, "cell 0 21 14 1")
 
         //======== jUnitErrors ========
 
@@ -233,24 +244,56 @@ class buildreportUI(fullBuildReport: FullBuildReport) : JPanel() {
         if (fullBuildReport.structureErrors == null) {
 
             if (!passedAllTests){
+                var cellNum = 22
                 if (fullBuildReport.buildReport?.compilationErrors !=null){
-                    textArea1.text = fullBuildReport.buildReport?.compilationErrors.toString()
+
+                    for (cError in fullBuildReport.buildReport.compilationErrors){
+                        val errorLabel = JLabel(cError)
+                        val separator = JSeparator()
+                        errorLabel.font = Font("Segoe UI", Font.ITALIC, 12)
+                        if (cError.startsWith("[TEST]"))
+                            add(separator, "cell 0 ${cellNum++} 3 1")
+                        add(errorLabel, "cell 0 ${cellNum++},width 30,height 30")
+
+                    }
                 } else if (fullBuildReport.buildReport?.checkstyleErrors !=null){
-                    textArea1.text = fullBuildReport.buildReport?.checkstyleErrors.toString()
-                }
-                else{
-                    textArea1.text = fullBuildReport.buildReport?.junitErrorsTeacher
+
+                    for (ccError in fullBuildReport.buildReport.checkstyleErrors){
+                        val errorLabel = JLabel(ccError)
+                        val separator = JSeparator()
+                        errorLabel.font = Font("Segoe UI", Font.ITALIC, 12)
+                        add(errorLabel, "cell 0 ${cellNum++},width 30,height 30")
+                        add(separator, "cell 0 ${cellNum++} 3 1")
+                    }
+                } else if(fullBuildReport.buildReport?.junitErrorsTeacher !=null){
+
+                    for (jError in fullBuildReport.buildReport.junitErrorsTeacher.split("[FAILURE]")) {
+                        val errorLabel = JLabel(jError)
+                        val separator = JSeparator()
+                        errorLabel.font = Font("Segoe UI", Font.ITALIC, 12)
+                        add(errorLabel, "cell 0 ${cellNum++},width 30,height 30")
+                        add(separator, "cell 0 ${cellNum++} 3 1")
+                    }
                 }
 
-                textArea1.lineWrap = true
+                /*textArea1.lineWrap = true
                 textArea1.wrapStyleWord = true
                 textArea1.isEditable = false
                 jUnitErrors.setViewportView(textArea1)
-                add(jUnitErrors, "pad 10 0 0 0,cell 0 22 14 1,wmax 700,hmin 100,hmax 400")
+                add(jUnitErrors, "pad 10 0 0 0,cell 0 22 14 1,wmax 700,hmin 100,hmax 400")*/
             }
 
 
 
+        } else {
+            var cellNum = 22
+            for (error in fullBuildReport.structureErrors) {
+                val errorLabel = JLabel(error)
+                val separator = JSeparator()
+                errorLabel.font = Font("Segoe UI", Font.ITALIC, 12)
+                add(errorLabel, "cell 0 ${cellNum++},width 30,height 30")
+                add(separator, "cell 0 ${cellNum++} 3 1")
+            }
         }
 
 

@@ -18,10 +18,12 @@
 
 package com.tfc.ulht.dropProjectPlugin.assignmentComponents
 
+import com.intellij.diagnostic.PluginException
 import com.intellij.icons.AllIcons
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.UpdateInBackground
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
@@ -42,12 +44,13 @@ import java.io.File
 import javax.swing.JOptionPane
 
 
-class SubmitAssignment : DumbAwareAction("Submit", "Submit an assignment to Drop Project", AllIcons.Actions.Upload) {
+class SubmitAssignment : DumbAwareAction("Submit", "Submit an assignment to Drop Project", AllIcons.Actions.Upload), UpdateInBackground {
 
     private val REQUEST_URL = "${Globals.REQUEST_URL}/api/student/submissions/new"
     private var submissionId : SubmissionId? = null
     private var submissionResultsService = SubmissionReport()
 
+    private var lastCheckTime : Long = 0
 
     override fun actionPerformed(e: AnActionEvent) {
 
@@ -68,7 +71,7 @@ class SubmitAssignment : DumbAwareAction("Submit", "Submit an assignment to Drop
                     File(uploadFilePath)
                         .asRequestBody("application/octet-stream".toMediaTypeOrNull())
                 )
-                .addFormDataPart("assignmentId", /*Globals.selectedAssignmentID*/"fp-exemplo-2223")
+                .addFormDataPart("assignmentId",Globals.selectedAssignmentID/*"fp-exemplo-2223"*/)
                 .build()
 
             val request: Request = Request.Builder()
@@ -81,11 +84,12 @@ class SubmitAssignment : DumbAwareAction("Submit", "Submit an assignment to Drop
             Authentication.httpClient.newCall(request).execute().use { response ->
                 if (response.isSuccessful) {
                     if (response.code == 200) {
+
                         submissionId = submissionJsonAdapter.fromJson(response.body!!.source())
                         SubmittedNotifier.notify(e.project,"<html>The submission from the assignment <b>${Globals.selectedAssignmentID}</b> has been submitted!</html>")
+
                     }
                 } else if (response.code == 500) {
-
                     val errorJsonAdapter = moshi.adapter(ErrorMessage::class.java)
                     val errorMessage = errorJsonAdapter.fromJson(response.body!!.source())!!
                     Messages.showMessageDialog(errorMessage.error, "Submission", Messages.getErrorIcon())
@@ -98,12 +102,13 @@ class SubmitAssignment : DumbAwareAction("Submit", "Submit an assignment to Drop
 
     override fun update(e: AnActionEvent) {
 
-        if (submissionId!=null) {
+            if (submissionId!=null) {
+                if (submissionResultsService.checkResult(submissionId,e)) {
+                    submissionId = null
+                }
+            }
 
-           if (submissionResultsService.checkResult(submissionId,e)) {
-               submissionId = null
-           }
-        }
+
     }
 }
 

@@ -20,6 +20,7 @@ package com.tfc.ulht.dropProjectPlugin.submissionComponents
 
 
 import assignmentTable.FullBuildReportTableColumn
+import com.intellij.diagnostic.PluginException
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnAction
@@ -51,14 +52,12 @@ class SubmissionReport {
                 .url("$REQUEST_URL/${submissionID.submissionNumber}")
                 .build()
 
-            Authentication.httpClient.newCall(request).execute().use { response ->
-                fullBuildReport = submissionJsonAdapter.fromJson(response.body!!.source())!!
-            }
+                Authentication.httpClient.newCall(request).execute().use { response ->
+                    fullBuildReport = submissionJsonAdapter.fromJson(response.body!!.source())!!
+                }
 
             if (fullBuildReport.error == null){
-
                 ReportResultsNotifier.notify(e.project,fullBuildReport)
-
                 return true
             }
 

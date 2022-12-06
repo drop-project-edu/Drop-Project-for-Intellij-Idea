@@ -21,6 +21,7 @@
 package com.tfc.ulht.dropProjectPlugin.statusBarWidget
 
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.wm.StatusBar
@@ -41,7 +42,8 @@ class PluginStatusWidget : StatusBarWidget, StatusBarWidget.TextPresentation {
 
     init {
         val future = AppExecutorUtil.getAppScheduledExecutorService().scheduleWithFixedDelay({
-            runInEdt(this) { statusBar?.updateWidget(Globals.PLUGIN_ID) }
+            //runInEdt(this, null) { statusBar?.updateWidget(Globals.PLUGIN_ID) }
+            ApplicationManager.getApplication().invokeLater { statusBar?.updateWidget(Globals.PLUGIN_ID) }
         }, 0, 1, TimeUnit.SECONDS)
         Disposer.register(this, Disposable { future.cancel(false) })
     }

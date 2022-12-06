@@ -26,7 +26,7 @@ data class FullBuildReport(
     val buildReport: BuildReport?,
     val numSubmissions: Int?,
     val error: String? = null,
-    val structureErrors: String? = null,
+    val structureErrors: List<String>?,
     val submission: Submission?,
     val summary: List<Summary>?
 )

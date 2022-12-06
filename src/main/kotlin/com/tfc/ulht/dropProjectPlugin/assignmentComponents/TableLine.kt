@@ -10,7 +10,4 @@ class TableLine {
     lateinit var dueDate : String
     lateinit var id_notVisible : String
 
-    /*lateinit var detailsLink : String
-    lateinit var select: String*/
-
 }

@@ -21,6 +21,7 @@ package com.tfc.ulht.dropProjectPlugin.loginComponents
 import AssignmentTableModel
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.UpdateInBackground
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.DumbAwareAction
 import com.tfc.ulht.dropProjectPlugin.AuthorsFile
@@ -30,7 +31,7 @@ import com.tfc.ulht.dropProjectPlugin.loginComponents.Authentication.Companion.a
 import javax.swing.JOptionPane
 import javax.swing.JPanel
 
-class MainLogin (val tableModel:AssignmentTableModel,val resultsTable: ListTable) : DumbAwareAction("Login", "Insert your credentials", AllIcons.General.User) {
+class MainLogin (val tableModel:AssignmentTableModel,val resultsTable: ListTable) : DumbAwareAction("Login", "Insert your credentials", AllIcons.General.User), UpdateInBackground {
 
     override fun actionPerformed(e: AnActionEvent) {
 
@@ -48,6 +49,7 @@ class MainLogin (val tableModel:AssignmentTableModel,val resultsTable: ListTable
 
             if (alreadyLoggedIn) {
                 AuthorsFile().make(projectDirectory,false,e)
+
             }
 
         } else {
@@ -58,7 +60,10 @@ class MainLogin (val tableModel:AssignmentTableModel,val resultsTable: ListTable
             )
         }
 
-        ListAssignment(tableModel, resultsTable).actionPerformed(e)
-
     }
+
+    override fun update(e: AnActionEvent) {
+        ListAssignment(tableModel, resultsTable).get()
+    }
+
 }

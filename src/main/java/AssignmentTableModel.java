@@ -1,11 +1,12 @@
-
+import com.intellij.icons.AllIcons;
 import com.intellij.util.ui.ColumnInfo;
 import com.intellij.util.ui.ListTableModel;
 import com.tfc.ulht.dropProjectPlugin.assignmentComponents.TableLine;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-
+import javax.swing.*;
+import javax.swing.table.TableCellRenderer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -17,7 +18,7 @@ public class AssignmentTableModel extends ListTableModel<TableLine>
         super(columnNames, tableLines);
     }
 
-    static final String[] COLUMNS = {"Name", "Language", "Due Date"};
+    static final String[] COLUMNS = {"Name", "Language", "Due Date","Details"};
     public static ColumnInfo<TableLine, String>[] generateColumnInfo()
     {
         ColumnInfo<TableLine, String>[] columnInfos = new ColumnInfo[COLUMNS.length];
@@ -37,24 +38,24 @@ public class AssignmentTableModel extends ListTableModel<TableLine>
                                     return o.language;
                                 case "Due Date":
                                     return o.dueDate;
+                                case "Details":
+                                    return null;
                                 default:
                                     return "Not Available";
                             }
                         }
 
-                        /*@Override
+                        @Override
                         public TableCellRenderer getCustomizedRenderer(TableLine o, TableCellRenderer renderer)
                         {
                             switch (eachColumn)
                             {
-                                case "Name":
-                                    return (table, value, isSelected, hasFocus, row, column) -> new BoldLabel(value.toString());
                                 case "Details":
-                                    return (table, value, isSelected, hasFocus, row, column) -> new LinkLabel<String>(value.toString(), AllIcons.Ide.External_link_arrow);
+                                    return (table, value, isSelected, hasFocus, row, column) -> new JButton("Instructions",AllIcons.Actions.Find);
                                 default:
                                     return super.getCustomizedRenderer(o, renderer);
                             }
-                        }*/
+                        }
 
                     };
                     i.getAndIncrement();

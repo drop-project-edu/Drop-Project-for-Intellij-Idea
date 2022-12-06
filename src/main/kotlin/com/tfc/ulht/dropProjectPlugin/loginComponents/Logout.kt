@@ -27,9 +27,10 @@ import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import com.tfc.ulht.dropProjectPlugin.Globals
+import com.tfc.ulht.dropProjectPlugin.assignmentComponents.ListTable
 import org.jetbrains.annotations.Nullable
 
-class Logout(val tableModel: AssignmentTableModel) : DumbAwareAction("Logout", "Leave this login session", AllIcons.Actions.ShowReadAccess) {
+class Logout(val tableModel: AssignmentTableModel, val resultsTable: ListTable) : DumbAwareAction("Logout", "Leave this login session", AllIcons.Actions.ShowReadAccess) {
 
     override fun actionPerformed(e: AnActionEvent) {
         if (Authentication.alreadyLoggedIn) {
@@ -42,8 +43,6 @@ class Logout(val tableModel: AssignmentTableModel) : DumbAwareAction("Logout", "
                 Authentication.alreadyLoggedIn = false
                 Globals.selectedAssignmentID = ""
                 LoggedOffNotifier.notify(e.project,"You've been logged out")
-                //clear list of assignments
-                tableModel.items = ArrayList()
 
             }
         } else {

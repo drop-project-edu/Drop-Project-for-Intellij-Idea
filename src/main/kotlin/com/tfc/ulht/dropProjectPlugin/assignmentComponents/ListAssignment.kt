@@ -14,7 +14,7 @@ import okhttp3.*
 import java.lang.reflect.Type
 
 
-class ListAssignment(val tableModel: AssignmentTableModel, val resultsTable: ListTable) : AnAction() {
+class ListAssignment(val tableModel: AssignmentTableModel, val resultsTable: ListTable) {
 
     val type: Type = Types.newParameterizedType(
         List::class.java,
@@ -26,7 +26,8 @@ class ListAssignment(val tableModel: AssignmentTableModel, val resultsTable: Lis
     private val assignmentJsonAdapter: JsonAdapter<List<Assignment>> = moshi.adapter(type)
 
 
-    override fun actionPerformed(e: AnActionEvent) {
+     fun get() {
+
         if (Authentication.alreadyLoggedIn) {
             val request = Request.Builder()
                 .url(REQUEST_URL)
@@ -35,21 +36,18 @@ class ListAssignment(val tableModel: AssignmentTableModel, val resultsTable: Lis
                 assignmentList = assignmentJsonAdapter.fromJson(response.body!!.source())!!
 
             }
-            //showAssignmentTable()
             val assignments = listAssignments()
             tableModel.items = assignments
             resultsTable.updateColumnSizes()
 
-        }/* else {
-            JOptionPane.showMessageDialog(null, "You need to login first!", "Login First", JOptionPane.WARNING_MESSAGE)
-        }*/
+            resultsTable.emptyText.text = "No Assignments available"
+
+        }
+        else {
+            tableModel.items = listOf()
+            resultsTable.emptyText.text = "Login to see your Assignments"
+        }
     }
-
-    /*private fun showAssignmentTable() {
-        // TODO: Create submissions dialog
-        AssignmentTableColumn(assignmentList)
-
-    }*/
 
     private fun listAssignments(): List<TableLine> {
         val assignments : ArrayList<TableLine>  = ArrayList()
@@ -65,6 +63,7 @@ class ListAssignment(val tableModel: AssignmentTableModel, val resultsTable: Lis
                 line.dueDate = assignment.dueDate.toString()
             }
             line.id_notVisible = assignment.id
+
 
             assignments.add(line)
 

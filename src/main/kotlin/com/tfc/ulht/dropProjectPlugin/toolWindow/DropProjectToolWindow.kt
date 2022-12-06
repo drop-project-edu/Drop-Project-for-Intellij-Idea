@@ -1,6 +1,7 @@
 package com.tfc.ulht.dropProjectPlugin.toolWindow
 
 import AssignmentTableModel
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.ui.Splitter
 import com.intellij.ui.IdeBorderFactory
@@ -13,7 +14,7 @@ import javax.swing.BorderFactory
 import javax.swing.JComponent
 import javax.swing.JPanel
 
-class DropProjectToolWindow {
+class DropProjectToolWindow(project: Project) {
 
     private var contentToolWindow: JPanel? = null
 
@@ -26,7 +27,7 @@ class DropProjectToolWindow {
         contentToolWindow = SimpleToolWindowPanel(true,true)
 
         val tableModel = AssignmentTableModel(AssignmentTableModel.generateColumnInfo(), ArrayList())
-        val resultsTable = ListTable(tableModel)
+        val resultsTable = ListTable(tableModel,project)
         val assignmentTablePanel = AssignmentTablePanel(resultsTable)
         assignmentTablePanel.border = IdeBorderFactory.createBorder(SideBorder.TOP or SideBorder.RIGHT)
 
