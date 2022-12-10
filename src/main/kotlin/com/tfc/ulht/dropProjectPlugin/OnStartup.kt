@@ -20,29 +20,36 @@ package com.tfc.ulht.dropProjectPlugin
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.StartupActivity
+import com.tfc.ulht.dropProjectPlugin.assignmentComponents.ListAssignment
+import com.tfc.ulht.dropProjectPlugin.loginComponents.Authentication
 import com.tfc.ulht.dropProjectPlugin.loginComponents.CredentialsController
-import java.io.File
 
 
 class OnStartup : StartupActivity {
 
     override fun runActivity(project: Project) {
 
-        val userPassFile = File("${project.basePath}\\up.txt")
+        //val separator = System.getProperty("file.separator")
+        //val userPassFile = File("${project.basePath}${separator}up.txt")
 
-        if (userPassFile.exists()) {
-            val bufferedReader = userPassFile.bufferedReader()
-            val text = bufferedReader.readLine()
+        //if (userPassFile.exists()) {
+            //val bufferedReader = userPassFile.bufferedReader()
+            //val text = bufferedReader.readLine()
 
-            val data = text.split(";")
+            //val data = text.split(";")
 
-            val username = data[0]
-            val decryptedPassword = String(CredentialsController().decrypt(data[1].toByteArray()))
-
-            /*if (Authentication().checkCredentials(username, decryptedPassword, true)) {
-                Authentication.alreadyLoggedIn = true
-            }*/
+            //val username = data[0]
+            //val decryptedPassword = String(CredentialsController().decrypt(data[1].toByteArray()))
+        val credentials = CredentialsController().retrieveStoredCredentials(Globals.PLUGIN_ID)
+        if (credentials != null) {
+            credentials.getPasswordAsString()
+                ?.let { credentials.userName?.let { it1 -> Authentication().onStartAuthenticate(it1, it) } }
         }
+        if (Authentication.alreadyLoggedIn){
+            ListAssignment(false).get()
+        }
+
+        //}
 
 
 

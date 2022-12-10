@@ -1,41 +1,34 @@
 package com.tfc.ulht.dropProjectPlugin.loginComponents
 
-import java.io.File
+import com.intellij.credentialStore.CredentialAttributes
+import com.intellij.credentialStore.Credentials
+import com.intellij.credentialStore.generateServiceName
+import com.intellij.ide.passwordSafe.PasswordSafe
+
 
 class CredentialsController {
 
-    companion object {
-        lateinit var e: String
+    private fun createCredentialAttributes(key: String): CredentialAttributes {
+        return CredentialAttributes(
+            generateServiceName("My System",key)
+        )
     }
 
-    fun encryptPassword(username: String, password: String) {
-        val enc = String(encrypt(password.toByteArray()))
+    fun storeCredentials(username : String,password: String, serverId : String) {
 
-        val file = File("$e\\up.txt")
-        file.writeText("$username;$enc")
-
+        val credentialAttributes = createCredentialAttributes(serverId)
+        val credentials = Credentials(username, password)
+        PasswordSafe.instance.set(credentialAttributes, credentials)
     }
-
-
-    private fun encrypt(textToEncrypt: ByteArray): ByteArray {
-        val enc = ByteArray(textToEncrypt.size)
-
-        for (i in textToEncrypt.indices) {
-            enc[i] = (if ((i % 2 == 0)) textToEncrypt[i] + 1 else textToEncrypt[i] - 1).toByte()
-        }
-
-        return enc
+    fun removeStoredCredentials(serverId: String) {
+        val credentialAttributes = createCredentialAttributes(serverId)
+        PasswordSafe.instance.set(credentialAttributes,null)
     }
+    fun retrieveStoredCredentials(serverId: String): Credentials? {
 
-    fun decrypt(textToDecrypt: ByteArray): ByteArray {
-        val enc = ByteArray(textToDecrypt.size)
+        val credentialAttributes = createCredentialAttributes(serverId)
 
-        for (i in textToDecrypt.indices) {
-            enc[i] = (if ((i % 2 == 0)) textToDecrypt[i] - 1 else textToDecrypt[i] + 1).toByte()
-        }
-
-        return enc
+        return PasswordSafe.instance.get(credentialAttributes)
     }
-
-
 }
+

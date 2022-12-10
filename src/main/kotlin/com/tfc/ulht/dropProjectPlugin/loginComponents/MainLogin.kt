@@ -18,20 +18,21 @@
 
 package com.tfc.ulht.dropProjectPlugin.loginComponents
 
-import AssignmentTableModel
 import com.intellij.icons.AllIcons
+import com.intellij.notification.NotificationGroupManager
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.UpdateInBackground
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.DumbAwareAction
+import com.intellij.openapi.project.Project
 import com.tfc.ulht.dropProjectPlugin.AuthorsFile
 import com.tfc.ulht.dropProjectPlugin.assignmentComponents.ListAssignment
-import com.tfc.ulht.dropProjectPlugin.assignmentComponents.ListTable
 import com.tfc.ulht.dropProjectPlugin.loginComponents.Authentication.Companion.alreadyLoggedIn
-import javax.swing.JOptionPane
+import org.jetbrains.annotations.Nullable
 import javax.swing.JPanel
 
-class MainLogin (val tableModel:AssignmentTableModel,val resultsTable: ListTable) : DumbAwareAction("Login", "Insert your credentials", AllIcons.General.User), UpdateInBackground {
+class MainLogin() : DumbAwareAction("Login", "Insert your credentials", AllIcons.General.User), UpdateInBackground {
 
     override fun actionPerformed(e: AnActionEvent) {
 
@@ -39,31 +40,31 @@ class MainLogin (val tableModel:AssignmentTableModel,val resultsTable: ListTable
         val projectDirectory = e.project?.let { FileEditorManager.getInstance(it).project.basePath.toString() }
         val panel = JPanel()
 
-        if (projectDirectory != null) {
-            CredentialsController.e = projectDirectory
-
-        }
 
         if (!alreadyLoggedIn) {
             LoginDialog().assembleDialog(panel,e)
 
             if (alreadyLoggedIn) {
                 AuthorsFile().make(projectDirectory,false,e)
-
             }
 
         } else {
-            JOptionPane.showMessageDialog(
-                null, "You are already logged in",
-                "Log in",
-                JOptionPane.INFORMATION_MESSAGE
-            )
+            LoggedNotifier.notify(e.project,"You are already logged in")
         }
 
+        ListAssignment(true).get()
     }
 
-    override fun update(e: AnActionEvent) {
-        ListAssignment(tableModel, resultsTable).get()
+    object LoggedNotifier {
+        fun notify(
+            @Nullable project: Project?,
+            content: String
+        ) {
+            NotificationGroupManager.getInstance()
+                .getNotificationGroup("Logged Notification")
+                .createNotification(content, NotificationType.INFORMATION)
+                .notify(project)
+        }
     }
 
 }

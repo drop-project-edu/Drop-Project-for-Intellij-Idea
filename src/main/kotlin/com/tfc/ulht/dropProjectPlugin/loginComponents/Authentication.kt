@@ -36,10 +36,22 @@ class Authentication {
         var alreadyLoggedIn = false
     }
 
-    var serverResponse: Boolean = false
+
     private val REQUEST_URL = "${Globals.REQUEST_URL}/api/student/assignments/current"
 
-    fun authenticate(username: String, token: String): Boolean {
+    fun loginAuthenticate(username: String,token: String): Boolean {
+        alreadyLoggedIn = request(username,token)
+        if (alreadyLoggedIn){
+            CredentialsController().storeCredentials(username,token,Globals.PLUGIN_ID)
+        }
+        return alreadyLoggedIn
+    }
+
+    fun onStartAuthenticate(username: String,token: String): Boolean {
+        alreadyLoggedIn = request(username,token)
+        return alreadyLoggedIn
+    }
+    private fun request(username: String, token: String): Boolean {
         httpClient = OkHttpClient.Builder()
             .authenticator(object : Authenticator {
                 @Throws(IOException::class)
@@ -56,18 +68,16 @@ class Authentication {
             .ignoreAllSSLErrors()
             .build()
         val request = Request.Builder()
-            .url(/*Globals.*/REQUEST_URL)
+            .url(REQUEST_URL)
             .build()
 
         httpClient.newCall(request).execute().use { response ->
-            alreadyLoggedIn = response.isSuccessful
+            return response.isSuccessful
         }
-
-        return alreadyLoggedIn
     }
 
 
-    fun OkHttpClient.Builder.ignoreAllSSLErrors(): OkHttpClient.Builder {
+    private fun OkHttpClient.Builder.ignoreAllSSLErrors(): OkHttpClient.Builder {
         val naiveTrustManager = object : X509TrustManager {
             override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
             override fun checkClientTrusted(certs: Array<X509Certificate>, authType: String) = Unit

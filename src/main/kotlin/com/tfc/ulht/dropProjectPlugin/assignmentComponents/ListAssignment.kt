@@ -1,22 +1,20 @@
 package com.tfc.ulht.dropProjectPlugin.assignmentComponents
 
-import AssignmentTableModel
-import com.intellij.openapi.actionSystem.AnAction
-import com.intellij.openapi.actionSystem.AnActionEvent
 import com.jetbrains.rd.util.use
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.tfc.ulht.dropProjectPlugin.Globals
 import com.tfc.ulht.dropProjectPlugin.loginComponents.Authentication
+import com.tfc.ulht.dropProjectPlugin.toolWindow.DropProjectToolWindow
 import data.Assignment
-import okhttp3.*
+import okhttp3.Request
 import java.lang.reflect.Type
 
 
-class ListAssignment(val tableModel: AssignmentTableModel, val resultsTable: ListTable) {
+class ListAssignment(private val firstTime : Boolean) {
 
-    val type: Type = Types.newParameterizedType(
+    private val type: Type = Types.newParameterizedType(
         List::class.java,
         Assignment::class.java
     )
@@ -37,15 +35,19 @@ class ListAssignment(val tableModel: AssignmentTableModel, val resultsTable: Lis
 
             }
             val assignments = listAssignments()
-            tableModel.items = assignments
-            resultsTable.updateColumnSizes()
+            DropProjectToolWindow.tableModel.items = assignments
+            DropProjectToolWindow.resultsTable.updateColumnSizes()
 
-            resultsTable.emptyText.text = "No Assignments available"
+            DropProjectToolWindow.resultsTable.emptyText.text = "No Assignments available"
 
         }
         else {
-            tableModel.items = listOf()
-            resultsTable.emptyText.text = "Login to see your Assignments"
+
+            if (firstTime){
+                DropProjectToolWindow.tableModel.items = listOf()
+                DropProjectToolWindow.resultsTable.emptyText.text = "Login to see your Assignments"
+            }
+
         }
     }
 

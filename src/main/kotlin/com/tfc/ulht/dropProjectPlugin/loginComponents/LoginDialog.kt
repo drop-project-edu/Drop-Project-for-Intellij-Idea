@@ -135,7 +135,7 @@ class LoginDialog {
 
 
             val response = Authentication()
-                .authenticate(studentNumberField[0].text.trim(),
+                .loginAuthenticate(studentNumberField[0].text.trim(),
                 tokenField.text.toString())
 
             UIManager.put("OptionPane.minimumSize", Dimension(200, 100))

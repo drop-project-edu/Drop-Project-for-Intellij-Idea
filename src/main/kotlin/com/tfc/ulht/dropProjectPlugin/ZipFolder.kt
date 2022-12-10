@@ -3,7 +3,6 @@ package com.tfc.ulht.dropProjectPlugin
 
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.fileEditor.FileEditorManager
-import com.intellij.openapi.ui.Messages
 import net.lingala.zip4j.ZipFile
 import java.io.File
 import javax.swing.JOptionPane
@@ -31,10 +30,10 @@ class ZipFolder {
 
     fun zipIt(e: AnActionEvent): String? {
         val projectDirectory = e.project?.let { FileEditorManager.getInstance(it).project.basePath.toString() }
-
-        val newUploadFile = File("$projectDirectory\\projeto.zip")
-        val authorsPath = "$projectDirectory\\AUTHORS.txt"
-        val srcPath = "$projectDirectory\\src"
+        val separator = System.getProperty("file.separator")
+        val newUploadFile = File("$projectDirectory${separator}projeto.zip")
+        val authorsPath = "$projectDirectory${separator}AUTHORS.txt"
+        val srcPath = "$projectDirectory${separator}src"
 
         if (!File(authorsPath).exists()){
             AuthorsFile().make(projectDirectory,true,e)
@@ -44,20 +43,19 @@ class ZipFolder {
         ZipFile(newUploadFile)
             .addFile(File(authorsPath))
 
-        if (!File(srcPath).exists()) {
+        return if (!File(srcPath).exists()) {
             JOptionPane.showMessageDialog(
                 null, "Src Folder Not Found",
                 "Submit Error",
                 JOptionPane.ERROR_MESSAGE
             )
-            return null
-        }
-        else {
+            null
+        } else {
             // Add the "src" folder on the existing zip
             ZipFile(newUploadFile)
                 .addFolder(File(srcPath))
 
-            return newUploadFile.path
+            newUploadFile.path
         }
 
 

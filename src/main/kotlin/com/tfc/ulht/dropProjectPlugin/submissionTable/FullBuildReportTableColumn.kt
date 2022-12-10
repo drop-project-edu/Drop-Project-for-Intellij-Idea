@@ -19,14 +19,13 @@
 package assignmentTable
 
 import com.intellij.ui.components.JBScrollPane
-import com.intellij.ui.tabs.JBTabs
 import com.tfc.ulht.dropProjectPlugin.submissionTable.buildreportUI
 import data.FullBuildReport
 import java.awt.Dimension
 import javax.swing.JFrame
 
 
-class FullBuildReportTableColumn(fullBuildReport: FullBuildReport) : JFrame() {
+class FullBuildReportTableColumn(fullBuildReport: FullBuildReport) : JFrame(){
 
     private val frame = JFrame("Submission Report")
 

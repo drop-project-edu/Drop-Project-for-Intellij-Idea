@@ -18,6 +18,11 @@ class DropProjectToolWindow(project: Project) {
 
     private var contentToolWindow: JPanel? = null
 
+    companion object{
+        lateinit var tableModel:AssignmentTableModel
+        lateinit var resultsTable : ListTable
+
+    }
 
     fun getContent(): JComponent? {
         return contentToolWindow
@@ -26,13 +31,12 @@ class DropProjectToolWindow(project: Project) {
     init {
         contentToolWindow = SimpleToolWindowPanel(true,true)
 
-        val tableModel = AssignmentTableModel(AssignmentTableModel.generateColumnInfo(), ArrayList())
-        val resultsTable = ListTable(tableModel,project)
+        tableModel = AssignmentTableModel(AssignmentTableModel.generateColumnInfo(), ArrayList())
+        resultsTable = ListTable(tableModel,project)
         val assignmentTablePanel = AssignmentTablePanel(resultsTable)
         assignmentTablePanel.border = IdeBorderFactory.createBorder(SideBorder.TOP or SideBorder.RIGHT)
 
-
-        val toolbarPanel = ToolbarPanel(tableModel,resultsTable)
+        val toolbarPanel = ToolbarPanel()
         toolbarPanel.border = IdeBorderFactory.createBorder(SideBorder.TOP or SideBorder.RIGHT or SideBorder.BOTTOM)
         val horizontalSplitter = OnePixelSplitter(true,0.0f)
         horizontalSplitter.border = BorderFactory.createEmptyBorder()
@@ -41,6 +45,7 @@ class DropProjectToolWindow(project: Project) {
         horizontalSplitter.firstComponent = toolbarPanel
         horizontalSplitter.secondComponent = assignmentTablePanel
         (this.contentToolWindow as SimpleToolWindowPanel).add(horizontalSplitter)
+
     }
 
 }

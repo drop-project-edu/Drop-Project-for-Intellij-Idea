@@ -18,7 +18,6 @@
 
 package com.tfc.ulht.dropProjectPlugin.loginComponents
 
-import AssignmentTableModel
 import com.intellij.icons.AllIcons
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
@@ -27,10 +26,10 @@ import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import com.tfc.ulht.dropProjectPlugin.Globals
-import com.tfc.ulht.dropProjectPlugin.assignmentComponents.ListTable
+import com.tfc.ulht.dropProjectPlugin.toolWindow.DropProjectToolWindow
 import org.jetbrains.annotations.Nullable
 
-class Logout(val tableModel: AssignmentTableModel, val resultsTable: ListTable) : DumbAwareAction("Logout", "Leave this login session", AllIcons.Actions.ShowReadAccess) {
+class Logout() : DumbAwareAction("Logout", "Leave this login session", AllIcons.Actions.Exit) {
 
     override fun actionPerformed(e: AnActionEvent) {
         if (Authentication.alreadyLoggedIn) {
@@ -44,6 +43,9 @@ class Logout(val tableModel: AssignmentTableModel, val resultsTable: ListTable) 
                 Globals.selectedAssignmentID = ""
                 LoggedOffNotifier.notify(e.project,"You've been logged out")
 
+                CredentialsController().removeStoredCredentials(Globals.PLUGIN_ID)
+                DropProjectToolWindow.tableModel.items = listOf()
+                DropProjectToolWindow.resultsTable.emptyText.text = "Login to see your Assignments"
             }
         } else {
             Messages.showMessageDialog("You need to login first", "Logout", Messages.getInformationIcon())

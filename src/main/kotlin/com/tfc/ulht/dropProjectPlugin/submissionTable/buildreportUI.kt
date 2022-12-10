@@ -3,10 +3,9 @@
  */
 package com.tfc.ulht.dropProjectPlugin.submissionTable
 
+import com.intellij.ui.components.JBScrollPane
 import data.FullBuildReport
 import net.miginfocom.swing.MigLayout
-import java.awt.Color
-import java.awt.Dimension
 import java.awt.Font
 import javax.swing.*
 
@@ -46,9 +45,8 @@ class buildreportUI(fullBuildReport: FullBuildReport) : JPanel() {
         val jUnitSummaryLabel = JLabel()
         val separator9 = JSeparator()
         val jUnitSummaryTeacherLabel = JLabel()
-        val separator10 = JSeparator()
-        val jUnitErrors = JScrollPane()
-        val textArea1 = JTextArea()
+        val jUnitErrors = JBScrollPane()
+
 
         //======== this ========
         layout = MigLayout(
@@ -248,14 +246,26 @@ class buildreportUI(fullBuildReport: FullBuildReport) : JPanel() {
                 if (fullBuildReport.buildReport?.compilationErrors !=null){
 
                     for (cError in fullBuildReport.buildReport.compilationErrors){
-                        val errorLabel = JLabel(cError)
-                        val separator = JSeparator()
+                        val errorLabel = JLabel("<html><p>${cError}<p/></html>")
+
                         errorLabel.font = Font("Segoe UI", Font.ITALIC, 12)
-                        if (cError.startsWith("[TEST]"))
+                        if (cError.startsWith("[TEST]")){
+                            val separator = JSeparator()
                             add(separator, "cell 0 ${cellNum++} 3 1")
+                        }
                         add(errorLabel, "cell 0 ${cellNum++},width 30,height 30")
 
                     }
+                    /*
+                    val textArea1 = JTextArea()
+                    val separator = JSeparator()
+                    textArea1.text = fullBuildReport.buildReport.compilationErrors
+                    textArea1.lineWrap = true
+                    textArea1.wrapStyleWord = true
+                    textArea1.isEditable = false
+                    jUnitErrors.setViewportView(textArea1)
+                    add(jUnitErrors, "pad 10 0 0 0,cell 0 ${cellNum++} 6 1,wmax 600,hmin 30")
+                    add(separator, "cell 0 ${cellNum++} 3 1")*/
                 } else if (fullBuildReport.buildReport?.checkstyleErrors !=null){
 
                     for (ccError in fullBuildReport.buildReport.checkstyleErrors){
@@ -267,13 +277,22 @@ class buildreportUI(fullBuildReport: FullBuildReport) : JPanel() {
                     }
                 } else if(fullBuildReport.buildReport?.junitErrorsTeacher !=null){
 
-                    for (jError in fullBuildReport.buildReport.junitErrorsTeacher.split("[FAILURE]")) {
-                        val errorLabel = JLabel(jError)
+                    //for (jError in fullBuildReport.buildReport.junitErrorsTeacher.split("ERROR:")) {
+                        val textArea1 = JTextArea()
+                        val separator = JSeparator()
+                        textArea1.text = fullBuildReport.buildReport.junitErrorsTeacher
+                        textArea1.lineWrap = true
+                        textArea1.wrapStyleWord = true
+                        textArea1.isEditable = false
+                        jUnitErrors.setViewportView(textArea1)
+                        add(jUnitErrors, "pad 10 0 0 0,cell 0 ${cellNum++} 6 1,wmax 600,hmin 30")
+                        add(separator, "cell 0 ${cellNum/*++*/} 3 1")
+                        /*val errorLabel = JLabel(jError)
                         val separator = JSeparator()
                         errorLabel.font = Font("Segoe UI", Font.ITALIC, 12)
                         add(errorLabel, "cell 0 ${cellNum++},width 30,height 30")
-                        add(separator, "cell 0 ${cellNum++} 3 1")
-                    }
+                        add(separator, "cell 0 ${cellNum++} 3 1")*/
+                    //}
                 }
 
                 /*textArea1.lineWrap = true

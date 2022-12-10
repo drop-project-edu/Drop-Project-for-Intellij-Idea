@@ -6,11 +6,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.table.TableView
 import com.intellij.util.ui.ListTableModel
 import com.tfc.ulht.dropProjectPlugin.Globals
+import com.tfc.ulht.dropProjectPlugin.loginComponents.Authentication
 import org.jetbrains.annotations.Nullable
 import java.awt.Cursor
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
-import javax.swing.JOptionPane
 import javax.swing.JTable
 import javax.swing.ListSelectionModel
 
@@ -24,7 +24,12 @@ class ListTable(model: ListTableModel<TableLine>?,project: Project?) : TableView
         isStriped = true
         cursor = Cursor(Cursor.HAND_CURSOR)
         autoCreateRowSorter = true
-        emptyText.text = "Login to see your Assignments"
+        if (Authentication.alreadyLoggedIn){
+            emptyText.text = "No Assignments"
+
+        } else {
+            emptyText.text = "Login to see your Assignments"
+        }
         addMouseListener(object : MouseAdapter() {
             override fun mousePressed(e: MouseEvent) {
                 val source = e.source as JTable

@@ -1,7 +1,7 @@
 /*-
  * Plugin Drop Project
  * 
- * Copyright (C) 2019 Yash Jahit
+ * Copyright (C) 2022 Yash Jahit & Bernardo Baltazar
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@
 
 package com.tfc.ulht.dropProjectPlugin.assignmentComponents
 
-import com.intellij.diagnostic.PluginException
 import com.intellij.icons.AllIcons
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
@@ -49,8 +48,7 @@ class SubmitAssignment : DumbAwareAction("Submit", "Submit an assignment to Drop
     private val REQUEST_URL = "${Globals.REQUEST_URL}/api/student/submissions/new"
     private var submissionId : SubmissionId? = null
     private var submissionResultsService = SubmissionReport()
-
-    private var lastCheckTime : Long = 0
+    private var previousCheckTime: Long = 0
 
     override fun actionPerformed(e: AnActionEvent) {
 
@@ -103,9 +101,15 @@ class SubmitAssignment : DumbAwareAction("Submit", "Submit an assignment to Drop
     override fun update(e: AnActionEvent) {
 
             if (submissionId!=null) {
-                if (submissionResultsService.checkResult(submissionId,e)) {
-                    submissionId = null
+                val currentTime = System.currentTimeMillis()
+                val delta = currentTime-previousCheckTime
+                if (delta>3000){
+                    if (submissionResultsService.checkResult(submissionId,e)) {
+                        submissionId = null
+                    }
+                    previousCheckTime = currentTime
                 }
+
             }
 
 
