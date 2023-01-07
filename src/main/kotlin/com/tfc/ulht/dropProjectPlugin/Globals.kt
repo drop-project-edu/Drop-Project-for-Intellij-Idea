@@ -18,11 +18,15 @@
 
 package com.tfc.ulht.dropProjectPlugin
 
+import com.tfc.ulht.dropProjectPlugin.assignmentComponents.TableLine
 import com.tfc.ulht.dropProjectPlugin.statusBarWidget.PluginStatusWidget
+import data.FullBuildReport
 
 class Globals {
 
     companion object {
+
+
         //val REQUEST_URL = "https://drop-project-fork.herokuapp.com"
         //val REQUEST_URL = "http://localhost:8080"
         val REQUEST_URL = "https://deisi.ulusofona.pt/drop-project"
@@ -32,6 +36,9 @@ class Globals {
         var choosenColumn: Int = 0
 
         var selectedAssignmentID: String = ""
+        var selectedLine: TableLine? = null
+
+        var lastBuildReport : FullBuildReport? = null
     }
 
 }

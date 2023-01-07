@@ -1,4 +1,5 @@
 import com.intellij.icons.AllIcons;
+import com.intellij.ui.components.labels.BoldLabel;
 import com.intellij.util.ui.ColumnInfo;
 import com.intellij.util.ui.ListTableModel;
 import com.tfc.ulht.dropProjectPlugin.assignmentComponents.TableLine;
@@ -19,7 +20,7 @@ public class AssignmentTableModel extends ListTableModel<TableLine>
         super(columnNames, tableLines);
     }
 
-    static final String[] COLUMNS = {"Name", "Language", "Due Date","Details"};
+    static final String[] COLUMNS = {"", "Name", "Language", "Due Date","Details"};
     public static ColumnInfo<TableLine, String>[] generateColumnInfo()
     {
         ColumnInfo<TableLine, String>[] columnInfos = new ColumnInfo[COLUMNS.length];
@@ -40,6 +41,7 @@ public class AssignmentTableModel extends ListTableModel<TableLine>
                                 case "Due Date":
                                     return o.dueDate;
                                 case "Details":
+                                case "":
                                     return null;
                                 default:
                                     return "Not Available";
@@ -53,8 +55,12 @@ public class AssignmentTableModel extends ListTableModel<TableLine>
                             {
                                 case "Details":
                                     return (table, value, isSelected, hasFocus, row, column) -> new JButton("Instructions",AllIcons.Actions.Find);
+                                case "":
+                                   // return (table, value, isSelected, hasFocus, row, column) -> new JBRadioButton();
+                                    return (table, value, isSelected, hasFocus, row, column) -> o.radioButton;
                                 default:
-                                    return super.getCustomizedRenderer(o, renderer);
+                                    //return super.getCustomizedRenderer(o, renderer);
+                                    return (table, value, isSelected, hasFocus, row, column) -> new BoldLabel(value.toString());
                             }
                         }
 

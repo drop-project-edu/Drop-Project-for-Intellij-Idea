@@ -32,6 +32,10 @@
         <notificationGroup id="Authors Created Notification" displayType="BALLOON"/>
         <notificationGroup id="Logged Notification" displayType="BALLOON"/>
         <notificationGroup id="Submitted Notification" displayType="BALLOON"/>
+        <fileEditorProvider
+                implementation="com.tfc.ulht.dropProjectPlugin.submissionComponents.BuildReportEditorTabProvider"/>
+        <fileEditorProvider
+                implementation="com.tfc.ulht.dropProjectPlugin.assignmentComponents.AssignmentInstructionsEditorTabProvider"/>
     </extensions>
 
 

@@ -19,8 +19,8 @@ class DropProjectToolWindow(project: Project) {
     private var contentToolWindow: JPanel? = null
 
     companion object{
-        lateinit var tableModel:AssignmentTableModel
-        lateinit var resultsTable : ListTable
+        var tableModel: AssignmentTableModel? = null
+        var resultsTable : ListTable? = null
 
     }
 
@@ -33,7 +33,7 @@ class DropProjectToolWindow(project: Project) {
 
         tableModel = AssignmentTableModel(AssignmentTableModel.generateColumnInfo(), ArrayList())
         resultsTable = ListTable(tableModel,project)
-        val assignmentTablePanel = AssignmentTablePanel(resultsTable)
+        val assignmentTablePanel = AssignmentTablePanel(resultsTable!!)
         assignmentTablePanel.border = IdeBorderFactory.createBorder(SideBorder.TOP or SideBorder.RIGHT)
 
         val toolbarPanel = ToolbarPanel()

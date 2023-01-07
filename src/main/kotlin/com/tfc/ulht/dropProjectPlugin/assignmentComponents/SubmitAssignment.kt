@@ -23,6 +23,7 @@ import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.UpdateInBackground
+import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
@@ -43,7 +44,7 @@ import java.io.File
 import javax.swing.JOptionPane
 
 
-class SubmitAssignment : DumbAwareAction("Submit", "Submit an assignment to Drop Project", AllIcons.Actions.Upload), UpdateInBackground {
+class SubmitAssignment : DumbAwareAction("Submit Selected Assignment", "Submit an assignment to Drop Project", AllIcons.Actions.Upload), UpdateInBackground {
 
     private val REQUEST_URL = "${Globals.REQUEST_URL}/api/student/submissions/new"
     private var submissionId : SubmissionId? = null
@@ -61,6 +62,8 @@ class SubmitAssignment : DumbAwareAction("Submit", "Submit an assignment to Drop
             JOptionPane.showMessageDialog(null, "You need to choose an assignment first", "Unassigned Submission", JOptionPane.INFORMATION_MESSAGE)
         } else {
             // If assignment has been choosen, upload zip file
+            //first save all documents
+            FileDocumentManager.getInstance().saveAllDocuments()
             val uploadFilePath = ZipFolder().zipIt(e) ?: return
 
             val body: RequestBody = MultipartBody.Builder().setType(MultipartBody.FORM)
@@ -103,7 +106,7 @@ class SubmitAssignment : DumbAwareAction("Submit", "Submit an assignment to Drop
             if (submissionId!=null) {
                 val currentTime = System.currentTimeMillis()
                 val delta = currentTime-previousCheckTime
-                if (delta>3000){
+                if (delta>5000){
                     if (submissionResultsService.checkResult(submissionId,e)) {
                         submissionId = null
                     }

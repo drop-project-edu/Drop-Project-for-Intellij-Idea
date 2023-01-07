@@ -256,16 +256,6 @@ class buildreportUI(fullBuildReport: FullBuildReport) : JPanel() {
                         add(errorLabel, "cell 0 ${cellNum++},width 30,height 30")
 
                     }
-                    /*
-                    val textArea1 = JTextArea()
-                    val separator = JSeparator()
-                    textArea1.text = fullBuildReport.buildReport.compilationErrors
-                    textArea1.lineWrap = true
-                    textArea1.wrapStyleWord = true
-                    textArea1.isEditable = false
-                    jUnitErrors.setViewportView(textArea1)
-                    add(jUnitErrors, "pad 10 0 0 0,cell 0 ${cellNum++} 6 1,wmax 600,hmin 30")
-                    add(separator, "cell 0 ${cellNum++} 3 1")*/
                 } else if (fullBuildReport.buildReport?.checkstyleErrors !=null){
 
                     for (ccError in fullBuildReport.buildReport.checkstyleErrors){
@@ -276,30 +266,26 @@ class buildreportUI(fullBuildReport: FullBuildReport) : JPanel() {
                         add(separator, "cell 0 ${cellNum++} 3 1")
                     }
                 } else if(fullBuildReport.buildReport?.junitErrorsTeacher !=null){
-
-                    //for (jError in fullBuildReport.buildReport.junitErrorsTeacher.split("ERROR:")) {
-                        val textArea1 = JTextArea()
-                        val separator = JSeparator()
-                        textArea1.text = fullBuildReport.buildReport.junitErrorsTeacher
-                        textArea1.lineWrap = true
-                        textArea1.wrapStyleWord = true
-                        textArea1.isEditable = false
-                        jUnitErrors.setViewportView(textArea1)
-                        add(jUnitErrors, "pad 10 0 0 0,cell 0 ${cellNum++} 6 1,wmax 600,hmin 30")
-                        add(separator, "cell 0 ${cellNum/*++*/} 3 1")
-                        /*val errorLabel = JLabel(jError)
-                        val separator = JSeparator()
-                        errorLabel.font = Font("Segoe UI", Font.ITALIC, 12)
-                        add(errorLabel, "cell 0 ${cellNum++},width 30,height 30")
-                        add(separator, "cell 0 ${cellNum++} 3 1")*/
-                    //}
+                    var array:ArrayList<String> = arrayListOf()
+                    val iterator = "ERROR:|FAILURE:".toRegex().findAll(fullBuildReport.buildReport.junitErrorsTeacher).iterator()
+                    while(iterator.hasNext()){
+                        array.add(iterator.next().value)
+                    }
+                    var index = 0
+                    for (jError in fullBuildReport.buildReport.junitErrorsTeacher.split("ERROR:|FAILURE:".toRegex())) {
+                        if (jError.isNotBlank()){
+                            val label = JLabel(array[index++])
+                            val errorLabel = JLabel("<html><p>${jError}<p/></html>")
+                            errorLabel.font = Font("Segoe UI", Font.ITALIC, 12)
+                            val separator = JSeparator()
+                            val separator2 =JSeparator()
+                            add(separator, "cell 0 ${cellNum++} 3 1")
+                            add(label, "cell 0 ${cellNum++},width 30,height 30")
+                            add(separator2, "cell 0 ${cellNum++} 3 1")
+                            add(errorLabel, "cell 0 ${cellNum++},width 30,height 30")
+                        }
+                    }
                 }
-
-                /*textArea1.lineWrap = true
-                textArea1.wrapStyleWord = true
-                textArea1.isEditable = false
-                jUnitErrors.setViewportView(textArea1)
-                add(jUnitErrors, "pad 10 0 0 0,cell 0 22 14 1,wmax 700,hmin 100,hmax 400")*/
             }
 
 

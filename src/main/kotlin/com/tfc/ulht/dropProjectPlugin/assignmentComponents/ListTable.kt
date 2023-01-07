@@ -2,10 +2,12 @@ package com.tfc.ulht.dropProjectPlugin.assignmentComponents
 
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.ui.table.TableView
 import com.intellij.util.ui.ListTableModel
 import com.tfc.ulht.dropProjectPlugin.Globals
+import com.tfc.ulht.dropProjectPlugin.ProjectComponents
 import com.tfc.ulht.dropProjectPlugin.loginComponents.Authentication
 import org.jetbrains.annotations.Nullable
 import java.awt.Cursor
@@ -37,25 +39,31 @@ class ListTable(model: ListTableModel<TableLine>?,project: Project?) : TableView
                 if (rowAtPoint >= 0) {
 
                     if (MouseEvent.BUTTON1==e.button && e.clickCount==2 && !e.isConsumed)  {
-                        val idOfSelected = this@ListTable.getRow(rowAtPoint).id_notVisible
-                        val nameOfSelected = this@ListTable.getRow(rowAtPoint).name
-                        if (Globals.selectedAssignmentID!=idOfSelected) {
+                        val selectedRow = this@ListTable.getRow(rowAtPoint)
+                        val idOfSelected = selectedRow.id_notVisible
+                        val nameOfSelected = selectedRow.name
 
+                        if (Globals.selectedAssignmentID!=idOfSelected) {
+                            selectedRow.radioButton.isSelected = true
+                            Globals.selectedLine?.radioButton?.isSelected=false
+                            Globals.selectedLine = selectedRow
                             Globals.selectedAssignmentID = idOfSelected
-                            SelectAssignmentNotifier.notify(project,"<html>The Assignment <b>$nameOfSelected</b> Was Selected</html>")
+                            service<ProjectComponents>().setProjectSelectedAssignmentID(idOfSelected)
+                            SelectAssignmentNotifier.notify(project,"<html>The assignment <b>$nameOfSelected</b> was selected</html>")
                         }
 
                     }
                     val columnAtPoint = source.columnAtPoint(e.point)
-                    // instructions column = 3
-                    if ( columnAtPoint == 3  && MouseEvent.BUTTON1 == e.button) {
-                        AssignmentInstructions(this@ListTable.getRow(rowAtPoint).id_notVisible).showInstructions()
+                    // instructions column = 3 , 4 now update
+                    if ( columnAtPoint == 4  && MouseEvent.BUTTON1 == e.button) {
+                        AssignmentInstructions(this@ListTable.getRow(rowAtPoint).id_notVisible).showInstructions(project)
                     }
                     super.mousePressed(e)
                 }
 
             }
         })
+
     }
 
 }

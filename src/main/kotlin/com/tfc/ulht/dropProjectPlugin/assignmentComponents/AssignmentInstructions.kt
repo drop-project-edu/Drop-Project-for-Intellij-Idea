@@ -1,18 +1,17 @@
 package com.tfc.ulht.dropProjectPlugin.assignmentComponents
 
 import com.intellij.ide.BrowserUtil
+import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.ProjectManager
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.util.ui.JBUI
 import com.tfc.ulht.dropProjectPlugin.Globals
 import com.tfc.ulht.dropProjectPlugin.loginComponents.Authentication
 import okhttp3.Request
 import java.awt.BorderLayout
-import java.awt.Desktop
-import java.awt.Insets
-import java.awt.Point
+import java.awt.Dimension
 import javax.swing.JEditorPane
-import javax.swing.JFrame
-import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.event.HyperlinkEvent
 
@@ -40,7 +39,11 @@ class AssignmentInstructions(private val assignmentID: String){
         return htmlFragment
     }
 
-    fun showInstructions() {
+    fun showInstructions(project: Project?) {
+
+
+
+
         val ed1 = JEditorPane("text/html", getInstructionsFragment()) // PREPARE HTML VIEWER
         ed1.isEditable = false
         // ABILITY TO CLICK ON HYPERLINK
@@ -51,6 +54,7 @@ class AssignmentInstructions(private val assignmentID: String){
             }
         }
         ed1.caretPosition = 0
+        ed1.margin = JBUI.insets(0,10,10,10)
         val jbScrollPane = JBScrollPane(ed1)
         val linkPane = JEditorPane("text/html", " <a style=\"text-decoration:none;color:#D4D4D3\" href=\"${Globals.REQUEST_URL}/upload/${assignmentID}\">Instructions in Web \uD83D\uDD17</a>")
         linkPane.isEditable = false
@@ -71,10 +75,13 @@ class AssignmentInstructions(private val assignmentID: String){
         val panel = JPanel(BorderLayout())
         panel.add(jbScrollPane,BorderLayout.CENTER)
         panel.add(header,BorderLayout.NORTH)
-        val tempFrame = JFrame()
+        /*val tempFrame = JFrame()
         tempFrame.add(panel)
         tempFrame.isVisible = true
-        tempFrame.setSize(700, 600)
+        tempFrame.setSize(700, 600)*/
+        val editorManager = project?.let { FileEditorManager.getInstance(it) }
+        val virtualFile = InstructionsVirtualFile("Assignment Details", panel)
+        editorManager?.openFile(virtualFile,true)
 
 
 

@@ -1,7 +1,7 @@
 /*-
  * Plugin Drop Project
  * 
- * Copyright (C) 2019 Yash Jahit
+ * Copyright (C) 2022 Yash Jahit & Bernardo Baltazar
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,12 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.ui.Messages
+import com.intellij.openapi.wm.ToolWindowManager
 import com.tfc.ulht.dropProjectPlugin.Globals
 import com.tfc.ulht.dropProjectPlugin.toolWindow.DropProjectToolWindow
+import com.tfc.ulht.dropProjectPlugin.toolWindow.panel.ToolbarPanel
 import org.jetbrains.annotations.Nullable
 
 class Logout() : DumbAwareAction("Logout", "Leave this login session", AllIcons.Actions.Exit) {
@@ -43,9 +46,12 @@ class Logout() : DumbAwareAction("Logout", "Leave this login session", AllIcons.
                 Globals.selectedAssignmentID = ""
                 LoggedOffNotifier.notify(e.project,"You've been logged out")
 
+                ToolbarPanel.loggedOutToolbar()
+
+
                 CredentialsController().removeStoredCredentials(Globals.PLUGIN_ID)
-                DropProjectToolWindow.tableModel.items = listOf()
-                DropProjectToolWindow.resultsTable.emptyText.text = "Login to see your Assignments"
+                DropProjectToolWindow.tableModel?.items = listOf()
+                DropProjectToolWindow.resultsTable?.emptyText?.text = "Login to see your Assignments"
             }
         } else {
             Messages.showMessageDialog("You need to login first", "Logout", Messages.getInformationIcon())

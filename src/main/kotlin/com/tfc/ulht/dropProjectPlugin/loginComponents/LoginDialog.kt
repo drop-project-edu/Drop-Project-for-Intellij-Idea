@@ -1,7 +1,7 @@
 /*-
  * Plugin Drop Project
  * 
- * Copyright (C) 2019 Yash Jahit
+ * Copyright (C) 2022 Yash Jahit & Bernardo Baltazar
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.Project
 import com.tfc.ulht.dropProjectPlugin.Users
+import com.tfc.ulht.dropProjectPlugin.toolWindow.panel.ToolbarPanel
 import org.jetbrains.annotations.Nullable
 import java.awt.Dimension
 import java.awt.GridBagConstraints
@@ -144,6 +145,7 @@ class LoginDialog {
             if (response) {
                 registerStudents()
                 LoggedInNotifier.notify(e.project,"Login Successful")
+                ToolbarPanel.loggedInToolbar()
 
             } else /*if (!response)*/ {
                 JOptionPane.showMessageDialog(

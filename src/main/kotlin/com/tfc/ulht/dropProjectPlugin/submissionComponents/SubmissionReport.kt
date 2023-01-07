@@ -1,7 +1,7 @@
 /*-
  * Plugin Drop Project
  * 
- * Copyright (C) 2019 Yash Jahit
+ * Copyright (C) 2022 Yash Jahit & Bernardo Baltazar
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,10 @@
 package com.tfc.ulht.dropProjectPlugin.submissionComponents
 
 
-import assignmentTable.FullBuildReportTableColumn
-import com.intellij.diagnostic.PluginException
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
-import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import com.squareup.moshi.JsonAdapter
@@ -32,6 +30,7 @@ import com.squareup.moshi.Moshi
 import com.tfc.ulht.dropProjectPlugin.Globals
 import com.tfc.ulht.dropProjectPlugin.assignmentComponents.SubmissionId
 import com.tfc.ulht.dropProjectPlugin.loginComponents.Authentication
+import com.tfc.ulht.dropProjectPlugin.toolWindow.panel.ToolbarPanel
 import data.FullBuildReport
 import okhttp3.Request
 import org.jetbrains.annotations.Nullable
@@ -65,12 +64,6 @@ class SubmissionReport {
         return false
     }
 
-
-    private fun showFullBuildReport() {
-
-        FullBuildReportTableColumn(fullBuildReport)
-    }
-
 }
 
 object ReportResultsNotifier {
@@ -79,6 +72,10 @@ object ReportResultsNotifier {
         fullBuildReport: FullBuildReport,
         content: String = "The Build Report of your submission is now available to view"
     ) {
+        Globals.lastBuildReport = fullBuildReport
+        //display report button in toolbar
+        ToolbarPanel.buildReportAvailable()
+
         NotificationGroupManager.getInstance()
             .getNotificationGroup("Report Results Notification")
             .createNotification(content, NotificationType.INFORMATION)
@@ -89,6 +86,10 @@ object ReportResultsNotifier {
 
 class ShowFullBuildReport(private val fullBuildReport: FullBuildReport) : DumbAwareAction("Show") {
     override fun actionPerformed(e: AnActionEvent) {
-        FullBuildReportTableColumn(fullBuildReport)
+        val editorManager = e.project?.let { FileEditorManager.getInstance(it) }
+        val virtualFile = BuildReportVirtualFile("Build Report",fullBuildReport)
+        editorManager?.openFile(virtualFile,true)
     }
+
+
 }

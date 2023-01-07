@@ -14,7 +14,6 @@ class AssignmentTablePanel(resultsTable: TableView<TableLine>) :
 
     init {
         this.resultsTable = resultsTable
-        resultsTable.rowHeight = 30
         init()
     }
 

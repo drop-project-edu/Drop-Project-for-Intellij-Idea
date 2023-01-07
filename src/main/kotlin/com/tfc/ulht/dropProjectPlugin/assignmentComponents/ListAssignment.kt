@@ -1,5 +1,6 @@
 package com.tfc.ulht.dropProjectPlugin.assignmentComponents
 
+import com.intellij.ui.components.JBRadioButton
 import com.jetbrains.rd.util.use
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
@@ -35,17 +36,17 @@ class ListAssignment(private val firstTime : Boolean) {
 
             }
             val assignments = listAssignments()
-            DropProjectToolWindow.tableModel.items = assignments
-            DropProjectToolWindow.resultsTable.updateColumnSizes()
+            DropProjectToolWindow.tableModel?.items = assignments
+            DropProjectToolWindow.resultsTable?.updateColumnSizes()
 
-            DropProjectToolWindow.resultsTable.emptyText.text = "No Assignments available"
+            DropProjectToolWindow.resultsTable?.emptyText?.text = "No Assignments available"
 
         }
         else {
 
             if (firstTime){
-                DropProjectToolWindow.tableModel.items = listOf()
-                DropProjectToolWindow.resultsTable.emptyText.text = "Login to see your Assignments"
+                DropProjectToolWindow.tableModel?.items = listOf()
+                DropProjectToolWindow.resultsTable?.emptyText?.text = "Login to see your Assignments"
             }
 
         }
@@ -56,6 +57,8 @@ class ListAssignment(private val firstTime : Boolean) {
 
         for (assignment in assignmentList) {
             val line = TableLine()
+
+
             line.name = assignment.name
             line.language = assignment.language
             if (assignment.dueDate.isNullOrEmpty()) {
@@ -66,6 +69,12 @@ class ListAssignment(private val firstTime : Boolean) {
             }
             line.id_notVisible = assignment.id
 
+            line.radioButton = JBRadioButton()
+
+            if (Globals.selectedAssignmentID == line.id_notVisible){
+                line.radioButton.isSelected = true
+                Globals.selectedLine = line
+            }
 
             assignments.add(line)
 
