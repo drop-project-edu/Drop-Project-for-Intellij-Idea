@@ -1,5 +1,6 @@
 package com.tfc.ulht.dropProjectPlugin.assignmentComponents
 
+import com.intellij.openapi.ui.Messages
 import com.intellij.ui.components.JBRadioButton
 import com.jetbrains.rd.util.use
 import com.squareup.moshi.JsonAdapter
@@ -23,6 +24,7 @@ class ListAssignment(private val firstTime : Boolean) {
     private var assignmentList = listOf<Assignment>()
     private val moshi = Moshi.Builder().build()
     private val assignmentJsonAdapter: JsonAdapter<List<Assignment>> = moshi.adapter(type)
+    private var status = 500
 
 
      fun get() {
@@ -32,7 +34,11 @@ class ListAssignment(private val firstTime : Boolean) {
                 .url(REQUEST_URL)
                 .build()
             Authentication.httpClient.newCall(request).execute().use { response ->
-                assignmentList = assignmentJsonAdapter.fromJson(response.body!!.source())!!
+                status = response.code
+                if (status==200){
+                    assignmentList = assignmentJsonAdapter.fromJson(response.body!!.source())!!
+                }
+
 
             }
             val assignments = listAssignments()
@@ -41,6 +47,11 @@ class ListAssignment(private val firstTime : Boolean) {
 
             DropProjectToolWindow.resultsTable?.emptyText?.text = "No Assignments available"
 
+            if (status==401){
+                DropProjectToolWindow.resultsTable?.emptyText?.text = "Unauthorized to view assignments"
+                Messages.showMessageDialog("You're not authorized to access assignments", "Invalid Token", Messages.getErrorIcon())
+
+            }
         }
         else {
 
@@ -68,8 +79,8 @@ class ListAssignment(private val firstTime : Boolean) {
                 line.dueDate = assignment.dueDate.toString()
             }
             line.id_notVisible = assignment.id
-
             line.radioButton = JBRadioButton()
+            line.instructions = assignment.instructions
 
             if (Globals.selectedAssignmentID == line.id_notVisible){
                 line.radioButton.isSelected = true

@@ -28,10 +28,8 @@
         <postStartupActivity implementation="com.tfc.ulht.dropProjectPlugin.OnStartup"/>
         <statusBarWidgetFactory implementation="com.tfc.ulht.dropProjectPlugin.statusBarWidget.PluginStatusWidgetFactory"
                                 order="after notificationsWidget"/>
-        <notificationGroup id="Report Results Notification" displayType="BALLOON"/>
-        <notificationGroup id="Authors Created Notification" displayType="BALLOON"/>
-        <notificationGroup id="Logged Notification" displayType="BALLOON"/>
-        <notificationGroup id="Submitted Notification" displayType="BALLOON"/>
+        <notificationGroup id="Build Report Notification" displayType="BALLOON"/>
+        <notificationGroup id="Default Notification" displayType="BALLOON"/>
         <fileEditorProvider
                 implementation="com.tfc.ulht.dropProjectPlugin.submissionComponents.BuildReportEditorTabProvider"/>
         <fileEditorProvider

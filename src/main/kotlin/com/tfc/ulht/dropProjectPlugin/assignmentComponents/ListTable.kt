@@ -1,15 +1,12 @@
 package com.tfc.ulht.dropProjectPlugin.assignmentComponents
 
-import com.intellij.notification.NotificationGroupManager
-import com.intellij.notification.NotificationType
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.ui.table.TableView
 import com.intellij.util.ui.ListTableModel
 import com.tfc.ulht.dropProjectPlugin.Globals
+import com.tfc.ulht.dropProjectPlugin.DefaultNotification
 import com.tfc.ulht.dropProjectPlugin.ProjectComponents
 import com.tfc.ulht.dropProjectPlugin.loginComponents.Authentication
-import org.jetbrains.annotations.Nullable
 import java.awt.Cursor
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
@@ -37,9 +34,8 @@ class ListTable(model: ListTableModel<TableLine>?,project: Project?) : TableView
                 val source = e.source as JTable
                 val rowAtPoint = source.rowAtPoint(e.point)
                 if (rowAtPoint >= 0) {
-
+                    val selectedRow = this@ListTable.getRow(rowAtPoint)
                     if (MouseEvent.BUTTON1==e.button && e.clickCount==2 && !e.isConsumed)  {
-                        val selectedRow = this@ListTable.getRow(rowAtPoint)
                         val idOfSelected = selectedRow.id_notVisible
                         val nameOfSelected = selectedRow.name
 
@@ -48,15 +44,22 @@ class ListTable(model: ListTableModel<TableLine>?,project: Project?) : TableView
                             Globals.selectedLine?.radioButton?.isSelected=false
                             Globals.selectedLine = selectedRow
                             Globals.selectedAssignmentID = idOfSelected
-                            service<ProjectComponents>().setProjectSelectedAssignmentID(idOfSelected)
-                            SelectAssignmentNotifier.notify(project,"<html>The assignment <b>$nameOfSelected</b> was selected</html>")
+                            /*service<ProjectComponents>().setProjectSelectedAssignmentID(idOfSelected)
+                            Keeps data between overall plugin sessions*/
+                            ProjectComponents().saveProjectComponents(idOfSelected)
+                           DefaultNotification.notify(project,
+                                "<html>The assignment <b>$nameOfSelected</b> was selected</html>")
                         }
 
                     }
                     val columnAtPoint = source.columnAtPoint(e.point)
                     // instructions column = 3 , 4 now update
                     if ( columnAtPoint == 4  && MouseEvent.BUTTON1 == e.button) {
-                        AssignmentInstructions(this@ListTable.getRow(rowAtPoint).id_notVisible).showInstructions(project)
+
+                        if (selectedRow.instructions!= null)
+                        AssignmentInstructions(selectedRow.id_notVisible, selectedRow.instructions!!.format,
+                            selectedRow.instructions!!.body).showInstructions(project)
+
                     }
                     super.mousePressed(e)
                 }
@@ -66,15 +69,4 @@ class ListTable(model: ListTableModel<TableLine>?,project: Project?) : TableView
 
     }
 
-}
-object SelectAssignmentNotifier {
-    fun notify(
-        @Nullable project: Project?,
-        content: String
-    ) {
-        NotificationGroupManager.getInstance()
-            .getNotificationGroup("Logged Notification")
-            .createNotification(content, NotificationType.INFORMATION)
-            .notify(project)
-    }
 }

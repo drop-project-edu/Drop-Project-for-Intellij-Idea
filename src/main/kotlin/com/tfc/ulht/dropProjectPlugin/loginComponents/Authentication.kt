@@ -24,7 +24,6 @@ import okhttp3.*
 import java.io.IOException
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
-import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
@@ -39,7 +38,7 @@ class Authentication {
 
     private val REQUEST_URL = "${Globals.REQUEST_URL}/api/student/assignments/current"
 
-    fun loginAuthenticate(username: String,token: String): Boolean {
+    fun loginAuthenticate(username: String, token: String): Boolean {
         alreadyLoggedIn = request(username,token)
         if (alreadyLoggedIn){
             CredentialsController().storeCredentials(username,token,Globals.PLUGIN_ID)
@@ -47,7 +46,7 @@ class Authentication {
         return alreadyLoggedIn
     }
 
-    fun onStartAuthenticate(username: String,token: String): Boolean {
+    fun onStartAuthenticate(username: String, token: String): Boolean {
         alreadyLoggedIn = request(username,token)
         return alreadyLoggedIn
     }
@@ -90,7 +89,7 @@ class Authentication {
         }.socketFactory
 
         sslSocketFactory(insecureSocketFactory, naiveTrustManager)
-        hostnameVerifier(HostnameVerifier { _, _ -> true })
+        hostnameVerifier { _, _ -> true }
         return this
     }
 }

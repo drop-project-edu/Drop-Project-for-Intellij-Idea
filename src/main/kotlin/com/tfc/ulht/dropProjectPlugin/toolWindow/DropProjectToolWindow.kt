@@ -21,6 +21,7 @@ class DropProjectToolWindow(project: Project) {
     companion object{
         var tableModel: AssignmentTableModel? = null
         var resultsTable : ListTable? = null
+        var horizontalSplitter: OnePixelSplitter? = null
 
     }
 
@@ -38,12 +39,12 @@ class DropProjectToolWindow(project: Project) {
 
         val toolbarPanel = ToolbarPanel()
         toolbarPanel.border = IdeBorderFactory.createBorder(SideBorder.TOP or SideBorder.RIGHT or SideBorder.BOTTOM)
-        val horizontalSplitter = OnePixelSplitter(true,0.0f)
-        horizontalSplitter.border = BorderFactory.createEmptyBorder()
-        horizontalSplitter.dividerPositionStrategy = Splitter.DividerPositionStrategy.KEEP_FIRST_SIZE
-        horizontalSplitter.setResizeEnabled(false)
-        horizontalSplitter.firstComponent = toolbarPanel
-        horizontalSplitter.secondComponent = assignmentTablePanel
+        horizontalSplitter = OnePixelSplitter(true,0.0f)
+        horizontalSplitter!!.border = BorderFactory.createEmptyBorder()
+        horizontalSplitter!!.dividerPositionStrategy = Splitter.DividerPositionStrategy.KEEP_FIRST_SIZE
+        horizontalSplitter!!.setResizeEnabled(false)
+        horizontalSplitter!!.firstComponent = toolbarPanel
+        horizontalSplitter!!.secondComponent = assignmentTablePanel
         (this.contentToolWindow as SimpleToolWindowPanel).add(horizontalSplitter)
 
     }

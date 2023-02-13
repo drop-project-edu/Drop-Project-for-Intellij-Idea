@@ -14,7 +14,7 @@ class RefreshList() : DumbAwareAction("Refresh Assigment List","Refresh the assi
     }
 }
 
-class checkLastReport() : DumbAwareAction("Last Build Report","Check last build report",AllIcons.Actions.Annotate) {
+class CheckLastReport() : DumbAwareAction("Last Build Report","Check last build report",AllIcons.Actions.Annotate) {
     override fun actionPerformed(e: AnActionEvent) {
         if (Globals.lastBuildReport!=null){
             ShowFullBuildReport(Globals.lastBuildReport!!).actionPerformed(e)

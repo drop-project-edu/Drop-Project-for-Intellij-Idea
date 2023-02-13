@@ -1,32 +1,48 @@
 package com.tfc.ulht.dropProjectPlugin
 
-import com.intellij.openapi.components.PersistentStateComponent
-import com.intellij.openapi.components.State
-import com.intellij.openapi.components.Storage
+import com.intellij.openapi.project.ProjectManager
+import java.io.File
+import javax.xml.bind.JAXBContext
+import javax.xml.bind.JAXBException
+import javax.xml.bind.Marshaller
+import javax.xml.bind.annotation.XmlRootElement
 
-@com.intellij.openapi.components.Service
-@State(name = "ProjectComponents", storages = [Storage("ProjectComponent.xml")])
-class ProjectComponents : PersistentStateComponent<ProjectComponents.State>{
 
-    private var myState = State()
-    //private var selectedAssignmentID: String? = null
+@XmlRootElement
+data class Components(var selectedAssignmentID: String? = null)
+class ProjectComponents{
 
-    data class State(var selectedAssignmentID: String? = null)
+    fun saveProjectComponents(assignmentId: String){
+        val components = Components(assignmentId)
+        val project = ProjectManager.getInstance().openProjects[0]
+        val metadataDir = File(File(project.basePath!!),".dp")
+        metadataDir.mkdirs()
+        val metadataFile = File(metadataDir,"components.xml")
+        try {
+            val context = JAXBContext.newInstance(Components::class.java)
+            val marshaller = context.createMarshaller()
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,true)
+            marshaller.marshal(components,metadataFile)
+        } catch (_: JAXBException){}
 
-    fun getProjectSelectedAssignmentID(): String? {
-        return myState.selectedAssignmentID
     }
 
-    fun setProjectSelectedAssignmentID(assignmentID: String) {
-        myState.selectedAssignmentID = assignmentID
-    }
+    fun loadProjectComponents(): Components {
+        val project = ProjectManager.getInstance().openProjects[0]
+        val metadataDir = File(File(project.basePath!!),".dp")
+        val metadataFile = File(metadataDir,"components.xml")
+        metadataDir.mkdirs()
+        if (!metadataFile.isFile){
+            metadataFile.createNewFile()
+        }
+        return try {
+            val context = JAXBContext.newInstance(Components::class.java)
+            val unmarshaller = context.createUnmarshaller()
+            unmarshaller.unmarshal(metadataFile) as Components
+        } catch (_: JAXBException){
+            Components()
+        }
 
-    override fun getState(): ProjectComponents.State {
-        return myState
-    }
-
-    override fun loadState(state: ProjectComponents.State) {
-        myState = state
     }
 
 }

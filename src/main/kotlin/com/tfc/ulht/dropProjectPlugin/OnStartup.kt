@@ -18,16 +18,12 @@
 
 package com.tfc.ulht.dropProjectPlugin
 
-import com.intellij.openapi.components.ComponentManager
-import com.intellij.openapi.components.ComponentManagerEx
-import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.StartupActivity
 import com.tfc.ulht.dropProjectPlugin.assignmentComponents.ListAssignment
 import com.tfc.ulht.dropProjectPlugin.loginComponents.Authentication
 import com.tfc.ulht.dropProjectPlugin.loginComponents.CredentialsController
 import com.tfc.ulht.dropProjectPlugin.toolWindow.panel.ToolbarPanel
-import com.intellij.openapi.components.service
 
 class OnStartup : StartupActivity {
 
@@ -39,11 +35,11 @@ class OnStartup : StartupActivity {
                 ?.let { credentials.userName?.let { it1 -> Authentication().onStartAuthenticate(it1, it) } }
         }
         if (Authentication.alreadyLoggedIn){
-            val projectSelectedAssignmentID = service<ProjectComponents>().getProjectSelectedAssignmentID()
-            if (projectSelectedAssignmentID != null){
-                Globals.selectedAssignmentID = projectSelectedAssignmentID
-            }
 
+            val components = ProjectComponents().loadProjectComponents()
+            if (components.selectedAssignmentID!=null){
+                Globals.selectedAssignmentID = components.selectedAssignmentID!!
+            }
             ListAssignment(false).get()
             ToolbarPanel.loggedInToolbar()
         }

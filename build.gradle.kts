@@ -1,14 +1,12 @@
-import org.jetbrains.kotlin.ir.backend.js.compile
-
 plugins {
     id("java")
-    id("org.jetbrains.kotlin.jvm") version "1.7.10"
+    id("org.jetbrains.kotlin.jvm") version "1.8.0"
     id("org.jetbrains.intellij") version "1.8.0"
     kotlin("kapt") version "1.7.21"
 }
 
 group = "com.tfc.ulht"
-version = "v1.3-Alpha Release"
+version = "v1.5-Alpha Release"
 
 repositories {
     mavenCentral()
@@ -17,7 +15,7 @@ repositories {
 
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib")
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("com.squareup.moshi:moshi:1.14.0")
     kapt("com.squareup.moshi:moshi-kotlin-codegen:1.14.0")

@@ -20,6 +20,9 @@ package data
 
 import com.squareup.moshi.JsonClass
 
+enum class AssignmentInstructionsFormat {
+    HTML
+}
 @JsonClass(generateAdapter = true)
 data class Assignment(
     val id: String,
@@ -28,5 +31,12 @@ data class Assignment(
     val dueDate: String?,
     val submissionMethod: String,
     val language: String,
-    val active: Boolean
+    val active: Boolean,
+    val instructions: Instructions?,
+)
+
+@JsonClass(generateAdapter = true)
+data class Instructions(
+    var format: AssignmentInstructionsFormat? = null,
+    var body: String? = null
 )

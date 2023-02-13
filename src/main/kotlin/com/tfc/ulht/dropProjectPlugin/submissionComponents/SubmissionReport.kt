@@ -19,21 +19,17 @@
 package com.tfc.ulht.dropProjectPlugin.submissionComponents
 
 
-import com.intellij.notification.NotificationGroupManager
-import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.DumbAwareAction
-import com.intellij.openapi.project.Project
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.tfc.ulht.dropProjectPlugin.Globals
+import com.tfc.ulht.dropProjectPlugin.BuildReportNotification
 import com.tfc.ulht.dropProjectPlugin.assignmentComponents.SubmissionId
 import com.tfc.ulht.dropProjectPlugin.loginComponents.Authentication
-import com.tfc.ulht.dropProjectPlugin.toolWindow.panel.ToolbarPanel
 import data.FullBuildReport
 import okhttp3.Request
-import org.jetbrains.annotations.Nullable
 
 
 class SubmissionReport {
@@ -56,7 +52,7 @@ class SubmissionReport {
                 }
 
             if (fullBuildReport.error == null){
-                ReportResultsNotifier.notify(e.project,fullBuildReport)
+                BuildReportNotification.notify(e.project,fullBuildReport)
                 return true
             }
 
@@ -66,23 +62,7 @@ class SubmissionReport {
 
 }
 
-object ReportResultsNotifier {
-    fun notify(
-        @Nullable project: Project?,
-        fullBuildReport: FullBuildReport,
-        content: String = "The Build Report of your submission is now available to view"
-    ) {
-        Globals.lastBuildReport = fullBuildReport
-        //display report button in toolbar
-        ToolbarPanel.buildReportAvailable()
 
-        NotificationGroupManager.getInstance()
-            .getNotificationGroup("Report Results Notification")
-            .createNotification(content, NotificationType.INFORMATION)
-            .addAction(ShowFullBuildReport(fullBuildReport))
-            .notify(project)
-    }
-}
 
 class ShowFullBuildReport(private val fullBuildReport: FullBuildReport) : DumbAwareAction("Show") {
     override fun actionPerformed(e: AnActionEvent) {

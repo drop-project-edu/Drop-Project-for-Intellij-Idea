@@ -19,18 +19,13 @@
 package com.tfc.ulht.dropProjectPlugin.loginComponents
 
 import com.intellij.icons.AllIcons
-import com.intellij.notification.NotificationGroupManager
-import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAwareAction
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.ui.Messages
-import com.intellij.openapi.wm.ToolWindowManager
 import com.tfc.ulht.dropProjectPlugin.Globals
+import com.tfc.ulht.dropProjectPlugin.DefaultNotification
 import com.tfc.ulht.dropProjectPlugin.toolWindow.DropProjectToolWindow
 import com.tfc.ulht.dropProjectPlugin.toolWindow.panel.ToolbarPanel
-import org.jetbrains.annotations.Nullable
 
 class Logout() : DumbAwareAction("Logout", "Leave this login session", AllIcons.Actions.Exit) {
 
@@ -44,7 +39,7 @@ class Logout() : DumbAwareAction("Logout", "Leave this login session", AllIcons.
             if (userMessage == 0) {
                 Authentication.alreadyLoggedIn = false
                 Globals.selectedAssignmentID = ""
-                LoggedOffNotifier.notify(e.project,"You've been logged out")
+                DefaultNotification.notify(e.project,"You've been logged out")
 
                 ToolbarPanel.loggedOutToolbar()
 
@@ -60,14 +55,3 @@ class Logout() : DumbAwareAction("Logout", "Leave this login session", AllIcons.
     // TODO: update() , maybe its works on dynamic toolbar, *setVisible*
 }
 
-object LoggedOffNotifier {
-    fun notify(
-        @Nullable project: Project?,
-        content: String
-    ) {
-        NotificationGroupManager.getInstance()
-            .getNotificationGroup("Logged Notification")
-            .createNotification(content, NotificationType.INFORMATION)
-            .notify(project)
-    }
-}

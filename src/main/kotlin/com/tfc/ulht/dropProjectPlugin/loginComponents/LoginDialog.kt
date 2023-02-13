@@ -19,13 +19,10 @@
 package com.tfc.ulht.dropProjectPlugin.loginComponents
 
 import TextPrompt
-import com.intellij.notification.NotificationGroupManager
-import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.project.Project
+import com.tfc.ulht.dropProjectPlugin.DefaultNotification
 import com.tfc.ulht.dropProjectPlugin.Users
 import com.tfc.ulht.dropProjectPlugin.toolWindow.panel.ToolbarPanel
-import org.jetbrains.annotations.Nullable
 import java.awt.Dimension
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
@@ -51,7 +48,7 @@ class LoginDialog {
     private val studentNameField = mutableListOf<JTextField>()
     private val numberField = JTextField()
     private val nameField = JTextField()
-    private val tokenField = JTextField()
+    private val tokenField = JPasswordField()
 
     fun assembleDialog(panel: JPanel, e: AnActionEvent) {
 
@@ -137,14 +134,14 @@ class LoginDialog {
 
             val response = Authentication()
                 .loginAuthenticate(studentNumberField[0].text.trim(),
-                tokenField.text.toString())
+                tokenField.password.concatToString())
 
             UIManager.put("OptionPane.minimumSize", Dimension(200, 100))
 
 
             if (response) {
                 registerStudents()
-                LoggedInNotifier.notify(e.project,"Login Successful")
+                DefaultNotification.notify(e.project,"Login Successful")
                 ToolbarPanel.loggedInToolbar()
 
             } else /*if (!response)*/ {
@@ -205,14 +202,3 @@ class LoginDialog {
     }
 }
 
-object LoggedInNotifier {
-    fun notify(
-        @Nullable project: Project?,
-        content: String
-    ) {
-        NotificationGroupManager.getInstance()
-            .getNotificationGroup("Logged Notification")
-            .createNotification(content, NotificationType.INFORMATION)
-            .notify(project)
-    }
-}

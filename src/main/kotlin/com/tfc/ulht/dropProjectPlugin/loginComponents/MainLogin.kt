@@ -19,17 +19,14 @@
 package com.tfc.ulht.dropProjectPlugin.loginComponents
 
 import com.intellij.icons.AllIcons
-import com.intellij.notification.NotificationGroupManager
-import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.UpdateInBackground
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.DumbAwareAction
-import com.intellij.openapi.project.Project
 import com.tfc.ulht.dropProjectPlugin.AuthorsFile
+import com.tfc.ulht.dropProjectPlugin.DefaultNotification
 import com.tfc.ulht.dropProjectPlugin.assignmentComponents.ListAssignment
 import com.tfc.ulht.dropProjectPlugin.loginComponents.Authentication.Companion.alreadyLoggedIn
-import org.jetbrains.annotations.Nullable
 import javax.swing.JPanel
 
 class MainLogin() : DumbAwareAction("Login", "Insert your credentials", AllIcons.General.User), UpdateInBackground {
@@ -42,29 +39,16 @@ class MainLogin() : DumbAwareAction("Login", "Insert your credentials", AllIcons
 
 
         if (!alreadyLoggedIn) {
-            LoginDialog().assembleDialog(panel,e)
+            LoginDialog().assembleDialog(panel, e)
 
             if (alreadyLoggedIn) {
-                AuthorsFile().make(projectDirectory,false,e)
+                AuthorsFile().make(projectDirectory, false, e)
             }
 
         } else {
-            LoggedNotifier.notify(e.project,"You are already logged in")
+            DefaultNotification.notify(e.project, "You are already logged in")
         }
 
         ListAssignment(true).get()
     }
-
-    object LoggedNotifier {
-        fun notify(
-            @Nullable project: Project?,
-            content: String
-        ) {
-            NotificationGroupManager.getInstance()
-                .getNotificationGroup("Logged Notification")
-                .createNotification(content, NotificationType.INFORMATION)
-                .notify(project)
-        }
-    }
-
 }
