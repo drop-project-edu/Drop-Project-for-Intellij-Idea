@@ -40,3 +40,8 @@ data class Instructions(
     var format: AssignmentInstructionsFormat? = null,
     var body: String? = null
 )
+@JsonClass(generateAdapter = true)
+data class AssignmentInfoResponse(
+    val assignment: Assignment?,
+    val errorCode: Int?
+)

@@ -80,7 +80,6 @@ class SubmitAssignment : DumbAwareAction("Submit Selected Assignment",
                 .url(REQUEST_URL)
                 .method("POST", body)
                 .build()
-
             val moshi = Moshi.Builder().build()
             val submissionJsonAdapter = moshi.adapter(SubmissionId::class.java)
             Authentication.httpClient.newCall(request).execute().use { response ->
@@ -98,15 +97,18 @@ class SubmitAssignment : DumbAwareAction("Submit Selected Assignment",
                     val errorMessage = errorJsonAdapter.fromJson(response.body!!.source())!!
                     Messages.showMessageDialog(errorMessage.error, "Submission", Messages.getErrorIcon())
                 } else if (response.code==403){
-                    Messages.showMessageDialog("You're not allowed to submit this assignment",
+                    val responseBody = response.body?.string()
+                    val accessDeniedMessage = responseBody?.trim() ?: "Access Denied : Unknown error"
+                    Messages.showMessageDialog(accessDeniedMessage.split(":")[1].trim(),
                         "Access Denied", Messages.getErrorIcon())
+
                 } else if (response.code==401){
                     Messages.showMessageDialog("You're not authorized to submit this assignment",
                         "Invalid Token", Messages.getErrorIcon())
                 }
 
-            }
 
+            }
         }
     }
 

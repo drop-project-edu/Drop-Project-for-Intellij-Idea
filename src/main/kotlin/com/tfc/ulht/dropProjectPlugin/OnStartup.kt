@@ -29,17 +29,22 @@ class OnStartup : StartupActivity {
 
     override fun runActivity(project: Project) {
 
+        val components = ProjectComponents().loadProjectComponents()
+        if (components.selectedAssignmentID!=null){
+            Globals.selectedAssignmentID = components.selectedAssignmentID!!
+        } else {
+            Globals.selectedAssignmentID=""
+            Globals.selectedLine=null
+        }
+
         val credentials = CredentialsController().retrieveStoredCredentials(Globals.PLUGIN_ID)
         if (credentials != null) {
             credentials.getPasswordAsString()
                 ?.let { credentials.userName?.let { it1 -> Authentication().onStartAuthenticate(it1, it) } }
         }
+
         if (Authentication.alreadyLoggedIn){
 
-            val components = ProjectComponents().loadProjectComponents()
-            if (components.selectedAssignmentID!=null){
-                Globals.selectedAssignmentID = components.selectedAssignmentID!!
-            }
             ListAssignment(false).get()
             ToolbarPanel.loggedInToolbar()
         }

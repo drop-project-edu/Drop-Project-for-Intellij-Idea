@@ -19,6 +19,7 @@ import com.tfc.ulht.dropProjectPlugin.assignmentComponents.TableLine
 import com.tfc.ulht.dropProjectPlugin.loginComponents.Authentication
 import com.tfc.ulht.dropProjectPlugin.toolWindow.DropProjectToolWindow
 import data.Assignment
+import data.AssignmentInfoResponse
 import okhttp3.Request
 import java.awt.FlowLayout
 import java.awt.event.KeyAdapter
@@ -88,20 +89,26 @@ class GoBack : DumbAwareAction("Go Back","Go to previous",AllIcons.Actions.Back)
 
 class SearchAssignment : DumbAwareAction("Search Assignment",
     "Search for assignment by ID",AllIcons.Actions.Search) {
-    private val REQUEST_URL = "${Globals.REQUEST_URL}/api/student/assignments/current"
+    private val REQUEST_URL = "${Globals.REQUEST_URL}/api/student/assignments"
     private val moshi = Moshi.Builder().build()
-    private val assignmentJsonAdapter: JsonAdapter<Assignment> = moshi.adapter(Assignment::class.java)
+    private val assignmentJsonAdapter: JsonAdapter<AssignmentInfoResponse> = moshi.adapter(AssignmentInfoResponse::class.java)
     private var assignment: Assignment? = null
-    private var status = 500 //ISE by default
+    private var errorCode: Int? = null
     override fun actionPerformed(e: AnActionEvent) {
+        if (ToolbarSearchPanel.assignmentSearchField.text.isEmpty()){
+            return
+        }
         val request = Request.Builder()
             .url("$REQUEST_URL/${ToolbarSearchPanel.assignmentSearchField.text.trim()}")
             .build()
 
         Authentication.httpClient.newCall(request).execute().use { response ->
-            status = response.code
-            if (status==200){
-                assignment = assignmentJsonAdapter.fromJson(response.body!!.source())!!
+            if (response.code==200){
+                val assignmentInfoResponse = assignmentJsonAdapter.fromJson(response.body!!.source())!!
+                assignment = assignmentInfoResponse.assignment
+                errorCode = assignmentInfoResponse.errorCode
+            } else {
+                errorCode = response.code
             }
         }
         if (assignment!=null){
@@ -120,12 +127,12 @@ class SearchAssignment : DumbAwareAction("Search Assignment",
                     "<html>You've added <b>${assignmentLineToAdd.name}</b> to your list</html>")
             }
         } else {
-            if (status==500){
+            if (errorCode==404){
                 Messages.showMessageDialog("Assignment not found", "Not Found", Messages.getErrorIcon())
-            } else if (status==403){
+            } else if (errorCode==403){
                 Messages.showMessageDialog("You're not allowed to view this assignment",
                     "Access Denied", Messages.getErrorIcon())
-            } else if (status==401) {
+            } else if (errorCode==401) {
                 Messages.showMessageDialog("You're not authorized to access assignments",
                     "Invalid Token", Messages.getErrorIcon())
             }

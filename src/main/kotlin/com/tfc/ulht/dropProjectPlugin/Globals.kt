@@ -32,8 +32,6 @@ class Globals {
         val REQUEST_URL = "https://deisi.ulusofona.pt/drop-project"
         val PLUGIN_ID = PluginStatusWidget::class.java.name
 
-        var choosenRow: Int = 0
-        var choosenColumn: Int = 0
 
         var selectedAssignmentID: String = ""
         var selectedLine: TableLine? = null

@@ -18,10 +18,12 @@
 
 package com.tfc.ulht.dropProjectPlugin.loginComponents
 
+import com.intellij.openapi.ui.Messages
 import com.jetbrains.rd.util.use
 import com.tfc.ulht.dropProjectPlugin.Globals
 import okhttp3.*
 import java.io.IOException
+import java.net.ConnectException
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
 import javax.net.ssl.SSLContext
@@ -69,10 +71,16 @@ class Authentication {
         val request = Request.Builder()
             .url(REQUEST_URL)
             .build()
-
-        httpClient.newCall(request).execute().use { response ->
-            return response.isSuccessful
+        try {
+            httpClient.newCall(request).execute().use { response ->
+                return response.isSuccessful
+            }
+        } catch (e:ConnectException){
+            Messages.showMessageDialog("Drop project server connection refused",
+                "DP Server Off", Messages.getErrorIcon())
+            return false
         }
+
     }
 
 
