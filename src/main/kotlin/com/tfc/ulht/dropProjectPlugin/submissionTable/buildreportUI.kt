@@ -7,7 +7,10 @@ import com.intellij.ui.components.JBScrollPane
 import data.FullBuildReport
 import net.miginfocom.swing.MigLayout
 import java.awt.Font
-import javax.swing.*
+import javax.swing.ImageIcon
+import javax.swing.JLabel
+import javax.swing.JPanel
+import javax.swing.JSeparator
 
 /**
  * @author bernardobaltazar
@@ -101,10 +104,9 @@ class buildreportUI(fullBuildReport: FullBuildReport) : JPanel() {
         add(assignmentLabel, "cell 0 2,width 30,height 30")
 
         //---- PackageLabel ----
-        if (fullBuildReport.assignment?.packageName != null || fullBuildReport.assignment?.packageName != "" ){
+        if (fullBuildReport.assignment?.packageName != null || fullBuildReport.assignment?.packageName != "") {
             packageLabel.text = "Package: " + fullBuildReport.assignment?.packageName
-        }
-        else {
+        } else {
             packageLabel.text = "Package: None"
         }
         packageLabel.font = Font("Segoe UI", Font.PLAIN, 12)
@@ -129,22 +131,25 @@ class buildreportUI(fullBuildReport: FullBuildReport) : JPanel() {
 
         for (summary in fullBuildReport.summary!!) {
             when (summary.reportKey) {
-                "PS" ->  if (summary.reportValue=="OK"){
+                "PS" -> if (summary.reportValue == "OK") {
                     psResponse.text = "✅"
                 } else {
                     psResponse.text = "❌"
                 }
-                "C" -> if (summary.reportValue=="OK"){
+
+                "C" -> if (summary.reportValue == "OK") {
                     cResponse.text = "✅"
                 } else {
                     cResponse.text = "❌"
                 }
-                "CS" -> if (summary.reportValue=="OK"){
+
+                "CS" -> if (summary.reportValue == "OK") {
                     ccResponse.text = "✅"
                 } else {
                     ccResponse.text = "❌"
                 }
-                "TT" -> if (summary.reportValue=="OK"){
+
+                "TT" -> if (summary.reportValue == "OK") {
                     passedAllTests = true
                     ttResponse.text = "✅ ${summary.reportProgress}/${summary.reportGoal}"
                 } else {
@@ -196,9 +201,9 @@ class buildreportUI(fullBuildReport: FullBuildReport) : JPanel() {
         //-----StructErr or BuildSummary
         if (fullBuildReport.structureErrors != null) {
             jUnitSummaryLabel.text = "Structure Errors"
-        } else if (fullBuildReport.buildReport?.compilationErrors !=null){
+        } else if (fullBuildReport.buildReport?.compilationErrors != null) {
             jUnitSummaryLabel.text = "Compilation Errors"
-        } else if(fullBuildReport.buildReport?.checkstyleErrors !=null) {
+        } else if (fullBuildReport.buildReport?.checkstyleErrors != null) {
             jUnitSummaryLabel.text = "Checkstyle Errors"
         } else {
             jUnitSummaryLabel.text = "JUnit Summary"
@@ -211,21 +216,30 @@ class buildreportUI(fullBuildReport: FullBuildReport) : JPanel() {
 
         //---- jUnitSummaryTeacherLabel ----
         if (fullBuildReport.structureErrors != null) {
-            jUnitSummaryTeacherLabel.text = "You're code has ${fullBuildReport.structureErrors.size} structure error${if (fullBuildReport.structureErrors.size!=1){"s"} else {
-                ""
-            }
+            jUnitSummaryTeacherLabel.text = "You're code has ${fullBuildReport.structureErrors.size} structure error${
+                if (fullBuildReport.structureErrors.size != 1) {
+                    "s"
+                } else {
+                    ""
+                }
             }"
-        } else if (fullBuildReport.buildReport?.compilationErrors !=null){
-            val size = fullBuildReport.buildReport.compilationErrors.filter { it.startsWith("[TEST]") }.size
-            jUnitSummaryTeacherLabel.text = "You're code has $size compilation error${if (size!=1){"s"} else {
-                ""
-            }
+        } else if (fullBuildReport.buildReport?.compilationErrors != null) {
+            val size = fullBuildReport.buildReport.compilationErrors.size
+            jUnitSummaryTeacherLabel.text = "You're code has $size compilation error${
+                if (size != 1) {
+                    "s"
+                } else {
+                    ""
+                }
             }"
-        } else if(fullBuildReport.buildReport?.checkstyleErrors !=null) {
+        } else if (fullBuildReport.buildReport?.checkstyleErrors != null) {
             val size = fullBuildReport.buildReport.checkstyleErrors.size
-            jUnitSummaryTeacherLabel.text = "You're code has ${size} code quality error${if (size!=1){"s"} else {
-                ""
-            }
+            jUnitSummaryTeacherLabel.text = "You're code has ${size} code quality error${
+                if (size != 1) {
+                    "s"
+                } else {
+                    ""
+                }
             }"
         } else {
             jUnitSummaryTeacherLabel.text = fullBuildReport.buildReport?.junitSummaryTeacher
@@ -241,44 +255,43 @@ class buildreportUI(fullBuildReport: FullBuildReport) : JPanel() {
         //---- textArea1 ----
         if (fullBuildReport.structureErrors == null) {
 
-            if (!passedAllTests){
+            if (!passedAllTests) {
                 var cellNum = 22
-                if (fullBuildReport.buildReport?.compilationErrors !=null){
+                if (fullBuildReport.buildReport?.compilationErrors != null) {
 
-                    for (cError in fullBuildReport.buildReport.compilationErrors){
+                    for (cError in fullBuildReport.buildReport.compilationErrors) {
                         val errorLabel = JLabel("<html><p>${cError}<p/></html>")
 
                         errorLabel.font = Font("Segoe UI", Font.ITALIC, 12)
-                        if (cError.startsWith("[TEST]")){
-                            val separator = JSeparator()
-                            add(separator, "cell 0 ${cellNum++} 3 1")
-                        }
+                        val separator = JSeparator()
+                        add(separator, "cell 0 ${cellNum++} 3 1")
                         add(errorLabel, "cell 0 ${cellNum++},width 30,height 30")
 
                     }
-                } else if (fullBuildReport.buildReport?.checkstyleErrors !=null){
+                } else if (fullBuildReport.buildReport?.checkstyleErrors != null) {
 
-                    for (ccError in fullBuildReport.buildReport.checkstyleErrors){
+                    for (ccError in fullBuildReport.buildReport.checkstyleErrors) {
                         val errorLabel = JLabel(ccError)
                         val separator = JSeparator()
                         errorLabel.font = Font("Segoe UI", Font.ITALIC, 12)
                         add(errorLabel, "cell 0 ${cellNum++},width 30,height 30")
                         add(separator, "cell 0 ${cellNum++} 3 1")
                     }
-                } else if(fullBuildReport.buildReport?.junitErrorsTeacher !=null){
-                    var array:ArrayList<String> = arrayListOf()
-                    val iterator = "ERROR:|FAILURE:".toRegex().findAll(fullBuildReport.buildReport.junitErrorsTeacher).iterator()
-                    while(iterator.hasNext()){
+                } else if (fullBuildReport.buildReport?.junitErrorsTeacher != null) {
+                    var array: ArrayList<String> = arrayListOf()
+                    val iterator =
+                        "ERROR:|FAILURE:".toRegex().findAll(fullBuildReport.buildReport.junitErrorsTeacher).iterator()
+                    while (iterator.hasNext()) {
                         array.add(iterator.next().value)
                     }
                     var index = 0
                     for (jError in fullBuildReport.buildReport.junitErrorsTeacher.split("ERROR:|FAILURE:".toRegex())) {
-                        if (jError.isNotBlank()){
+                        if (jError.isNotBlank()) {
                             val label = JLabel(array[index++])
                             val errorLabel = JLabel("<html><p>${jError}<p/></html>")
                             errorLabel.font = Font("Segoe UI", Font.ITALIC, 12)
                             val separator = JSeparator()
-                            val separator2 =JSeparator()
+                            val separator2 = JSeparator()
                             add(separator, "cell 0 ${cellNum++} 3 1")
                             add(label, "cell 0 ${cellNum++},width 30,height 30")
                             add(separator2, "cell 0 ${cellNum++} 3 1")
@@ -287,7 +300,6 @@ class buildreportUI(fullBuildReport: FullBuildReport) : JPanel() {
                     }
                 }
             }
-
 
 
         } else {
@@ -306,7 +318,6 @@ class buildreportUI(fullBuildReport: FullBuildReport) : JPanel() {
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
-
 
 
 }

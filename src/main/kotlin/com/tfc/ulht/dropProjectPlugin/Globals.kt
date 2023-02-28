@@ -36,7 +36,7 @@ class Globals {
         var selectedAssignmentID: String = ""
         var selectedLine: TableLine? = null
 
-        var lastBuildReport : FullBuildReport? = null
+        var lastBuildReport: FullBuildReport? = null
     }
 
 }

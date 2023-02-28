@@ -21,17 +21,15 @@
 package com.tfc.ulht.dropProjectPlugin.statusBarWidget
 
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.wm.StatusBar
 import com.intellij.openapi.wm.StatusBarWidget
-import com.intellij.openapi.wm.StatusBarWidgetFactory
 import com.intellij.util.Consumer
 import com.intellij.util.concurrency.AppExecutorUtil
-import com.intellij.util.text.DateFormatUtil
 import com.intellij.util.text.JBDateFormat
-import com.intellij.vcs.log.runInEdt
 import com.tfc.ulht.dropProjectPlugin.Globals
 import java.awt.Component
 import java.awt.event.MouseEvent
@@ -49,12 +47,14 @@ class PluginStatusWidget : StatusBarWidget, StatusBarWidget.TextPresentation {
     }
 
     override fun ID(): String = Globals.PLUGIN_ID
-    override fun getPresentation(): StatusBarWidget.WidgetPresentation? = this
-    override fun getTooltipText(): String? {
+    override fun getPresentation(): StatusBarWidget.WidgetPresentation = this
+    override fun getTooltipText(): String {
         return JBDateFormat.getFormatter().formatDateTime(System.currentTimeMillis())
     }
 
     override fun getText(): String {
+
+
         return if (Globals.selectedAssignmentID.isEmpty()) {
             "No assignment selected"
         } else {
@@ -62,8 +62,19 @@ class PluginStatusWidget : StatusBarWidget, StatusBarWidget.TextPresentation {
         }
     }
 
-    override fun getClickConsumer(): Consumer<MouseEvent>? {
-        return null
+    override fun getClickConsumer(): Consumer<MouseEvent> {
+        return Consumer { }/*Consumer { mouseEvent ->
+            var builder = JBPopupFactory.getInstance().createActionGroupPopup(
+                null,
+                DefaultActionGroup(DeselectAssignment()),
+                DataManager.getInstance().getDataContext(mouseEvent.component),
+                JBPopupFactory.ActionSelectionAid.SPEEDSEARCH,
+                true
+            )
+            builder.setMinimumSize(Dimension(110, 35))
+            builder.showAbove(mouseEvent.component as JComponent)
+
+        }*/
     }
 
     override fun getAlignment(): Float {
@@ -79,6 +90,11 @@ class PluginStatusWidget : StatusBarWidget, StatusBarWidget.TextPresentation {
     }
 
 
-
-
 }
+
+class DeselectAssignment : DumbAwareAction("Unselect Assignment") {
+    override fun actionPerformed(e: AnActionEvent) {
+        Globals.selectedAssignmentID = ""
+    }
+}
+
