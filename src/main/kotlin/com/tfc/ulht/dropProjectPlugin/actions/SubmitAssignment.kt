@@ -16,22 +16,24 @@
  * limitations under the License.
  */
 
-package com.tfc.ulht.dropProjectPlugin.assignmentComponents
+package com.tfc.ulht.dropProjectPlugin.actions
 
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.UpdateInBackground
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.fileEditor.FileDocumentManager
+import com.intellij.openapi.progress.ProgressIndicator
+import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.ui.Messages
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
-import com.tfc.ulht.dropProjectPlugin.Globals
 import com.tfc.ulht.dropProjectPlugin.DefaultNotification
+import com.tfc.ulht.dropProjectPlugin.Globals
 import com.tfc.ulht.dropProjectPlugin.ZipFolder
-import com.tfc.ulht.dropProjectPlugin.loginComponents.Authentication
 import com.tfc.ulht.dropProjectPlugin.submissionComponents.SubmissionReport
+import com.tfc.ulht.dropProjectPlugin.toolWindow.DropProjectToolWindow
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.Request
@@ -41,70 +43,69 @@ import java.io.File
 import javax.swing.JOptionPane
 
 
-class SubmitAssignment : DumbAwareAction("Submit Selected Assignment",
-    "Submit an assignment to Drop Project", AllIcons.Actions.Upload), UpdateInBackground {
+class SubmitAssignment(private var toolWindow: DropProjectToolWindow) : DumbAwareAction(
+    "Submit Selected Assignment", "Submit an assignment to Drop Project", AllIcons.Actions.Upload
+) {
 
     private val REQUEST_URL = "${Globals.REQUEST_URL}/api/student/submissions/new"
-    private var submissionId : SubmissionId? = null
-    private var submissionResultsService = SubmissionReport()
+    private var submissionId: SubmissionId? = null
+    private var submissionResultsService = SubmissionReport(toolWindow)
     private var previousCheckTime: Long = 0
 
     override fun actionPerformed(e: AnActionEvent) {
 
-        if (!Authentication.alreadyLoggedIn) {
+        if (!toolWindow.authentication.alreadyLoggedIn) {
             // If user is has not logged in, show an error message
-            JOptionPane.showMessageDialog(null,
-                "You need to login before submitting an assignment", "Submit", JOptionPane.ERROR_MESSAGE)
+            JOptionPane.showMessageDialog(
+                null, "You need to login before submitting an assignment", "Submit", JOptionPane.ERROR_MESSAGE
+            )
 
-        } else if (Globals.selectedAssignmentID.isEmpty()) {
+        } else if (toolWindow.globals.selectedAssignmentID.isEmpty()) {
             // Before trying to submit project, check if an assignment has been chosen
-            JOptionPane.showMessageDialog(null,
-                "You need to choose an assignment first", "Unassigned Submission",
-                JOptionPane.INFORMATION_MESSAGE)
+            JOptionPane.showMessageDialog(
+                null, "You need to choose an assignment first", "Unassigned Submission", JOptionPane.INFORMATION_MESSAGE
+            )
         } else {
             // If assignment has been choosen, upload zip file
             //first save all documents
             FileDocumentManager.getInstance().saveAllDocuments()
             val uploadFilePath = ZipFolder().zipIt(e) ?: return
 
-            val body: RequestBody = MultipartBody.Builder().setType(MultipartBody.FORM)
-                .addFormDataPart(
-                    "file", "projeto.zip",
-                    File(uploadFilePath)
-                        .asRequestBody("application/octet-stream".toMediaTypeOrNull())
-                )
-                .addFormDataPart("assignmentId",Globals.selectedAssignmentID/*"fp-exemplo-2223"*/)
-                .build()
+            val body: RequestBody = MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart(
+                "file",
+                "projeto.zip",
+                File(uploadFilePath).asRequestBody("application/octet-stream".toMediaTypeOrNull())
+            ).addFormDataPart("assignmentId", toolWindow.globals.selectedAssignmentID).build()
 
-            val request: Request = Request.Builder()
-                .url(REQUEST_URL)
-                .method("POST", body)
-                .build()
+            val request: Request = Request.Builder().url(REQUEST_URL).method("POST", body).build()
             val moshi = Moshi.Builder().build()
             val submissionJsonAdapter = moshi.adapter(SubmissionId::class.java)
-            Authentication.httpClient.newCall(request).execute().use { response ->
+            toolWindow.authentication.httpClient.newCall(request).execute().use { response ->
                 if (response.isSuccessful) {
                     if (response.code == 200) {
 
                         submissionId = submissionJsonAdapter.fromJson(response.body!!.source())
-                        DefaultNotification.notify(e.project,
-                            "<html>The submission from the assignment " +
-                                    "<b>${Globals.selectedAssignmentID}</b> has been submitted!</html>")
+                        DefaultNotification.notify(
+                            e.project,
+                            "<html>The submission from the assignment " + "<b>${toolWindow.globals.selectedAssignmentID}</b> has been submitted!</html>"
+                        )
 
                     }
                 } else if (response.code == 500) {
                     val errorJsonAdapter = moshi.adapter(ErrorMessage::class.java)
                     val errorMessage = errorJsonAdapter.fromJson(response.body!!.source())!!
                     Messages.showMessageDialog(errorMessage.error, "Submission", Messages.getErrorIcon())
-                } else if (response.code==403){
+                } else if (response.code == 403) {
                     val responseBody = response.body?.string()
                     val accessDeniedMessage = responseBody?.trim() ?: "Access Denied : Unknown error"
-                    Messages.showMessageDialog(accessDeniedMessage.split(":")[1].trim(),
-                        "Access Denied", Messages.getErrorIcon())
+                    Messages.showMessageDialog(
+                        accessDeniedMessage.split(":")[1].trim(), "Access Denied", Messages.getErrorIcon()
+                    )
 
-                } else if (response.code==401){
-                    Messages.showMessageDialog("You're not authorized to submit this assignment",
-                        "Invalid Token", Messages.getErrorIcon())
+                } else if (response.code == 401) {
+                    Messages.showMessageDialog(
+                        "You're not authorized to submit this assignment", "Invalid Token", Messages.getErrorIcon()
+                    )
                 }
 
 
@@ -113,18 +114,23 @@ class SubmitAssignment : DumbAwareAction("Submit Selected Assignment",
     }
 
     override fun update(e: AnActionEvent) {
-
-            if (submissionId!=null) {
-                val currentTime = System.currentTimeMillis()
-                val delta = currentTime-previousCheckTime
-                if (delta>5000){
-                    if (submissionResultsService.checkResult(submissionId,e)) {
+        if (submissionId != null && (System.currentTimeMillis() - previousCheckTime > 8000)) {
+            val task = object : Task.Backgroundable(e.project, "Waiting for build report") {
+                override fun run(p0: ProgressIndicator) {
+                    if (submissionResultsService.checkResult(submissionId, e)) {
                         submissionId = null
                     }
-                    previousCheckTime = currentTime
+                    previousCheckTime = System.currentTimeMillis()
                 }
 
             }
+            ApplicationManager.getApplication().invokeLater {
+                // Choose the BGT thread for updating the UI
+                task.asBackgroundable()
+                task.queue()
+            }
+
+        }
 
 
     }
@@ -132,7 +138,8 @@ class SubmitAssignment : DumbAwareAction("Submit Selected Assignment",
 
 @JsonClass(generateAdapter = true)
 data class SubmissionId(
-    @Json(name = "submissionId") val submissionNumber: Int)
+    @Json(name = "submissionId") val submissionNumber: Int
+)
 
 @JsonClass(generateAdapter = true)
 data class ErrorMessage(val error: String)

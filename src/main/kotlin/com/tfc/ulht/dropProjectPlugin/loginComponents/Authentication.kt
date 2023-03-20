@@ -21,6 +21,7 @@ package com.tfc.ulht.dropProjectPlugin.loginComponents
 import com.intellij.openapi.ui.Messages
 import com.jetbrains.rd.util.use
 import com.tfc.ulht.dropProjectPlugin.Globals
+import com.tfc.ulht.dropProjectPlugin.toolWindow.DropProjectToolWindow
 import okhttp3.*
 import java.io.IOException
 import java.net.ConnectException
@@ -30,28 +31,35 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
-class Authentication {
+class Authentication(private val toolWindow: DropProjectToolWindow) {
 
-    companion object {
-        var httpClient = OkHttpClient()
-        var alreadyLoggedIn = false
-    }
+    var httpClient = OkHttpClient()
+    var alreadyLoggedIn = false
+        set(value) {
+            field = value
+            if (value) {
+                toolWindow.toolbarPanel!!.loggedInToolbar()
+            } else {
+                toolWindow.toolbarPanel!!.loggedOutToolbar()
+            }
+        }
 
 
     private val REQUEST_URL = "${Globals.REQUEST_URL}/api/student/assignments/current"
 
     fun loginAuthenticate(username: String, token: String): Boolean {
-        alreadyLoggedIn = request(username,token)
-        if (alreadyLoggedIn){
-            CredentialsController().storeCredentials(username,token,Globals.PLUGIN_ID)
+        alreadyLoggedIn = request(username, token)
+        if (alreadyLoggedIn) {
+            CredentialsController().storeCredentials(username, token, "DropProject")
         }
         return alreadyLoggedIn
     }
 
     fun onStartAuthenticate(username: String, token: String): Boolean {
-        alreadyLoggedIn = request(username,token)
+        alreadyLoggedIn = request(username, token)
         return alreadyLoggedIn
     }
+
     private fun request(username: String, token: String): Boolean {
         httpClient = OkHttpClient.Builder()
             .authenticator(object : Authenticator {
@@ -75,9 +83,11 @@ class Authentication {
             httpClient.newCall(request).execute().use { response ->
                 return response.isSuccessful
             }
-        } catch (e:ConnectException){
-            Messages.showMessageDialog("Drop project server connection refused",
-                "DP Server Off", Messages.getErrorIcon())
+        } catch (e: ConnectException) {
+            Messages.showMessageDialog(
+                "Drop project server connection refused",
+                "DP Server Off", Messages.getErrorIcon()
+            )
             return false
         }
 

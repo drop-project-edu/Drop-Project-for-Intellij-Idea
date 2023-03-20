@@ -12,9 +12,8 @@ class DropProjectToolWindowFactory : ToolWindowFactory {
     override fun createToolWindowContent(@NotNull project: Project, @NotNull toolWindow: ToolWindow) {
         val panel = DropProjectToolWindow(project)
         val contentFactory = ContentFactory.SERVICE.getInstance()
-        val content = contentFactory.createContent(panel.getContent(),"",false)
+        val content = contentFactory.createContent(panel.getContent(), "", false)
         toolWindow.contentManager.addContent(content)
-
 
 
     }

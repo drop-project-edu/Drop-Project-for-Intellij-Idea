@@ -16,20 +16,21 @@
  * limitations under the License.
  */
 
-package com.tfc.ulht.dropProjectPlugin.loginComponents
+package com.tfc.ulht.dropProjectPlugin.actions
 
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.UpdateInBackground
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.DumbAwareAction
 import com.tfc.ulht.dropProjectPlugin.AuthorsFile
 import com.tfc.ulht.dropProjectPlugin.DefaultNotification
-import com.tfc.ulht.dropProjectPlugin.assignmentComponents.ListAssignment
-import com.tfc.ulht.dropProjectPlugin.loginComponents.Authentication.Companion.alreadyLoggedIn
+import com.tfc.ulht.dropProjectPlugin.loginComponents.LoginDialog
+import com.tfc.ulht.dropProjectPlugin.toolWindow.DropProjectToolWindow
 import javax.swing.JPanel
 
-class MainLogin() : DumbAwareAction("Login", "Insert your credentials", AllIcons.General.User), UpdateInBackground {
+class MainLogin(private var toolWindow: DropProjectToolWindow) :
+    DumbAwareAction("Login", "Insert your credentials", AllIcons.General.User) {
+
 
     override fun actionPerformed(e: AnActionEvent) {
 
@@ -38,17 +39,20 @@ class MainLogin() : DumbAwareAction("Login", "Insert your credentials", AllIcons
         val panel = JPanel()
 
 
-        if (!alreadyLoggedIn) {
-            LoginDialog().assembleDialog(panel, e)
+        if (!toolWindow.authentication.alreadyLoggedIn) {
+            LoginDialog(toolWindow.authentication).assembleDialog(panel, e)
 
-            if (alreadyLoggedIn) {
+            if (toolWindow.authentication.alreadyLoggedIn) {
                 AuthorsFile().make(projectDirectory, false, e)
             }
 
         } else {
             DefaultNotification.notify(e.project, "You are already logged in")
+            //toolWindow.toolbarPanel!!.loggedInToolbar()
         }
 
-        ListAssignment(true).get()
+        if (toolWindow.authentication.alreadyLoggedIn)
+            toolWindow.updateAssignmentList()
+
     }
 }

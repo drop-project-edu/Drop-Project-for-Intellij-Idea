@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.tfc.ulht"
-version = "v1.5-Alpha Release"
+version = "v1.7-Alpha Release"
 
 repositories {
     mavenCentral()
@@ -19,7 +19,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("com.squareup.moshi:moshi:1.14.0")
     kapt("com.squareup.moshi:moshi-kotlin-codegen:1.14.0")
-    implementation(group = "net.lingala.zip4j", name="zip4j", version= "2.10.0")
+    implementation(group = "net.lingala.zip4j", name = "zip4j", version = "2.10.0")
 
 }
 

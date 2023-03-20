@@ -8,7 +8,7 @@
     <name>Drop Project</name>
 
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
-    <vendor email="a21704025@alunos.ulht.pt" url="https://deisi.ulusofona.pt/">DEISI</vendor>
+    <vendor email="baltazar1454@gmail.com" url="https://deisi.ulusofona.pt/">DEISI</vendor>
 
     <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
@@ -24,16 +24,15 @@
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow id="Drop Project" icon="MyIcons.logo" anchor="right" secondary="false" factoryClass="com.tfc.ulht.dropProjectPlugin.toolWindow.DropProjectToolWindowFactory"/>
-        <postStartupActivity implementation="com.tfc.ulht.dropProjectPlugin.OnStartup"/>
-        <statusBarWidgetFactory implementation="com.tfc.ulht.dropProjectPlugin.statusBarWidget.PluginStatusWidgetFactory"
-                                order="after notificationsWidget"/>
+        <toolWindow id="Drop Project" icon="MyIcons.logo" anchor="right" secondary="true"
+                    factoryClass="com.tfc.ulht.dropProjectPlugin.toolWindow.DropProjectToolWindowFactory"/>
+        <statusBarWidgetFactory
+                implementation="com.tfc.ulht.dropProjectPlugin.statusBarWidget.PluginStatusWidgetFactory"
+                order="after notificationsWidget"/>
         <notificationGroup id="Build Report Notification" displayType="BALLOON"/>
         <notificationGroup id="Default Notification" displayType="BALLOON"/>
         <fileEditorProvider
-                implementation="com.tfc.ulht.dropProjectPlugin.submissionComponents.BuildReportEditorTabProvider"/>
-        <fileEditorProvider
-                implementation="com.tfc.ulht.dropProjectPlugin.assignmentComponents.AssignmentInstructionsEditorTabProvider"/>
+                implementation="com.tfc.ulht.dropProjectPlugin.EditorTabProvider"/>
     </extensions>
 
 

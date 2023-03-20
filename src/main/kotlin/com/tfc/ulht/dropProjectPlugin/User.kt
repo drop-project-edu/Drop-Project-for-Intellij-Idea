@@ -1,7 +1,7 @@
 /*-
  * Plugin Drop Project
  * 
- * Copyright (C) 2019 Yash Jahit
+ * Copyright (C) 2019 Yash Jahit & Bernardo Baltazar
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 
 package com.tfc.ulht.dropProjectPlugin
 
-class Users(studentNumber: String, studentName: String) {
+class User(studentNumber: String, studentName: String) {
 
     val number = studentNumber
     val name = studentName

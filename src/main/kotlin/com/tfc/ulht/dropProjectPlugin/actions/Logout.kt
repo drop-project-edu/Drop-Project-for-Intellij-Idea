@@ -16,42 +16,39 @@
  * limitations under the License.
  */
 
-package com.tfc.ulht.dropProjectPlugin.loginComponents
+package com.tfc.ulht.dropProjectPlugin.actions
 
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.ui.Messages
-import com.tfc.ulht.dropProjectPlugin.Globals
 import com.tfc.ulht.dropProjectPlugin.DefaultNotification
+import com.tfc.ulht.dropProjectPlugin.loginComponents.CredentialsController
 import com.tfc.ulht.dropProjectPlugin.toolWindow.DropProjectToolWindow
-import com.tfc.ulht.dropProjectPlugin.toolWindow.panel.ToolbarPanel
 
-class Logout() : DumbAwareAction("Logout", "Leave this login session", AllIcons.Actions.Exit) {
+class Logout(private val toolWindow: DropProjectToolWindow) :
+    DumbAwareAction("Logout", "Leave this login session", AllIcons.Actions.Exit) {
 
     override fun actionPerformed(e: AnActionEvent) {
-        if (Authentication.alreadyLoggedIn) {
+        if (toolWindow.authentication.alreadyLoggedIn) {
             val userMessage = Messages.showYesNoDialog(
                 "Are you sure you want to logout?",
                 "Logout", "Yes", "No", Messages.getQuestionIcon()
             )
 
             if (userMessage == 0) {
-                Authentication.alreadyLoggedIn = false
-                Globals.selectedAssignmentID = ""
-                DefaultNotification.notify(e.project,"You've been logged out")
-
-                ToolbarPanel.loggedOutToolbar()
+                toolWindow.authentication.alreadyLoggedIn = false
+                toolWindow.globals.selectedAssignmentID = ""
+                DefaultNotification.notify(e.project, "You've been logged out")
 
 
-                CredentialsController().removeStoredCredentials(Globals.PLUGIN_ID)
-                DropProjectToolWindow.tableModel?.items = listOf()
-                DropProjectToolWindow.resultsTable?.emptyText?.text = "Login to see your Assignments"
+                CredentialsController().removeStoredCredentials("DropProject")
+                toolWindow.tableModel?.items = listOf()
+                toolWindow.resultsTable?.emptyText?.text = "Login to see your Assignments"
             }
         } else {
             Messages.showMessageDialog("You need to login first", "Logout", Messages.getInformationIcon())
         }
     }
-    // TODO: update() , maybe its works on dynamic toolbar, *setVisible*
 }
 

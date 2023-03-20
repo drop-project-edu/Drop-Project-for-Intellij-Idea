@@ -1,4 +1,4 @@
-package com.tfc.ulht.dropProjectPlugin.assignmentComponents
+package com.tfc.ulht.dropProjectPlugin
 
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.fileTypes.PlainTextLanguage
@@ -17,15 +17,14 @@ import java.beans.PropertyChangeListener
 import java.io.InputStream
 import java.io.OutputStream
 import javax.swing.JComponent
-import javax.swing.JPanel
 
-class AssignmentInstructionsEditorTabProvider : FileEditorProvider, DumbAware {
-    override fun accept(project: @NotNull Project, file: @NotNull VirtualFile): Boolean {
-        return file is InstructionsVirtualFile
+class EditorTabProvider : FileEditorProvider, DumbAware {
+    override fun accept(@NotNull project: Project, @NotNull file: VirtualFile): Boolean {
+        return file is com.tfc.ulht.dropProjectPlugin.VirtualFile
     }
 
-    override fun createEditor(project: @NotNull Project, file: @NotNull VirtualFile): FileEditor {
-        return InstructionsPanelEditor(file as InstructionsVirtualFile)
+    override fun createEditor(@NotNull project: Project, @NotNull file: VirtualFile): FileEditor {
+        return PanelEditor(file as com.tfc.ulht.dropProjectPlugin.VirtualFile)
     }
 
     override fun getEditorTypeId(): String {
@@ -37,26 +36,27 @@ class AssignmentInstructionsEditorTabProvider : FileEditorProvider, DumbAware {
     }
 }
 
-class InstructionsPanelEditor(private val instructionsVirtualFile: InstructionsVirtualFile) :
+class PanelEditor(private val virtualFile: com.tfc.ulht.dropProjectPlugin.VirtualFile) :
     FileEditor, UserDataHolder {
 
-    private var myPanel = JPanel()
+    private var myPanel = JBScrollPane()
     private val userData = UserDataHolderBase()
 
     init {
 
-        myPanel = instructionsVirtualFile.editorPanel
+        myPanel = virtualFile.editorPanel
     }
 
     override fun getFile(): VirtualFile {
-        return instructionsVirtualFile
+        return virtualFile
     }
+
     override fun <T : Any?> getUserData(key: Key<T>): T? {
         return userData.getUserData(key)
     }
 
     override fun <T : Any?> putUserData(key: Key<T>, value: T?) {
-        userData.putUserData(key,value)
+        userData.putUserData(key, value)
     }
 
     override fun dispose() {
@@ -67,12 +67,12 @@ class InstructionsPanelEditor(private val instructionsVirtualFile: InstructionsV
         return myPanel
     }
 
-    override fun getPreferredFocusedComponent(): JComponent? {
+    override fun getPreferredFocusedComponent(): JComponent {
         return myPanel
     }
 
     override fun getName(): String {
-        return instructionsVirtualFile.name
+        return virtualFile.name
     }
 
     override fun getState(level: FileEditorStateLevel): FileEditorState {
@@ -105,13 +105,13 @@ class InstructionsPanelEditor(private val instructionsVirtualFile: InstructionsV
 
 }
 
-class InstructionsVirtualFile(private val myName : String, val editorPanel : JPanel) : VirtualFile() {
+class VirtualFile(private val myName: String, val editorPanel: JBScrollPane) : VirtualFile() {
     override fun getName(): String {
         return myName
     }
 
     override fun getFileSystem(): VirtualFileSystem {
-        return InstructionsFileSystem.INSTANCE
+        return FileSystem.INSTANCE
     }
 
     override fun getPath(): String {
@@ -164,11 +164,11 @@ class InstructionsVirtualFile(private val myName : String, val editorPanel : JPa
 
 }
 
-object InstructionsFileSystem : VirtualFileSystem() {
+object FileSystem : VirtualFileSystem() {
 
     val INSTANCE = this
     override fun getProtocol(): String {
-        return "assignment-details"
+        return "drop-project-editor-tab"
     }
 
     override fun findFileByPath(path: String): VirtualFile? {
@@ -204,11 +204,11 @@ object InstructionsFileSystem : VirtualFileSystem() {
     }
 
     override fun createChildFile(requestor: Any?, vDir: VirtualFile, fileName: String): VirtualFile {
-        return LightVirtualFile("buildCopy.txt", PlainTextLanguage.INSTANCE,"cant copy")
+        return LightVirtualFile("buildCopy.txt", PlainTextLanguage.INSTANCE, "cant copy")
     }
 
     override fun createChildDirectory(requestor: Any?, vDir: VirtualFile, dirName: String): VirtualFile {
-        return LightVirtualFile("buildCopy.txt",PlainTextLanguage.INSTANCE,"cant copy")
+        return LightVirtualFile("buildCopy.txt", PlainTextLanguage.INSTANCE, "cant copy")
     }
 
     override fun copyFile(
@@ -217,7 +217,7 @@ object InstructionsFileSystem : VirtualFileSystem() {
         newParent: VirtualFile,
         copyName: String
     ): VirtualFile {
-        return LightVirtualFile("buildCopy.txt",PlainTextLanguage.INSTANCE,"cant copy")
+        return LightVirtualFile("buildCopy.txt", PlainTextLanguage.INSTANCE, "cant copy")
     }
 
     override fun isReadOnly(): Boolean {

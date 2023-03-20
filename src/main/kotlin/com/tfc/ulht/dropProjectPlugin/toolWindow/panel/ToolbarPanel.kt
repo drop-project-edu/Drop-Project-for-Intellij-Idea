@@ -5,100 +5,90 @@ import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionToolbar
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.ui.components.panels.NonOpaquePanel
-import com.tfc.ulht.dropProjectPlugin.Globals
-import com.tfc.ulht.dropProjectPlugin.assignmentComponents.AddAssignment
-import com.tfc.ulht.dropProjectPlugin.assignmentComponents.CheckLastReport
-import com.tfc.ulht.dropProjectPlugin.assignmentComponents.RefreshList
-import com.tfc.ulht.dropProjectPlugin.assignmentComponents.SubmitAssignment
-import com.tfc.ulht.dropProjectPlugin.loginComponents.Authentication
-import com.tfc.ulht.dropProjectPlugin.loginComponents.Logout
-import com.tfc.ulht.dropProjectPlugin.loginComponents.MainLogin
+import com.tfc.ulht.dropProjectPlugin.actions.*
+import com.tfc.ulht.dropProjectPlugin.toolWindow.DropProjectToolWindow
 import java.awt.BorderLayout
 import javax.swing.BorderFactory
 
-class ToolbarPanel() : NonOpaquePanel() {
-
-    companion object {
-        lateinit var toolbar:ActionToolbar
-        lateinit var leftActionGroup:DefaultActionGroup
-        lateinit var rightActionGroup:DefaultActionGroup
-        fun loggedInToolbar(){
-
-            leftActionGroup.removeAll()
-            rightActionGroup.removeAll()
-
-            leftActionGroup.add(AddAssignment())
-            leftActionGroup.addSeparator()
-            leftActionGroup.add(SubmitAssignment())
-            leftActionGroup.addSeparator()
-            leftActionGroup.add(RefreshList())
-
-            rightActionGroup.add(Logout())
-        }
-        fun loggedOutToolbar(){
-            leftActionGroup.removeAll()
-            rightActionGroup.removeAll()
-            leftActionGroup.add(MainLogin())
-        }
-        fun buildReportAvailable(){
-
-            rightActionGroup.removeAll()
-
-            rightActionGroup.add(CheckLastReport())
-            rightActionGroup.addSeparator()
-            rightActionGroup.add(Logout())
-        }
-    }
-
+class ToolbarPanel(private var toolWindow: DropProjectToolWindow) : NonOpaquePanel() {
+    private var actionToolbar: ActionToolbar
+    private var leftActionGroup: DefaultActionGroup
+    private var rightActionGroup: DefaultActionGroup
 
     init {
 
         layout = BorderLayout()//FlowLayout(FlowLayout.RIGHT)
         border = BorderFactory.createEmptyBorder()
-
         leftActionGroup = DefaultActionGroup()
-        toolbar = this.createLeftToolbar()
-        toolbar.targetComponent = this
-        add(toolbar.component,BorderLayout.WEST)
+        actionToolbar = this.createLeftToolbar()
+        actionToolbar.targetComponent = this
+        add(actionToolbar.component, BorderLayout.WEST)
 
 
         rightActionGroup = DefaultActionGroup()
-        toolbar = this.createRightToolbar()
-        toolbar.targetComponent = this
-        add(toolbar.component,BorderLayout.EAST)
+        actionToolbar = this.createRightToolbar()
+        actionToolbar.targetComponent = this
+        add(actionToolbar.component, BorderLayout.EAST)
 
     }
 
 
-
-     private fun createLeftToolbar(): ActionToolbar {
-         if (Authentication.alreadyLoggedIn){
-             leftActionGroup.add(AddAssignment())
-             leftActionGroup.addSeparator()
-             leftActionGroup.add(SubmitAssignment())
-             leftActionGroup.addSeparator()
-             leftActionGroup.add(RefreshList())
-         } else{
-             leftActionGroup.add(MainLogin())
-         }
+    private fun createLeftToolbar(): ActionToolbar {
+        if (toolWindow.authentication.alreadyLoggedIn) {
+            leftActionGroup.add(AddAssignment(toolWindow))
+            leftActionGroup.addSeparator()
+            leftActionGroup.add(SubmitAssignment(toolWindow))
+            leftActionGroup.addSeparator()
+            leftActionGroup.add(RefreshList(toolWindow))
+        } else {
+            leftActionGroup.add(MainLogin(toolWindow))
+        }
 
         return ActionManager.getInstance().createActionToolbar(ActionPlaces.TOOLBAR, leftActionGroup, true)
     }
+
     private fun createRightToolbar(): ActionToolbar {
-        if (Authentication.alreadyLoggedIn) {
-            if (Globals.lastBuildReport != null) {
-                rightActionGroup.add(CheckLastReport())
+        if (toolWindow.authentication.alreadyLoggedIn) {
+            if (toolWindow.globals.lastBuildReport != null) {
+                rightActionGroup.add(CheckLastReport(toolWindow.globals.lastBuildReport))
                 rightActionGroup.addSeparator()
-                rightActionGroup.add(Logout())
+                rightActionGroup.add(Logout(toolWindow))
             } else {
-                rightActionGroup.add(Logout())
+                rightActionGroup.add(Logout(toolWindow))
             }
 
         }
         return ActionManager.getInstance().createActionToolbar(ActionPlaces.TOOLBAR, rightActionGroup, true)
     }
 
+    fun loggedInToolbar() {
 
+        leftActionGroup.removeAll()
+        rightActionGroup.removeAll()
+
+        leftActionGroup.add(AddAssignment(toolWindow))
+        leftActionGroup.addSeparator()
+        leftActionGroup.add(SubmitAssignment(toolWindow))
+        leftActionGroup.addSeparator()
+        leftActionGroup.add(RefreshList(toolWindow))
+
+        rightActionGroup.add(Logout(toolWindow))
+    }
+
+    fun loggedOutToolbar() {
+        leftActionGroup.removeAll()
+        rightActionGroup.removeAll()
+        leftActionGroup.add(MainLogin(toolWindow))
+    }
+
+    fun buildReportAvailable() {
+
+        rightActionGroup.removeAll()
+
+        rightActionGroup.add(CheckLastReport(toolWindow.globals.lastBuildReport))
+        rightActionGroup.addSeparator()
+        rightActionGroup.add(Logout(toolWindow))
+    }
 
 
 }

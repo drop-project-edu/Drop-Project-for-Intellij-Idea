@@ -20,9 +20,9 @@ package com.tfc.ulht.dropProjectPlugin.loginComponents
 
 import TextPrompt
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.project.Project
 import com.tfc.ulht.dropProjectPlugin.DefaultNotification
-import com.tfc.ulht.dropProjectPlugin.Users
-import com.tfc.ulht.dropProjectPlugin.toolWindow.panel.ToolbarPanel
+import com.tfc.ulht.dropProjectPlugin.User
 import java.awt.Dimension
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
@@ -31,10 +31,10 @@ import java.awt.event.ActionListener
 import javax.swing.*
 
 
-class LoginDialog {
+class LoginDialog(private val authentication: Authentication) {
 
     companion object {
-        var studentsList = ArrayList<Users>()
+        var studentsList = ArrayList<User>()
     }
 
     private var GRIDY: Int = 3
@@ -130,26 +130,30 @@ class LoginDialog {
          * Check credential
          * */
         if (option == 0) {
+            authenticate(e.project)
+        }
+    }
+
+    private fun authenticate(project: Project?) {
+        val response = authentication
+            .loginAuthenticate(
+                studentNumberField[0].text.trim(),
+                tokenField.password.concatToString()
+            )
+
+        UIManager.put("OptionPane.minimumSize", Dimension(200, 100))
 
 
-            val response = Authentication()
-                .loginAuthenticate(studentNumberField[0].text.trim(),
-                tokenField.password.concatToString())
+        if (response) {
+            registerStudents()
+            DefaultNotification.notify(project, "Login Successful")
+            //toolbarPanel.loggedInToolbar()
 
-            UIManager.put("OptionPane.minimumSize", Dimension(200, 100))
-
-
-            if (response) {
-                registerStudents()
-                DefaultNotification.notify(e.project,"Login Successful")
-                ToolbarPanel.loggedInToolbar()
-
-            } else /*if (!response)*/ {
-                JOptionPane.showMessageDialog(
-                    null, "Login credentials incorrect!", "Error!",
-                    JOptionPane.ERROR_MESSAGE
-                )
-            }
+        } else /*if (!response)*/ {
+            JOptionPane.showMessageDialog(
+                null, "Login credentials incorrect!", "Error!",
+                JOptionPane.ERROR_MESSAGE
+            )
         }
     }
 
@@ -195,7 +199,7 @@ class LoginDialog {
         var index = 0
         for (number in studentNumberField) {
 
-            studentsList.add(Users(number.text.trim(), studentNameField[index].text.trim()))
+            studentsList.add(User(number.text.trim(), studentNameField[index].text.trim()))
             index++
 
         }

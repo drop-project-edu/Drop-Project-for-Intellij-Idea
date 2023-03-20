@@ -18,25 +18,38 @@
 
 package com.tfc.ulht.dropProjectPlugin
 
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.wm.WindowManager
 import com.tfc.ulht.dropProjectPlugin.assignmentComponents.TableLine
 import com.tfc.ulht.dropProjectPlugin.statusBarWidget.PluginStatusWidget
+import com.tfc.ulht.dropProjectPlugin.toolWindow.DropProjectToolWindow
 import data.FullBuildReport
 
-class Globals {
+class Globals(private val project: Project, private val toolWindow: DropProjectToolWindow) {
 
     companion object {
-
-
-        //val REQUEST_URL = "https://drop-project-fork.herokuapp.com"
         //val REQUEST_URL = "http://localhost:8080"
         val REQUEST_URL = "https://deisi.ulusofona.pt/drop-project"
-        val PLUGIN_ID = PluginStatusWidget::class.java.name
 
-
-        var selectedAssignmentID: String = ""
-        var selectedLine: TableLine? = null
-
-        var lastBuildReport: FullBuildReport? = null
+        //val PLUGIN_ID = PluginStatusWidget::class.java.name
     }
+
+    var statusWidgetId = "DropProjectStatusWidget${PluginStatusWidget.idCount}"
+    var selectedAssignmentID: String = ""
+        set(value) {
+            field = value
+            val statusWidget: PluginStatusWidget = WindowManager.getInstance().getStatusBar(project)
+                .getWidget(statusWidgetId) as PluginStatusWidget
+            statusWidget.selectedAssignmentID = selectedAssignmentID
+        }
+
+    var selectedLine: TableLine? = null
+    var lastBuildReport: FullBuildReport? = null
+        set(value) {
+            field = value
+            if (value != null) {
+                toolWindow.toolbarPanel!!.buildReportAvailable()
+            }
+        }
 
 }

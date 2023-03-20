@@ -20,7 +20,6 @@
 
 package com.tfc.ulht.dropProjectPlugin.statusBarWidget
 
-import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.DumbAwareAction
@@ -30,35 +29,39 @@ import com.intellij.openapi.wm.StatusBarWidget
 import com.intellij.util.Consumer
 import com.intellij.util.concurrency.AppExecutorUtil
 import com.intellij.util.text.JBDateFormat
-import com.tfc.ulht.dropProjectPlugin.Globals
 import java.awt.Component
 import java.awt.event.MouseEvent
 import java.util.concurrent.TimeUnit
 
 class PluginStatusWidget : StatusBarWidget, StatusBarWidget.TextPresentation {
+    companion object {
+        var idCount = 0
+    }
+
+    var selectedAssignmentID: String = ""
     private var statusBar: StatusBar? = null
 
     init {
+        idCount++
         val future = AppExecutorUtil.getAppScheduledExecutorService().scheduleWithFixedDelay({
-            //runInEdt(this, null) { statusBar?.updateWidget(Globals.PLUGIN_ID) }
-            ApplicationManager.getApplication().invokeLater { statusBar?.updateWidget(Globals.PLUGIN_ID) }
+            ApplicationManager.getApplication().invokeLater {
+                statusBar?.updateWidget("DropProjectStatusWidget$idCount")
+            }
         }, 0, 1, TimeUnit.SECONDS)
-        Disposer.register(this, Disposable { future.cancel(false) })
+        Disposer.register(this) { future.cancel(false) }
     }
 
-    override fun ID(): String = Globals.PLUGIN_ID
+    override fun ID(): String = "DropProjectStatusWidget$idCount"
     override fun getPresentation(): StatusBarWidget.WidgetPresentation = this
     override fun getTooltipText(): String {
         return JBDateFormat.getFormatter().formatDateTime(System.currentTimeMillis())
     }
 
     override fun getText(): String {
-
-
-        return if (Globals.selectedAssignmentID.isEmpty()) {
+        return if (selectedAssignmentID.isEmpty()) {
             "No assignment selected"
         } else {
-            "Selected assignment: ${Globals.selectedAssignmentID}"
+            "Selected assignment: $selectedAssignmentID"
         }
     }
 
@@ -94,7 +97,7 @@ class PluginStatusWidget : StatusBarWidget, StatusBarWidget.TextPresentation {
 
 class DeselectAssignment : DumbAwareAction("Unselect Assignment") {
     override fun actionPerformed(e: AnActionEvent) {
-        Globals.selectedAssignmentID = ""
+        //Globals.selectedAssignmentID = ""
     }
 }
 
