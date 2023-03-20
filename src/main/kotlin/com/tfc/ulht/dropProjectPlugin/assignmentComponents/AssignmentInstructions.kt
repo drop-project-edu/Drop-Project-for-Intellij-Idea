@@ -18,7 +18,7 @@ class AssignmentInstructions(
     private val body: String?
 ) {
     private val fontColor = "#317092"
-    val backgroundColor = "white"
+    val backgroundColor = "#e0ffff"
     private val foregroundColor = "#e0ffff"
 
     fun showInstructions(project: Project?) {
@@ -70,7 +70,7 @@ class AssignmentInstructions(
     }
 
     private fun linkButton(): String {
-        return "<br><br><div style = \"cursor:pointer;padding:10px 20px;background-color:$foregroundColor;text-align:center;\"><a style=\"text-decoration:none;color:$fontColor;font-size:1.3em;\" href=\"${Globals.REQUEST_URL}/upload/${assignmentID}\">Instructions in Web \uD83D\uDD17</a></div>"
+        return "<br><br><div style = \"cursor:pointer;padding:10px 20px;background-color:$fontColor;text-align:center;\"><a style=\"text-decoration:none;color:$foregroundColor;font-size:1.3em;\" href=\"${Globals.REQUEST_URL}/upload/${assignmentID}\">Instructions in Web \uD83D\uDD17</a></div>"
     }
 
 }

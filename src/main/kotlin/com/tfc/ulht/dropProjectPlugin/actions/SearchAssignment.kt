@@ -83,6 +83,7 @@ class SearchAssignment(
                     "The assignment associated with this project is no longer available"
                 )
                 toolWindow.globals.selectedAssignmentID = ""
+                ProjectComponents(toolWindow.project).saveProjectComponents("")
             } else {
                 when (errorCode) {
                     404 -> {

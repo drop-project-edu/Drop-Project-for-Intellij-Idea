@@ -79,11 +79,14 @@ class DropProjectToolWindow(var project: Project) {
     private fun readMetadata() {
         val components = ProjectComponents(project).loadProjectComponents()
         if (components.selectedAssignmentID != null) {
-            globals.selectedAssignmentID = components.selectedAssignmentID!!
-            DefaultNotification.notify(
-                project,
-                "<html>The assignment <b>${globals.selectedAssignmentID}</b> was selected</html>"
-            )
+            if (components.selectedAssignmentID!!.isNotEmpty()) {
+                globals.selectedAssignmentID = components.selectedAssignmentID!!
+                DefaultNotification.notify(
+                    project,
+                    "<html>The assignment <b>${globals.selectedAssignmentID}</b> was selected</html>"
+                )
+            }
+
         } else {
             globals.selectedAssignmentID = ""
             globals.selectedLine = null
