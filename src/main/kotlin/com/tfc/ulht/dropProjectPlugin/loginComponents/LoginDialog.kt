@@ -22,12 +22,11 @@ import TextPrompt
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.Project
 import com.tfc.ulht.dropProjectPlugin.DefaultNotification
+import com.tfc.ulht.dropProjectPlugin.Globals
 import com.tfc.ulht.dropProjectPlugin.User
-import java.awt.Dimension
-import java.awt.GridBagConstraints
-import java.awt.GridBagLayout
-import java.awt.GridLayout
+import java.awt.*
 import java.awt.event.ActionListener
+import java.net.URI
 import javax.swing.*
 
 
@@ -37,12 +36,13 @@ class LoginDialog(private val authentication: Authentication) {
         var studentsList = ArrayList<User>()
     }
 
-    private var GRIDY: Int = 3
+    private var GRIDY: Int = 4
     private val nameLabel = JLabel("Name:   ")
     private val usernameLabel = JLabel("Username:   ")
     private val tokenLabel = JLabel("Token:   ")
 
-    private val addGroupStudents = JButton("Click here to add your group elements")
+    private val linkPersonalToken = JButton("Get your token here")
+    private val addGroupStudents = JButton("Click to add group member")
 
     private val studentNumberField = mutableListOf<JTextField>()
     private val studentNameField = mutableListOf<JTextField>()
@@ -56,7 +56,7 @@ class LoginDialog(private val authentication: Authentication) {
         val gbc = GridBagConstraints()
         var countUsers = 0
 
-        panel.layout = GridLayout(6, 2)
+        panel.layout = GridLayout(7, 2)
 
         /**
          * Name
@@ -96,16 +96,33 @@ class LoginDialog(private val authentication: Authentication) {
         gbPanel.setConstraints(tokenField, gbc)
         panel.add(tokenField)
 
+        val showTokenButton = JToggleButton("Show token")
+        showTokenButton.addActionListener {
+            tokenField.echoChar = if (showTokenButton.isSelected) 0.toChar() else '\u2022'
+        }
+
         /**
          * Add more students
          */
         gbc.gridx = 0; gbc.gridy = 3
+        gbPanel.setConstraints(linkPersonalToken, gbc)
+        panel.add(linkPersonalToken)
+        linkPersonalToken.addActionListener {
+            Desktop.getDesktop().browse(URI("${Globals.REQUEST_URL}/personalToken"))
+        }
+
+        gbc.gridx = 1; gbc.gridy = 3
+        gbPanel.setConstraints(showTokenButton, gbc)
+        panel.add(showTokenButton)
+
+        gbc.gridx = 0; gbc.gridy = 4
         gbPanel.setConstraints(addGroupStudents, gbc)
         panel.add(addGroupStudents)
 
         /**
          * Empty label after add students button
          */
+
         val emptyLabel = JLabel()
         panel.add(emptyLabel)
 

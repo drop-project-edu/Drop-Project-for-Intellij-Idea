@@ -38,9 +38,12 @@ class Globals(private val project: Project, private val toolWindow: DropProjectT
     var selectedAssignmentID: String = ""
         set(value) {
             field = value
-            val statusWidget: PluginStatusWidget = WindowManager.getInstance().getStatusBar(project)
+            val statusWidget: PluginStatusWidget? = WindowManager.getInstance().getStatusBar(project)
                 .getWidget(statusWidgetId) as PluginStatusWidget
-            statusWidget.selectedAssignmentID = selectedAssignmentID
+
+            if (statusWidget != null) {
+                statusWidget.selectedAssignmentID = selectedAssignmentID
+            }
         }
 
     var selectedLine: TableLine? = null

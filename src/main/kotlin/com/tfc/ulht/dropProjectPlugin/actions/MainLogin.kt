@@ -26,6 +26,7 @@ import com.tfc.ulht.dropProjectPlugin.AuthorsFile
 import com.tfc.ulht.dropProjectPlugin.DefaultNotification
 import com.tfc.ulht.dropProjectPlugin.loginComponents.LoginDialog
 import com.tfc.ulht.dropProjectPlugin.toolWindow.DropProjectToolWindow
+import java.awt.Dimension
 import javax.swing.JPanel
 
 class MainLogin(private var toolWindow: DropProjectToolWindow) :
@@ -37,6 +38,7 @@ class MainLogin(private var toolWindow: DropProjectToolWindow) :
 
         val projectDirectory = e.project?.let { FileEditorManager.getInstance(it).project.basePath.toString() }
         val panel = JPanel()
+        panel.preferredSize = Dimension(600, 200)
 
 
         if (!toolWindow.authentication.alreadyLoggedIn) {
@@ -48,7 +50,6 @@ class MainLogin(private var toolWindow: DropProjectToolWindow) :
 
         } else {
             DefaultNotification.notify(e.project, "You are already logged in")
-            //toolWindow.toolbarPanel!!.loggedInToolbar()
         }
 
         if (toolWindow.authentication.alreadyLoggedIn)
