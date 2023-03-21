@@ -31,7 +31,6 @@ intellij {
 
     //plugins.set(listOf(/* Plugin Dependencies */))
 }
-
 tasks {
     // Set the JVM compatibility versions
     withType<JavaCompile> {
