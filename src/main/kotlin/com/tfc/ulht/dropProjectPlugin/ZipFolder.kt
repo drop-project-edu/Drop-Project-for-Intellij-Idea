@@ -11,7 +11,7 @@ import javax.swing.JOptionPane
 /*-
  * Plugin Drop Project
  * 
- * Copyright (C) 2019 Yash Jahit
+ * Copyright (C) 2019 Yash Jahit & Bernardo Baltazar
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import javax.swing.JOptionPane
  * limitations under the License.
  */
 
-class ZipFolder {
+class ZipFolder(private val students: ArrayList<User>) {
 
     fun zipIt(e: AnActionEvent): String? {
         val projectDirectory = e.project?.let { FileEditorManager.getInstance(it).project.basePath.toString() }
@@ -35,8 +35,8 @@ class ZipFolder {
         val authorsPath = "$projectDirectory${separator}AUTHORS.txt"
         val srcPath = "$projectDirectory${separator}src"
 
-        if (!File(authorsPath).exists()){
-            AuthorsFile().make(projectDirectory,true,e)
+        if (!File(authorsPath).exists()) {
+            AuthorsFile(students).make(projectDirectory, true, e)
         }
 
         // Add AUTHORS.txt to a new zip

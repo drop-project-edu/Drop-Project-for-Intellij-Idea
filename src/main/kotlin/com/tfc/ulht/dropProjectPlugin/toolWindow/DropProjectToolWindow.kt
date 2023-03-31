@@ -12,6 +12,7 @@ import com.intellij.ui.SideBorder
 import com.tfc.ulht.dropProjectPlugin.DefaultNotification
 import com.tfc.ulht.dropProjectPlugin.Globals
 import com.tfc.ulht.dropProjectPlugin.ProjectComponents
+import com.tfc.ulht.dropProjectPlugin.User
 import com.tfc.ulht.dropProjectPlugin.actions.ListAssignment
 import com.tfc.ulht.dropProjectPlugin.actions.PanelRoute
 import com.tfc.ulht.dropProjectPlugin.actions.SearchAssignment
@@ -28,6 +29,7 @@ import javax.swing.JPanel
 
 class DropProjectToolWindow(var project: Project) {
 
+    var studentsList = ArrayList<User>()
     var tableModel: AssignmentTableModel? = null
     var resultsTable: ListTable? = null
     var toolbarPanel: ToolbarPanel? = null

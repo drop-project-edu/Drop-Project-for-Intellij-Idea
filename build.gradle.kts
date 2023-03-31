@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.tfc.ulht"
-version = "v1.7-Alpha Release"
+version = "v1.8-Alpha Release"
 
 repositories {
     mavenCentral()

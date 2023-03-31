@@ -24,10 +24,8 @@ import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.DumbAwareAction
 import com.tfc.ulht.dropProjectPlugin.AuthorsFile
 import com.tfc.ulht.dropProjectPlugin.DefaultNotification
-import com.tfc.ulht.dropProjectPlugin.loginComponents.LoginDialog
+import com.tfc.ulht.dropProjectPlugin.loginComponents.Login
 import com.tfc.ulht.dropProjectPlugin.toolWindow.DropProjectToolWindow
-import java.awt.Dimension
-import javax.swing.JPanel
 
 class MainLogin(private var toolWindow: DropProjectToolWindow) :
     DumbAwareAction("Login", "Insert your credentials", AllIcons.General.User) {
@@ -37,15 +35,13 @@ class MainLogin(private var toolWindow: DropProjectToolWindow) :
 
 
         val projectDirectory = e.project?.let { FileEditorManager.getInstance(it).project.basePath.toString() }
-        val panel = JPanel()
-        panel.preferredSize = Dimension(600, 200)
 
 
         if (!toolWindow.authentication.alreadyLoggedIn) {
-            LoginDialog(toolWindow.authentication).assembleDialog(panel, e)
+            Login(toolWindow)
 
             if (toolWindow.authentication.alreadyLoggedIn) {
-                AuthorsFile().make(projectDirectory, false, e)
+                AuthorsFile(toolWindow.studentsList).make(projectDirectory, false, e)
             }
 
         } else {

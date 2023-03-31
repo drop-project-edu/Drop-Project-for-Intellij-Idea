@@ -69,7 +69,7 @@ class SubmitAssignment(private var toolWindow: DropProjectToolWindow) : DumbAwar
             // If assignment has been choosen, upload zip file
             //first save all documents
             FileDocumentManager.getInstance().saveAllDocuments()
-            val uploadFilePath = ZipFolder().zipIt(e) ?: return
+            val uploadFilePath = ZipFolder(toolWindow.studentsList).zipIt(e) ?: return
 
             val body: RequestBody = MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart(
                 "file",
