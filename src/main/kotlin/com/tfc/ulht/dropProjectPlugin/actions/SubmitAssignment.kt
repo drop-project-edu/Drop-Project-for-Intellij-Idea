@@ -30,7 +30,6 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import com.tfc.ulht.dropProjectPlugin.DefaultNotification
-import com.tfc.ulht.dropProjectPlugin.Globals
 import com.tfc.ulht.dropProjectPlugin.ZipFolder
 import com.tfc.ulht.dropProjectPlugin.submissionComponents.SubmissionReport
 import com.tfc.ulht.dropProjectPlugin.toolWindow.DropProjectToolWindow
@@ -47,7 +46,7 @@ class SubmitAssignment(private var toolWindow: DropProjectToolWindow) : DumbAwar
     "Submit Selected Assignment", "Submit an assignment to Drop Project", AllIcons.Actions.Upload
 ) {
 
-    private val REQUEST_URL = "${Globals.REQUEST_URL}/api/student/submissions/new"
+    private val REQUEST_URL = "${toolWindow.globals.REQUEST_URL}/api/student/submissions/new"
     private var submissionId: SubmissionId? = null
     private var submissionResultsService = SubmissionReport(toolWindow)
     private var previousCheckTime: Long = 0
@@ -87,8 +86,11 @@ class SubmitAssignment(private var toolWindow: DropProjectToolWindow) : DumbAwar
                         submissionId = submissionJsonAdapter.fromJson(response.body!!.source())
                         DefaultNotification.notify(
                             e.project,
-                            "<html>The submission from the assignment " + "<b>${toolWindow.globals.selectedAssignmentID}</b> has been submitted!</html>"
+                            "<html>The submission from the assignment " + "<b>${toolWindow.globals.selectedAssignmentID}</b> has been submitted and is in validation. Please wait...</html>"
                         )
+                        //DISABLE OPEN BUILD REPORT ACTION
+                        toolWindow.globals.lastBuildReport = null
+
 
                     }
                 } else if (response.code == 500) {
@@ -115,9 +117,10 @@ class SubmitAssignment(private var toolWindow: DropProjectToolWindow) : DumbAwar
 
     override fun update(e: AnActionEvent) {
         if (submissionId != null && (System.currentTimeMillis() - previousCheckTime > 8000)) {
-            val task = object : Task.Backgroundable(e.project, "Waiting for build report") {
+            val task = object : Task.Backgroundable(e.project, "Fetching build report") {
                 override fun run(p0: ProgressIndicator) {
                     if (submissionResultsService.checkResult(submissionId, e)) {
+                        //ARRIVED
                         submissionId = null
                     }
                     previousCheckTime = System.currentTimeMillis()
@@ -131,8 +134,6 @@ class SubmitAssignment(private var toolWindow: DropProjectToolWindow) : DumbAwar
             }
 
         }
-
-
     }
 }
 

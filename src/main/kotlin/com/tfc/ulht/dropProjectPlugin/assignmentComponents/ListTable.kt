@@ -56,6 +56,7 @@ class ListTable(private val toolWindow: DropProjectToolWindow) :
 
                         if (selectedRow.instructions != null)
                             AssignmentInstructions(
+                                toolWindow.globals.REQUEST_URL,
                                 selectedRow.id_notVisible, selectedRow.instructions!!.format,
                                 selectedRow.instructions!!.body
                             ).showInstructions(toolWindow.project)

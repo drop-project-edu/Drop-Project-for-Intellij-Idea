@@ -10,7 +10,6 @@ import com.jetbrains.rd.util.use
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.tfc.ulht.dropProjectPlugin.DefaultNotification
-import com.tfc.ulht.dropProjectPlugin.Globals
 import com.tfc.ulht.dropProjectPlugin.ProjectComponents
 import com.tfc.ulht.dropProjectPlugin.assignmentComponents.TableLine
 import com.tfc.ulht.dropProjectPlugin.toolWindow.DropProjectToolWindow
@@ -30,7 +29,7 @@ class SearchAssignment(
     DumbAwareAction(
         "Search Assignment", "Search for assignment by ID", AllIcons.Actions.Search
     ) {
-    private val REQUEST_URL = "${Globals.REQUEST_URL}/api/student/assignments"
+    private val REQUEST_URL = "${toolWindow.globals.REQUEST_URL}/api/student/assignments"
     private val moshi = Moshi.Builder().build()
     private val assignmentJsonAdapter: JsonAdapter<AssignmentInfoResponse> =
         moshi.adapter(AssignmentInfoResponse::class.java)

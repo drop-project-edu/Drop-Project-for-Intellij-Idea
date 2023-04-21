@@ -24,7 +24,6 @@ import com.intellij.openapi.project.DumbAwareAction
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.tfc.ulht.dropProjectPlugin.BuildReportNotification
-import com.tfc.ulht.dropProjectPlugin.Globals
 import com.tfc.ulht.dropProjectPlugin.actions.SubmissionId
 import com.tfc.ulht.dropProjectPlugin.toolWindow.DropProjectToolWindow
 import data.FullBuildReport
@@ -33,7 +32,7 @@ import okhttp3.Request
 
 class SubmissionReport(private val toolWindow: DropProjectToolWindow) {
 
-    private val REQUEST_URL = "${Globals.REQUEST_URL}/api/student/submissions"
+    private val REQUEST_URL = "${toolWindow.globals.REQUEST_URL}/api/student/submissions"
     private lateinit var fullBuildReport: FullBuildReport
     private val moshi = Moshi.Builder().build()
     private val submissionJsonAdapter: JsonAdapter<FullBuildReport> = moshi.adapter(FullBuildReport::class.java)
@@ -66,10 +65,13 @@ class SubmissionReport(private val toolWindow: DropProjectToolWindow) {
 }
 
 
-class ShowFullBuildReport(private val fullBuildReport: FullBuildReport, val submissionNum: SubmissionId? = null) :
+class ShowFullBuildReport(
+    private val fullBuildReport: FullBuildReport,
+    private val submissionNum: SubmissionId? = null
+) :
     DumbAwareAction("Show") {
     override fun actionPerformed(e: AnActionEvent) {
-        FullBuildReportHtmlBuilder(fullBuildReport, submissionNum = submissionNum).showInstructions(e.project)
+        FullBuildReportHtmlBuilder(fullBuildReport, submissionNum = submissionNum).show(e.project)
         /*
             val editorManager = e.project?.let { FileEditorManager.getInstance(it) }
             val virtualFile = BuildReportVirtualFile("Build Report",fullBuildReport)

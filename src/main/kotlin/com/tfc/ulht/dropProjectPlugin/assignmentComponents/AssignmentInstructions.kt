@@ -6,13 +6,13 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.util.ui.JBUI
-import com.tfc.ulht.dropProjectPlugin.Globals
 import com.tfc.ulht.dropProjectPlugin.VirtualFile
 import data.AssignmentInstructionsFormat
 import javax.swing.JEditorPane
 import javax.swing.event.HyperlinkEvent
 
 class AssignmentInstructions(
+    private val requestUrl: String,
     private val assignmentID: String,
     private val format: AssignmentInstructionsFormat?,
     private val body: String?
@@ -70,7 +70,8 @@ class AssignmentInstructions(
     }
 
     private fun linkButton(): String {
-        return "<br><br><div style = \"cursor:pointer;padding:10px 20px;background-color:$fontColor;text-align:center;\"><a style=\"text-decoration:none;color:$foregroundColor;font-size:1.3em;\" href=\"${Globals.REQUEST_URL}/upload/${assignmentID}\">Instructions in Web \uD83D\uDD17</a></div>"
+        return "<br><br><div style = \"cursor:pointer;padding:10px 20px;background-color:$fontColor;text-align:center;\"><a style=\"text-decoration:none;color:$foregroundColor;font-size:1.3em;\" href=\"${requestUrl}/upload/${assignmentID}\">Instructions in Web \uD83D\uDD17</a></div>"
     }
+
 
 }

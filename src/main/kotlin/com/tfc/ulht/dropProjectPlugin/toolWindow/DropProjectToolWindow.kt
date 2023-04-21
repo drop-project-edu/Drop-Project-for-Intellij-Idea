@@ -50,11 +50,7 @@ class DropProjectToolWindow(var project: Project) {
         toolbarPanel = ToolbarPanel(this)
         toolbarPanel!!.border = IdeBorderFactory.createBorder(SideBorder.TOP or SideBorder.RIGHT or SideBorder.BOTTOM)
         //on start login
-        val credentials = CredentialsController().retrieveStoredCredentials("DropProject")
-        if (credentials != null) {
-            credentials.getPasswordAsString()
-                ?.let { credentials.userName?.let { it1 -> authentication.onStartAuthenticate(it1, it) } }
-        }
+        launchLogin()
         //toolwindow builder
         contentToolWindow = SimpleToolWindowPanel(true, true)
 
@@ -76,6 +72,14 @@ class DropProjectToolWindow(var project: Project) {
         }
 
 
+    }
+
+    private fun launchLogin() {
+        val credentials = CredentialsController().retrieveStoredCredentials("DropProject")
+        if (credentials != null) {
+            credentials.getPasswordAsString()
+                ?.let { credentials.userName?.let { it1 -> authentication.onStartAuthenticate(it1, it) } }
+        }
     }
 
     private fun readMetadata() {

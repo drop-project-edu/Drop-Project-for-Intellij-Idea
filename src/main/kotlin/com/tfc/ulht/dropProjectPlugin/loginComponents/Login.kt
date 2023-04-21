@@ -6,8 +6,8 @@ import com.intellij.uiDesigner.core.GridLayoutManager
 import com.intellij.uiDesigner.core.Spacer
 import com.intellij.util.ui.JBUI
 import com.tfc.ulht.dropProjectPlugin.DefaultNotification
-import com.tfc.ulht.dropProjectPlugin.Globals
 import com.tfc.ulht.dropProjectPlugin.User
+import com.tfc.ulht.dropProjectPlugin.settings.SettingsState
 import com.tfc.ulht.dropProjectPlugin.toolWindow.DropProjectToolWindow
 import java.awt.Desktop
 import java.awt.Dimension
@@ -81,8 +81,35 @@ class Login(private val toolWindow: DropProjectToolWindow) {
                 null, "Student info is empty", "Error",
                 JOptionPane.ERROR_MESSAGE
             )
-            else authenticate(toolWindow.project)
+            else {
+                authenticate(toolWindow.project)
+            }
         }
+    }
+
+    private fun manageSettingsChanges() {
+        val settingsState = SettingsState.getInstance()
+        if (!(nameField.text.equals(settingsState.username) && numberField.text.equals(settingsState.usernumber) &&
+                    settingsState.token == String(tokenField.password))
+        ) {
+            val updateSettings = JOptionPane.showOptionDialog(
+                null, "Do you want to update log-in settings for faster login?", "Drop Project Settings Update",
+                JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.DEFAULT_OPTION, null, arrayOf("Yes", "No"), null
+            )
+            when (updateSettings) {
+                0 -> {
+                    //YES
+                    SettingsState.getInstance()
+                        .updateValues(nameField.text, numberField.text, String(tokenField.password))
+                }
+            }
+        }
+    }
+
+    private fun fillFieldsFromSettings() {
+        nameField.text = SettingsState.getInstance().username
+        numberField.text = SettingsState.getInstance().usernumber
+        tokenField.text = SettingsState.getInstance().token
     }
 
     private fun authenticate(project: Project?) {
@@ -98,7 +125,7 @@ class Login(private val toolWindow: DropProjectToolWindow) {
         if (response) {
             registerStudents()
             DefaultNotification.notify(project, "Login Successful")
-            //toolbarPanel.loggedInToolbar()
+            manageSettingsChanges()
 
         } else {
             JOptionPane.showMessageDialog(
@@ -661,13 +688,14 @@ class Login(private val toolWindow: DropProjectToolWindow) {
         add2ndStudentPanel.isVisible = false
         add2ndStudentNameLabel.isVisible = false
         actionListeners()
+        fillFieldsFromSettings()
         return mainpanel
     }
 
     private fun actionListeners() {
         tokenLinkLabel.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent) {
-                Desktop.getDesktop().browse(URI("${Globals.REQUEST_URL}/personalToken"))
+                Desktop.getDesktop().browse(URI("${toolWindow.globals.REQUEST_URL}/personalToken"))
             }
         })
         addStudentButton.addActionListener {

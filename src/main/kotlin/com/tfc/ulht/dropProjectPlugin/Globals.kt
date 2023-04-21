@@ -21,18 +21,17 @@ package com.tfc.ulht.dropProjectPlugin
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.WindowManager
 import com.tfc.ulht.dropProjectPlugin.assignmentComponents.TableLine
+import com.tfc.ulht.dropProjectPlugin.settings.SettingsState
 import com.tfc.ulht.dropProjectPlugin.statusBarWidget.PluginStatusWidget
 import com.tfc.ulht.dropProjectPlugin.toolWindow.DropProjectToolWindow
 import data.FullBuildReport
 
 class Globals(private val project: Project, private val toolWindow: DropProjectToolWindow) {
 
-    companion object {
-        //val REQUEST_URL = "http://localhost:8080"
-        val REQUEST_URL = "https://deisi.ulusofona.pt/drop-project"
-
-        //val PLUGIN_ID = PluginStatusWidget::class.java.name
-    }
+    val REQUEST_URL = SettingsState.getInstance().serverURL
+    var USERNAME = SettingsState.getInstance().username
+    val USERNUMBER = SettingsState.getInstance().usernumber
+    val TOKEN = SettingsState.getInstance().token
 
     var statusWidgetId = "DropProjectStatusWidget${PluginStatusWidget.idCount}"
     var selectedAssignmentID: String = ""
@@ -52,6 +51,8 @@ class Globals(private val project: Project, private val toolWindow: DropProjectT
             field = value
             if (value != null) {
                 toolWindow.toolbarPanel!!.buildReportAvailable()
+            } else {
+                toolWindow.toolbarPanel!!.toggleOpenBuildReportAction()
             }
         }
 

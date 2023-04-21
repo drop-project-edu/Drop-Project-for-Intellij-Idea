@@ -5,6 +5,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.content.ContentFactory
+import com.tfc.ulht.dropProjectPlugin.actions.OpenSettings
 import org.jetbrains.annotations.NotNull
 
 class DropProjectToolWindowFactory : ToolWindowFactory {
@@ -14,6 +15,8 @@ class DropProjectToolWindowFactory : ToolWindowFactory {
         val contentFactory = ContentFactory.SERVICE.getInstance()
         val content = contentFactory.createContent(panel.getContent(), "", false)
         toolWindow.contentManager.addContent(content)
+
+        toolWindow.setTitleActions(listOf(OpenSettings(project)))
 
 
     }

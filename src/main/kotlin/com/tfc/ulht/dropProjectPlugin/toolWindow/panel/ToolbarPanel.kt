@@ -7,6 +7,7 @@ import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.ui.components.panels.NonOpaquePanel
 import com.tfc.ulht.dropProjectPlugin.actions.*
 import com.tfc.ulht.dropProjectPlugin.toolWindow.DropProjectToolWindow
+import org.jetbrains.annotations.NonNls
 import java.awt.BorderLayout
 import javax.swing.BorderFactory
 
@@ -14,6 +15,9 @@ class ToolbarPanel(private var toolWindow: DropProjectToolWindow) : NonOpaquePan
     private var actionToolbar: ActionToolbar
     private var leftActionGroup: DefaultActionGroup
     private var rightActionGroup: DefaultActionGroup
+
+    @NonNls
+    private var openBuildReportActionID: String = ""
 
     init {
 
@@ -50,7 +54,11 @@ class ToolbarPanel(private var toolWindow: DropProjectToolWindow) : NonOpaquePan
     private fun createRightToolbar(): ActionToolbar {
         if (toolWindow.authentication.alreadyLoggedIn) {
             if (toolWindow.globals.lastBuildReport != null) {
-                rightActionGroup.add(CheckLastReport(toolWindow.globals.lastBuildReport))
+
+                val openBuildReportAction = CheckLastReport(toolWindow.globals.lastBuildReport)
+                //GET ID FROM BUILD REPORT ACTION TO PROGRAMMATICALLY DISABLE
+                openBuildReportActionID = ActionManager.getInstance().getId(openBuildReportAction)
+                rightActionGroup.add(openBuildReportAction)
                 rightActionGroup.addSeparator()
                 rightActionGroup.add(Logout(toolWindow))
             } else {
@@ -88,6 +96,13 @@ class ToolbarPanel(private var toolWindow: DropProjectToolWindow) : NonOpaquePan
         rightActionGroup.add(CheckLastReport(toolWindow.globals.lastBuildReport))
         rightActionGroup.addSeparator()
         rightActionGroup.add(Logout(toolWindow))
+    }
+
+    fun toggleOpenBuildReportAction() {
+        rightActionGroup.removeAll()
+        rightActionGroup.addSeparator()
+        rightActionGroup.add(Logout(toolWindow))
+
     }
 
 

@@ -140,7 +140,7 @@ class FullBuildReportHtmlBuilder(
                 table.append("<tbody>")
                 for (error in fullbuildreport.buildReport!!.junitErrorsTeacher!!.split("ERROR:|FAILURE:".toRegex())) {
                     if (error.isNotBlank()) {
-                        table.append("<tr><td $style>${error}</td></tr>")
+                        table.append("<tr><td $style><p>${error.replace("\n", "<br>")}</p></td></tr>")
                     }
                 }
                 table.append("</tbody>")
@@ -179,7 +179,7 @@ class FullBuildReportHtmlBuilder(
 
     }
 
-    fun showInstructions(project: Project?) {
+    fun show(project: Project?) {
 
         val editor = JEditorPane("text/html", html) // PREPARE HTML VIEWER
         editor.isEditable = false

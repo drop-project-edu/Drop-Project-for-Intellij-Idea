@@ -20,7 +20,6 @@ package com.tfc.ulht.dropProjectPlugin.loginComponents
 
 import com.intellij.openapi.ui.Messages
 import com.jetbrains.rd.util.use
-import com.tfc.ulht.dropProjectPlugin.Globals
 import com.tfc.ulht.dropProjectPlugin.toolWindow.DropProjectToolWindow
 import okhttp3.*
 import java.io.IOException
@@ -45,7 +44,7 @@ class Authentication(private val toolWindow: DropProjectToolWindow) {
         }
 
 
-    private val REQUEST_URL = "${Globals.REQUEST_URL}/api/student/assignments/current"
+    private val REQUEST_URL = "${toolWindow.globals.REQUEST_URL}/api/student/assignments/current"
 
     fun loginAuthenticate(username: String, token: String): Boolean {
         alreadyLoggedIn = request(username, token)

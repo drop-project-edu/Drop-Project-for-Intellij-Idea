@@ -16,7 +16,14 @@
     <description><![CDATA[
     This plugin was made in order to help students simplify the process of submitting code to <b>Drop Project</b> website
   ]]></description>
-
+    <change-notes>
+        <![CDATA[
+      <ul>
+        <li><b>1.8</b> New login UI</li>
+        <li>Fix bugs</li>
+      </ul>
+    ]]>
+    </change-notes>
     <!-- Product and plugin compatibility requirements.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
@@ -33,6 +40,11 @@
         <notificationGroup id="Default Notification" displayType="BALLOON"/>
         <fileEditorProvider
                 implementation="com.tfc.ulht.dropProjectPlugin.EditorTabProvider"/>
+        <applicationConfigurable parentId="tools"
+                                 instance="com.tfc.ulht.dropProjectPlugin.settings.SettingsConfigurable"
+                                 id="com.tfc.ulht.dropProjectPlugin.settings.SettingsConfigurable"
+                                 displayName="Drop Project Settings"/>
+        <applicationService serviceImplementation="com.tfc.ulht.dropProjectPlugin.settings.SettingsState"/>
     </extensions>
 
 
