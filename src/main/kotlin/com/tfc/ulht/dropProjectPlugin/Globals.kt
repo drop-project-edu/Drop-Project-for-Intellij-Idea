@@ -29,9 +29,6 @@ import data.FullBuildReport
 class Globals(private val project: Project, private val toolWindow: DropProjectToolWindow) {
 
     val REQUEST_URL = SettingsState.getInstance().serverURL
-    var USERNAME = SettingsState.getInstance().username
-    val USERNUMBER = SettingsState.getInstance().usernumber
-    val TOKEN = SettingsState.getInstance().token
 
     var statusWidgetId = "DropProjectStatusWidget${PluginStatusWidget.idCount}"
     var selectedAssignmentID: String = ""
