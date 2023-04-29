@@ -99,7 +99,7 @@ class Login(private val toolWindow: DropProjectToolWindow) {
             when (updateSettings) {
                 0 -> {
                     //YES
-                    SettingsState.getInstance()
+                    settingsState
                         .updateValues(nameField.text, numberField.text, String(tokenField.password))
                 }
             }
@@ -107,9 +107,10 @@ class Login(private val toolWindow: DropProjectToolWindow) {
     }
 
     private fun fillFieldsFromSettings() {
-        nameField.text = SettingsState.getInstance().username
-        numberField.text = SettingsState.getInstance().usernumber
-        tokenField.text = SettingsState.getInstance().token
+        val settingsState = SettingsState.getInstance()
+        nameField.text = settingsState.username
+        numberField.text = settingsState.usernumber
+        tokenField.text = settingsState.token
     }
 
     private fun authenticate(project: Project?) {

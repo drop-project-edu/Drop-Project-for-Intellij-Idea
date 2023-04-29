@@ -12,7 +12,7 @@ import javax.swing.ListSelectionModel
 
 
 class ListTable(private val toolWindow: DropProjectToolWindow) :
-    TableView<TableLine>(toolWindow.tableModel) {
+    TableView<AssignmentTableLine>(toolWindow.tableModel) {
 
 
     init {
@@ -21,6 +21,19 @@ class ListTable(private val toolWindow: DropProjectToolWindow) :
         isStriped = true
         cursor = Cursor(Cursor.HAND_CURSOR)
         autoCreateRowSorter = true
+        //RADIO BUTTON RESTRICT COLUMN WIDTH
+        columnModel.getColumn(0).maxWidth = 40
+        columnModel.getColumn(0).minWidth = 20
+        //ASSIGNMENT NAME COLLUM WIDTH
+        columnModel.getColumn(1).preferredWidth = 300
+        //ASSIGNMENT LANGUAGE COLLUM WIDTH
+        columnModel.getColumn(2).preferredWidth = 50
+        //ASSIGNMENT DUE DATE COLLUM WIDTH
+        columnModel.getColumn(3).preferredWidth = 150
+        //DETAILS BUTTON RESTRICT COLUMN WIDTH
+        columnModel.getColumn(4).maxWidth = 180
+        columnModel.getColumn(4).preferredWidth = 170
+
         if (toolWindow.authentication.alreadyLoggedIn) {
             emptyText.text = "No Assignments"
 
@@ -28,6 +41,7 @@ class ListTable(private val toolWindow: DropProjectToolWindow) :
             emptyText.text = "Login to see your Assignments"
         }
         addMouseListener(object : MouseAdapter() {
+
             override fun mousePressed(e: MouseEvent) {
                 val source = e.source as JTable
                 val rowAtPoint = source.rowAtPoint(e.point)
@@ -61,6 +75,9 @@ class ListTable(private val toolWindow: DropProjectToolWindow) :
                                 selectedRow.instructions!!.body
                             ).showInstructions(toolWindow.project)
 
+                    }
+                    if (MouseEvent.BUTTON3 == e.button) {
+                        println("RIGHT MOUSE CLICK")
                     }
                     super.mousePressed(e)
                 }

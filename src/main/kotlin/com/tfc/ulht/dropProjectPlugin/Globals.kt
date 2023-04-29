@@ -20,7 +20,7 @@ package com.tfc.ulht.dropProjectPlugin
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.WindowManager
-import com.tfc.ulht.dropProjectPlugin.assignmentComponents.TableLine
+import com.tfc.ulht.dropProjectPlugin.assignmentComponents.AssignmentTableLine
 import com.tfc.ulht.dropProjectPlugin.settings.SettingsState
 import com.tfc.ulht.dropProjectPlugin.statusBarWidget.PluginStatusWidget
 import com.tfc.ulht.dropProjectPlugin.toolWindow.DropProjectToolWindow
@@ -42,14 +42,14 @@ class Globals(private val project: Project, private val toolWindow: DropProjectT
             }
         }
 
-    var selectedLine: TableLine? = null
+    var selectedLine: AssignmentTableLine? = null
     var lastBuildReport: FullBuildReport? = null
         set(value) {
             field = value
             if (value != null) {
                 toolWindow.toolbarPanel!!.buildReportAvailable()
             } else {
-                toolWindow.toolbarPanel!!.toggleOpenBuildReportAction()
+                toolWindow.toolbarPanel!!.hideBuildReportAction()
             }
         }
 

@@ -7,7 +7,7 @@ import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 
 class OpenSettings(private val project: Project) :
-    DumbAwareAction("Open settings", "Drop project settings", AllIcons.General.Settings) {
+    DumbAwareAction("Open Settings", "Drop project settings", AllIcons.General.Settings) {
     override fun actionPerformed(e: AnActionEvent) {
         ShowSettingsUtil.getInstance().showSettingsDialog(project, "Drop Project Settings")
     }

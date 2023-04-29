@@ -6,7 +6,7 @@ import com.jetbrains.rd.util.use
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
-import com.tfc.ulht.dropProjectPlugin.assignmentComponents.TableLine
+import com.tfc.ulht.dropProjectPlugin.assignmentComponents.AssignmentTableLine
 import com.tfc.ulht.dropProjectPlugin.toolWindow.DropProjectToolWindow
 import data.Assignment
 import okhttp3.Request
@@ -54,11 +54,11 @@ class ListAssignment(private var toolWindow: DropProjectToolWindow) {
         }
     }
 
-    private fun listAssignments(): List<TableLine> {
-        val assignments: ArrayList<TableLine> = ArrayList()
+    private fun listAssignments(): List<AssignmentTableLine> {
+        val assignments: ArrayList<AssignmentTableLine> = ArrayList()
 
         for (assignment in assignmentList) {
-            val line = TableLine()
+            val line = AssignmentTableLine()
 
 
             line.name = assignment.name

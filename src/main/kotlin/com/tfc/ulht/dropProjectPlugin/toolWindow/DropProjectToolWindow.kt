@@ -7,17 +7,13 @@ import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.ui.Splitter
 import com.intellij.ui.IdeBorderFactory
 import com.intellij.ui.OnePixelSplitter
-import com.intellij.ui.SearchTextField
 import com.intellij.ui.SideBorder
-import com.tfc.ulht.dropProjectPlugin.DefaultNotification
-import com.tfc.ulht.dropProjectPlugin.Globals
-import com.tfc.ulht.dropProjectPlugin.ProjectComponents
-import com.tfc.ulht.dropProjectPlugin.User
+import com.tfc.ulht.dropProjectPlugin.*
 import com.tfc.ulht.dropProjectPlugin.actions.ListAssignment
 import com.tfc.ulht.dropProjectPlugin.actions.PanelRoute
 import com.tfc.ulht.dropProjectPlugin.actions.SearchAssignment
+import com.tfc.ulht.dropProjectPlugin.assignmentComponents.AssignmentTableLine
 import com.tfc.ulht.dropProjectPlugin.assignmentComponents.ListTable
-import com.tfc.ulht.dropProjectPlugin.assignmentComponents.TableLine
 import com.tfc.ulht.dropProjectPlugin.loginComponents.Authentication
 import com.tfc.ulht.dropProjectPlugin.loginComponents.CredentialsController
 import com.tfc.ulht.dropProjectPlugin.toolWindow.panel.AssignmentTablePanel
@@ -29,6 +25,7 @@ import javax.swing.JPanel
 
 class DropProjectToolWindow(var project: Project) {
 
+    private var allAssignmentsState = ArrayList<AssignmentTableLine>()
     var studentsList = ArrayList<User>()
     var tableModel: AssignmentTableModel? = null
     var resultsTable: ListTable? = null
@@ -50,7 +47,7 @@ class DropProjectToolWindow(var project: Project) {
         toolbarPanel = ToolbarPanel(this)
         toolbarPanel!!.border = IdeBorderFactory.createBorder(SideBorder.TOP or SideBorder.RIGHT or SideBorder.BOTTOM)
         //on start login
-        launchLogin()
+        //launchLogin()
         //toolwindow builder
         contentToolWindow = SimpleToolWindowPanel(true, true)
 
@@ -79,6 +76,15 @@ class DropProjectToolWindow(var project: Project) {
         if (credentials != null) {
             credentials.getPasswordAsString()
                 ?.let { credentials.userName?.let { it1 -> authentication.onStartAuthenticate(it1, it) } }
+        }
+    }
+
+    private fun getAllAssignmentsState() {
+        val allAssignments = AllAssignments.getInstance()
+        for (id in allAssignments.getListOfIds()) {
+            val assignmentTableLine = AssignmentTableLine()
+            assignmentTableLine.id_notVisible = id
+            this.allAssignmentsState.add(assignmentTableLine)
         }
     }
 
@@ -112,13 +118,25 @@ class DropProjectToolWindow(var project: Project) {
     fun updateAssignmentList() {
         readMetadata()
         ListAssignment(this).get()
-        val tableLine = TableLine()
+        val tableLine = AssignmentTableLine()
         tableLine.id_notVisible = globals.selectedAssignmentID
         if (!tableModel?.items!!.contains(tableLine)) {
-            val searchfieldDummy = SearchTextField()
-            searchfieldDummy.text = globals.selectedAssignmentID
-            SearchAssignment(searchfieldDummy, this, PanelRoute.LOGIN).searchAndUpdateAssignmentList()
+            SearchAssignment(globals.selectedAssignmentID, this, PanelRoute.LOGIN).searchAndUpdateAssignmentList()
         }
+        /* for (assignment in allAssignmentsState) {
+             if (!tableModel?.items!!.contains(assignment)) {
+                 if (SearchAssignment(
+                         assignment.id_notVisible,
+                         this,
+                         PanelRoute.LOGIN
+                     ).searchAndUpdateAssignmentList() == null
+                 ) {
+                     //assignment not found
+                     allAssignmentsState.remove(assignment)
+                     AllAssignments.getInstance().removeAssignmentID(assignment.id_notVisible)
+                 }
+             }
+         }*/
     }
 
 }

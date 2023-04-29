@@ -2,7 +2,7 @@ import com.intellij.icons.AllIcons;
 import com.intellij.ui.components.labels.BoldLabel;
 import com.intellij.util.ui.ColumnInfo;
 import com.intellij.util.ui.ListTableModel;
-import com.tfc.ulht.dropProjectPlugin.assignmentComponents.TableLine;
+import com.tfc.ulht.dropProjectPlugin.assignmentComponents.AssignmentTableLine;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,21 +12,21 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class AssignmentTableModel extends ListTableModel<TableLine> {
-    public AssignmentTableModel(ColumnInfo @NotNull [] columnNames, @NotNull List<TableLine> tableLines) {
+public class AssignmentTableModel extends ListTableModel<AssignmentTableLine> {
+    public AssignmentTableModel(ColumnInfo @NotNull [] columnNames, @NotNull List<AssignmentTableLine> tableLines) {
         super(columnNames, tableLines);
     }
 
     static final String[] COLUMNS = {"", "Name", "Language", "Due Date", "Details"};
 
-    public static ColumnInfo<TableLine, String>[] generateColumnInfo() {
-        ColumnInfo<TableLine, String>[] columnInfos = new ColumnInfo[COLUMNS.length];
+    public static ColumnInfo<AssignmentTableLine, String>[] generateColumnInfo() {
+        ColumnInfo<AssignmentTableLine, String>[] columnInfos = new ColumnInfo[COLUMNS.length];
         AtomicInteger i = new AtomicInteger();
         Arrays.stream(COLUMNS).forEach(eachColumn -> {
                     columnInfos[i.get()] = new ColumnInfo<>(eachColumn) {
                         @Nullable
                         @Override
-                        public String valueOf(TableLine o) {
+                        public String valueOf(AssignmentTableLine o) {
                             switch (eachColumn) {
                                 case "Name":
                                     return o.name;
@@ -43,7 +43,7 @@ public class AssignmentTableModel extends ListTableModel<TableLine> {
                         }
 
                         @Override
-                        public TableCellRenderer getCustomizedRenderer(TableLine o, TableCellRenderer renderer) {
+                        public TableCellRenderer getCustomizedRenderer(AssignmentTableLine o, TableCellRenderer renderer) {
                             switch (eachColumn) {
                                 case "Details":
                                     return (table, value, isSelected, hasFocus, row, column) -> new JButton("Instructions", AllIcons.Actions.Find);

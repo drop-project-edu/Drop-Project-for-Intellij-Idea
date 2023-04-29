@@ -4,14 +4,13 @@ import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.ui.Messages
-import com.intellij.ui.SearchTextField
 import com.intellij.ui.components.JBRadioButton
 import com.jetbrains.rd.util.use
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.tfc.ulht.dropProjectPlugin.DefaultNotification
 import com.tfc.ulht.dropProjectPlugin.ProjectComponents
-import com.tfc.ulht.dropProjectPlugin.assignmentComponents.TableLine
+import com.tfc.ulht.dropProjectPlugin.assignmentComponents.AssignmentTableLine
 import com.tfc.ulht.dropProjectPlugin.toolWindow.DropProjectToolWindow
 import data.Assignment
 import data.AssignmentInfoResponse
@@ -22,7 +21,7 @@ enum class PanelRoute {
 }
 
 class SearchAssignment(
-    private val searchField: SearchTextField,
+    private val searchFieldText: String,
     private val toolWindow: DropProjectToolWindow,
     private val route: PanelRoute
 ) :
@@ -45,10 +44,10 @@ class SearchAssignment(
     }
 
     fun searchAndUpdateAssignmentList(): String? {
-        if (searchField.text.isEmpty()) {
+        if (searchFieldText.isEmpty()) {
             return null
         }
-        val request = Request.Builder().url("$REQUEST_URL/${searchField.text.trim()}").build()
+        val request = Request.Builder().url("$REQUEST_URL/${searchFieldText.trim()}").build()
 
         toolWindow.authentication.httpClient.newCall(request).execute().use { response ->
             if (response.code == 200) {
@@ -108,9 +107,9 @@ class SearchAssignment(
         return null
     }
 
-    private fun listAndSelectAssignment(): TableLine? {
+    private fun listAndSelectAssignment(): AssignmentTableLine? {
 
-        val line = TableLine()
+        val line = AssignmentTableLine()
 
         line.name = assignment!!.name
         line.language = assignment!!.language
@@ -127,10 +126,7 @@ class SearchAssignment(
         toolWindow.globals.selectedLine = line
         //save project metadata
         ProjectComponents(toolWindow.project).saveProjectComponents(line.id_notVisible)
-        //update statusbar
-        /*val statusWidget: PluginStatusWidget = WindowManager.getInstance().getStatusBar(toolWindow.project)
-            .getWidget(toolWindow.globals.statusWidgetId) as PluginStatusWidget
-        statusWidget.selectedAssignmentID = toolWindow.globals.selectedAssignmentID*/
+
         toolWindow.tableModel?.items?.forEach { it.radioButton.isSelected = false }
 
         if (toolWindow.tableModel?.items?.contains(line) == true) {

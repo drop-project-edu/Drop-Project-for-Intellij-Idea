@@ -37,6 +37,5 @@ class SettingsState : PersistentStateComponent<SettingsState> {
         this.username = userName
         this.usernumber = userNumber
         this.token = token
-        ApplicationManager.getApplication().saveSettings()
     }
 }

@@ -98,7 +98,7 @@ class ToolbarPanel(private var toolWindow: DropProjectToolWindow) : NonOpaquePan
         rightActionGroup.add(Logout(toolWindow))
     }
 
-    fun toggleOpenBuildReportAction() {
+    fun hideBuildReportAction() {
         rightActionGroup.removeAll()
         rightActionGroup.addSeparator()
         rightActionGroup.add(Logout(toolWindow))

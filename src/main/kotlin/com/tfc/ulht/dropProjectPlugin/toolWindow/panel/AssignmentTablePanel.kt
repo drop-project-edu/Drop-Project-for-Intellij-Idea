@@ -3,14 +3,14 @@ package com.tfc.ulht.dropProjectPlugin.toolWindow.panel
 import com.intellij.ui.ScrollPaneFactory
 import com.intellij.ui.components.panels.NonOpaquePanel
 import com.intellij.ui.table.TableView
-import com.tfc.ulht.dropProjectPlugin.assignmentComponents.TableLine
+import com.tfc.ulht.dropProjectPlugin.assignmentComponents.AssignmentTableLine
 import java.awt.BorderLayout
 import javax.swing.BorderFactory
 import javax.swing.JPanel
 
-class AssignmentTablePanel(resultsTable: TableView<TableLine>) :
+class AssignmentTablePanel(resultsTable: TableView<AssignmentTableLine>) :
     NonOpaquePanel() {
-    private val resultsTable: TableView<TableLine>
+    private val resultsTable: TableView<AssignmentTableLine>
 
     init {
         this.resultsTable = resultsTable
