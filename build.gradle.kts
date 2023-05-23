@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.tfc.ulht"
-version = "v0.9"
+version = "0.9.0"
 
 repositories {
     mavenCentral()
@@ -21,6 +21,8 @@ dependencies {
     kapt("com.squareup.moshi:moshi-kotlin-codegen:1.14.0")
     implementation(group = "net.lingala.zip4j", name = "zip4j", version = "2.10.0")
     implementation("org.jetbrains:marketplace-zip-signer:0.1.8")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.0")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.1")
 
 }
 

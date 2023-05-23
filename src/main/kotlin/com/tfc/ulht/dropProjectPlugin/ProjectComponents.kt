@@ -1,10 +1,10 @@
 package com.tfc.ulht.dropProjectPlugin
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper
+import com.fasterxml.jackson.module.kotlin.readValue
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.intellij.openapi.project.Project
 import java.io.File
-import javax.xml.bind.JAXBContext
-import javax.xml.bind.JAXBException
-import javax.xml.bind.Marshaller
 import javax.xml.bind.annotation.XmlRootElement
 
 
@@ -14,16 +14,13 @@ class ProjectComponents(private val project: Project) {
 
     fun saveProjectComponents(assignmentId: String) {
         val components = Components(assignmentId)
-        //val project = ProjectManager.getInstance().openProjects[0]
         val metadataDir = File(File(project.basePath!!), ".dp")
         metadataDir.mkdirs()
         val metadataFile = File(metadataDir, "components.xml")
         try {
-            val context = JAXBContext.newInstance(Components::class.java)
-            val marshaller = context.createMarshaller()
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true)
-            marshaller.marshal(components, metadataFile)
-        } catch (_: JAXBException) {
+            val xmlMapper = XmlMapper().registerKotlinModule()
+            xmlMapper.writeValue(metadataFile, components)
+        } catch (_: Exception) {
         }
 
     }
@@ -36,10 +33,9 @@ class ProjectComponents(private val project: Project) {
             metadataFile.createNewFile()
         }
         return try {
-            val context = JAXBContext.newInstance(Components::class.java)
-            val unmarshaller = context.createUnmarshaller()
-            unmarshaller.unmarshal(metadataFile) as Components
-        } catch (_: JAXBException) {
+            val xmlMapper = XmlMapper().registerKotlinModule()
+            xmlMapper.readValue<Components>(metadataFile)
+        } catch (_: Exception) {
             Components()
         }
 
