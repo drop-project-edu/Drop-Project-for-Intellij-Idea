@@ -17,6 +17,7 @@ class SettingsState : PersistentStateComponent<SettingsState> {
     var username: String = ""
     var usernumber: String = ""
     var token: String = ""
+    var publicAssignments: MutableList<String> = mutableListOf()
 
     companion object {
         fun getInstance(): SettingsState {
@@ -37,5 +38,17 @@ class SettingsState : PersistentStateComponent<SettingsState> {
         this.username = userName
         this.usernumber = userNumber
         this.token = token
+    }
+
+    fun addPublicAssignment(id: String) {
+        publicAssignments.add(id)
+    }
+
+    fun removePublicAssignment(id: String) {
+        publicAssignments.remove(id)
+    }
+
+    fun isPublicAssignment(id: String): Boolean {
+        return publicAssignments.contains(id)
     }
 }

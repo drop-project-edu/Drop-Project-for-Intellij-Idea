@@ -4,6 +4,7 @@ import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.ui.Messages
+import com.intellij.ui.SearchTextField
 import com.intellij.ui.components.JBRadioButton
 import com.jetbrains.rd.util.use
 import com.squareup.moshi.JsonAdapter
@@ -11,6 +12,7 @@ import com.squareup.moshi.Moshi
 import com.tfc.ulht.dropProjectPlugin.DefaultNotification
 import com.tfc.ulht.dropProjectPlugin.ProjectComponents
 import com.tfc.ulht.dropProjectPlugin.assignmentComponents.AssignmentTableLine
+import com.tfc.ulht.dropProjectPlugin.settings.SettingsState
 import com.tfc.ulht.dropProjectPlugin.toolWindow.DropProjectToolWindow
 import data.Assignment
 import data.AssignmentInfoResponse
@@ -21,14 +23,19 @@ enum class PanelRoute {
 }
 
 class SearchAssignment(
-    private val searchFieldText: String,
+    private val assignmentIDField: SearchTextField? = null,
+    private var assignmentID: String? = null,
     private val toolWindow: DropProjectToolWindow,
-    private val route: PanelRoute
+    private val route: PanelRoute,
+    private val selectAssignment: Boolean
 ) :
     DumbAwareAction(
         "Search Assignment", "Search for assignment by ID", AllIcons.Actions.Search
     ) {
-    private val REQUEST_URL = "${toolWindow.globals.REQUEST_URL}/api/student/assignments"
+    private val REQUEST_URL: String
+        get() {
+            return "${toolWindow.globals.REQUEST_URL}/api/student/assignments"
+        }
     private val moshi = Moshi.Builder().build()
     private val assignmentJsonAdapter: JsonAdapter<AssignmentInfoResponse> =
         moshi.adapter(AssignmentInfoResponse::class.java)
@@ -36,6 +43,9 @@ class SearchAssignment(
     private var errorCode: Int? = null
 
     override fun actionPerformed(e: AnActionEvent) {
+        if (assignmentIDField != null && assignmentID == null) {
+            assignmentID = assignmentIDField.text
+        }
         val assignmentAdded = searchAndUpdateAssignmentList()
         if (assignmentAdded != null)
             DefaultNotification.notify(
@@ -43,11 +53,9 @@ class SearchAssignment(
             )
     }
 
-    fun searchAndUpdateAssignmentList(): String? {
-        if (searchFieldText.isEmpty()) {
-            return null
-        }
-        val request = Request.Builder().url("$REQUEST_URL/${searchFieldText.trim()}").build()
+    private fun searchAssignment() {
+        assignment = null
+        val request = Request.Builder().url("$REQUEST_URL/${assignmentID!!.trim()}").build()
 
         toolWindow.authentication.httpClient.newCall(request).execute().use { response ->
             if (response.code == 200) {
@@ -58,30 +66,47 @@ class SearchAssignment(
                 errorCode = response.code
             }
         }
+    }
+
+    fun searchAndUpdateAssignmentList(): String? {
+        if (assignmentID!!.isEmpty()) {
+            return null
+        }
+        searchAssignment()
+
         if (assignment != null) {
 
-            val assignmentLineToAdd = listAndSelectAssignment()
+            var assignmentLineToAdd = formatAssignmentToTableLine()
 
-            if (assignmentLineToAdd == null) {
+            if (toolWindow.tableModel?.items?.indexOf(assignmentLineToAdd) != -1) {
                 Messages.showMessageDialog(
                     "This Assignment is already in your list", "Duplicate Assignment", Messages.getWarningIcon()
                 )
             } else {
+                if (selectAssignment) {
+                    assignmentLineToAdd = selectAssignment(assignmentLineToAdd)
+                }
                 val updateList = toolWindow.tableModel!!.items.toMutableList()
                 updateList.add(assignmentLineToAdd)
                 toolWindow.tableModel!!.items = updateList
-                if (route == PanelRoute.SEARCH)
+                if (route == PanelRoute.SEARCH) {
                     toolWindow.switchToMainToolbar()
+                    //ADD TO SETTINGS STATE CLASS, KEEPS BETWEEN RUNS
+                    SettingsState.getInstance().addPublicAssignment(assignmentLineToAdd.id_notVisible)
+                }
                 return assignmentLineToAdd.name
             }
         } else {
             if (route == PanelRoute.LOGIN) {
                 DefaultNotification.notify(
                     toolWindow.project,
-                    "The assignment associated with this project is no longer available"
+                    "<html>The assignment <b>$assignmentID</b> is no longer available</html>"
                 )
-                toolWindow.globals.selectedAssignmentID = ""
-                ProjectComponents(toolWindow.project).saveProjectComponents("")
+                if (selectAssignment) {
+                    toolWindow.globals.selectedAssignmentID = ""
+                    ProjectComponents(toolWindow.project).saveProjectComponents("")
+                }
+
             } else {
                 when (errorCode) {
                     404 -> {
@@ -107,7 +132,17 @@ class SearchAssignment(
         return null
     }
 
-    private fun listAndSelectAssignment(): AssignmentTableLine? {
+    private fun selectAssignment(assignmentLineToAdd: AssignmentTableLine): AssignmentTableLine {
+        //unselect the current from table
+        toolWindow.tableModel?.items?.find { it.radioButton.isSelected }?.radioButton?.isSelected = false
+        assignmentLineToAdd.radioButton.isSelected = true
+        toolWindow.globals.selectedLine = assignmentLineToAdd
+        //save selected assigment in project metadata
+        ProjectComponents(toolWindow.project).saveProjectComponents(assignmentLineToAdd.id_notVisible)
+        return assignmentLineToAdd
+    }
+
+    private fun formatAssignmentToTableLine(): AssignmentTableLine {
 
         val line = AssignmentTableLine()
 
@@ -121,24 +156,10 @@ class SearchAssignment(
         line.id_notVisible = assignment!!.id
         line.instructions = assignment?.instructions
         line.radioButton = JBRadioButton()
-        toolWindow.globals.selectedAssignmentID = line.id_notVisible
-        line.radioButton.isSelected = true
-        toolWindow.globals.selectedLine = line
-        //save project metadata
-        ProjectComponents(toolWindow.project).saveProjectComponents(line.id_notVisible)
 
-        toolWindow.tableModel?.items?.forEach { it.radioButton.isSelected = false }
-
-        if (toolWindow.tableModel?.items?.contains(line) == true) {
-            toolWindow.tableModel?.items?.forEach {
-                if (it.id_notVisible == line.id_notVisible) {
-                    it.radioButton.isSelected = true
-                }
-            }
-            return null
-        }
 
         return line
     }
+
 
 }

@@ -7,25 +7,6 @@ import net.lingala.zip4j.ZipFile
 import java.io.File
 import javax.swing.JOptionPane
 
-
-/*-
- * Plugin Drop Project
- * 
- * Copyright (C) 2019 Yash Jahit & Bernardo Baltazar
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 class ZipFolder(private val students: ArrayList<User>) {
 
     fun zipIt(e: AnActionEvent): String? {
@@ -34,6 +15,7 @@ class ZipFolder(private val students: ArrayList<User>) {
         val newUploadFile = File("$projectDirectory${separator}projeto.zip")
         val authorsPath = "$projectDirectory${separator}AUTHORS.txt"
         val srcPath = "$projectDirectory${separator}src"
+        val testsFilesPath = "$projectDirectory${separator}test-files"
 
         if (!File(authorsPath).exists()) {
             AuthorsFile(students).make(projectDirectory, true, e)
@@ -51,9 +33,15 @@ class ZipFolder(private val students: ArrayList<User>) {
             )
             null
         } else {
-            // Add the "src" folder on the existing zip
-            ZipFile(newUploadFile)
-                .addFolder(File(srcPath))
+
+            val zipFile: ZipFile = ZipFile(newUploadFile)
+
+            zipFile.addFolder(File(srcPath))
+
+            if (File(testsFilesPath).exists()) {
+                // Add the "test-files" folder on the existing zip
+                zipFile.addFolder(File(testsFilesPath))
+            }
 
             newUploadFile.path
         }

@@ -18,9 +18,7 @@ class AssignmentTableLine {
 
         other as AssignmentTableLine
 
-        if (id_notVisible != other.id_notVisible) return false
-
-        return true
+        return id_notVisible == other.id_notVisible
     }
 
     override fun hashCode(): Int {

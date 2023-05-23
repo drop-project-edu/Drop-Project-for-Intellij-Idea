@@ -50,7 +50,12 @@ class ToolbarSearchPanel(val e: AnActionEvent, private val toolWindow: DropProje
         return object : KeyAdapter() {
             override fun keyPressed(e: KeyEvent) {
                 if (KeyEvent.VK_ENTER == e.keyCode) {
-                    SearchAssignment(assignmentSearchField.text, toolWindow, PanelRoute.SEARCH).actionPerformed(event)
+                    SearchAssignment(
+                        assignmentIDField = assignmentSearchField,
+                        toolWindow = toolWindow,
+                        route = PanelRoute.SEARCH,
+                        selectAssignment = true
+                    ).actionPerformed(event)
                 }
             }
         }
@@ -66,7 +71,14 @@ class ToolbarSearchPanel(val e: AnActionEvent, private val toolWindow: DropProje
     }
 
     private fun createRightToolbar(): ActionToolbar {
-        rightActionGroup.add(SearchAssignment(assignmentSearchField.text, toolWindow, PanelRoute.SEARCH))
+        rightActionGroup.add(
+            SearchAssignment(
+                assignmentIDField = assignmentSearchField,
+                toolWindow = toolWindow,
+                route = PanelRoute.SEARCH,
+                selectAssignment = true
+            )
+        )
         return ActionManager.getInstance().createActionToolbar(ActionPlaces.TOOLBAR, rightActionGroup, true)
     }
 

@@ -1,18 +1,24 @@
 package com.tfc.ulht.dropProjectPlugin.assignmentComponents
 
+import com.intellij.ide.DataManager
+import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.ui.popup.JBPopupFactory
+import com.intellij.ui.awt.RelativePoint
 import com.intellij.ui.table.TableView
 import com.tfc.ulht.dropProjectPlugin.DefaultNotification
 import com.tfc.ulht.dropProjectPlugin.ProjectComponents
+import com.tfc.ulht.dropProjectPlugin.actions.ForgetAssignment
 import com.tfc.ulht.dropProjectPlugin.toolWindow.DropProjectToolWindow
 import java.awt.Cursor
+import java.awt.Dimension
+import java.awt.Point
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.JTable
 import javax.swing.ListSelectionModel
 
 
-class ListTable(private val toolWindow: DropProjectToolWindow) :
-    TableView<AssignmentTableLine>(toolWindow.tableModel) {
+class ListTable(private val toolWindow: DropProjectToolWindow) : TableView<AssignmentTableLine>(toolWindow.tableModel) {
 
 
     init {
@@ -22,14 +28,15 @@ class ListTable(private val toolWindow: DropProjectToolWindow) :
         cursor = Cursor(Cursor.HAND_CURSOR)
         autoCreateRowSorter = true
         //RADIO BUTTON RESTRICT COLUMN WIDTH
-        columnModel.getColumn(0).maxWidth = 40
+        columnModel.getColumn(0).maxWidth = 30
         columnModel.getColumn(0).minWidth = 20
+        //RADIO BUTTON CENTER CONTENT
         //ASSIGNMENT NAME COLLUM WIDTH
         columnModel.getColumn(1).preferredWidth = 300
         //ASSIGNMENT LANGUAGE COLLUM WIDTH
-        columnModel.getColumn(2).preferredWidth = 50
+        columnModel.getColumn(2).preferredWidth = 90
         //ASSIGNMENT DUE DATE COLLUM WIDTH
-        columnModel.getColumn(3).preferredWidth = 150
+        columnModel.getColumn(3).preferredWidth = 140
         //DETAILS BUTTON RESTRICT COLUMN WIDTH
         columnModel.getColumn(4).maxWidth = 180
         columnModel.getColumn(4).preferredWidth = 170
@@ -51,15 +58,14 @@ class ListTable(private val toolWindow: DropProjectToolWindow) :
                         val idOfSelected = selectedRow.id_notVisible
                         val nameOfSelected = selectedRow.name
 
-                        if (toolWindow.globals.selectedAssignmentID != idOfSelected) {
+                        if (toolWindow.globals.selectedLine != selectedRow) {
                             selectedRow.radioButton.isSelected = true
                             toolWindow.globals.selectedLine?.radioButton?.isSelected = false
                             toolWindow.globals.selectedLine = selectedRow
-                            toolWindow.globals.selectedAssignmentID = idOfSelected
+                            //toolWindow.globals.selectedAssignmentID = idOfSelected
                             ProjectComponents(toolWindow.project).saveProjectComponents(idOfSelected)
                             DefaultNotification.notify(
-                                toolWindow.project,
-                                "<html>The assignment <b>$nameOfSelected</b> was selected</html>"
+                                toolWindow.project, "<html>The assignment <b>$nameOfSelected</b> was selected</html>"
                             )
                         }
 
@@ -68,18 +74,31 @@ class ListTable(private val toolWindow: DropProjectToolWindow) :
                     // instructions column = 3 , 4 now update
                     if (columnAtPoint == 4 && MouseEvent.BUTTON1 == e.button) {
 
-                        if (selectedRow.instructions != null)
-                            AssignmentInstructions(
-                                toolWindow.globals.REQUEST_URL,
-                                selectedRow.id_notVisible, selectedRow.instructions!!.format,
-                                selectedRow.instructions!!.body
-                            ).showInstructions(toolWindow.project)
+                        if (selectedRow.instructions != null) AssignmentInstructions(
+                            toolWindow.globals.REQUEST_URL,
+                            selectedRow.id_notVisible,
+                            selectedRow.instructions!!.format,
+                            selectedRow.instructions!!.body
+                        ).showInstructions(toolWindow.project)
 
                     }
                     if (MouseEvent.BUTTON3 == e.button) {
-                        println("RIGHT MOUSE CLICK")
+                        //POPUP DIALOG
+                        val builder = JBPopupFactory.getInstance().createActionGroupPopup(
+                            null,
+                            DefaultActionGroup(
+                                ForgetAssignment(selectedRow, toolWindow)
+                            ),
+                            DataManager.getInstance().getDataContext(e.component),
+                            JBPopupFactory.ActionSelectionAid.SPEEDSEARCH,
+                            true
+                        )
+                        builder.setMinimumSize(Dimension(110, 35))
+                        val mousePosition = e.component.mousePosition ?: Point(0, 0)
+                        builder.show(RelativePoint(e.component, mousePosition))
+
+                        super.mousePressed(e)
                     }
-                    super.mousePressed(e)
                 }
 
             }

@@ -14,13 +14,23 @@
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
-    This plugin was made in order to help students simplify the process of submitting code to <b>Drop Project</b> website
+     The new and Improved Drop Project Plugin!<br>
+     <ul>
+        <li>Add assignments</li>
+        <li>Check assignments details</li>
+        <li>Submit assignments</li>
+        <li>Review assignments results</li>
+      </ul>
+    This plugin was made in order to help students simplify the process of submitting and review code to <b>Drop Project</b> website, all-in-one!
   ]]></description>
     <change-notes>
         <![CDATA[
       <ul>
-        <li><b>1.8</b> New login UI</li>
-        <li>Fix bugs</li>
+        <li><b>0.9</b> The new and Improved Drop Project Plugin!</li>
+        <li>Add assignments</li>
+        <li>Assignments details access</li>
+        <li>Submit assignments</li>
+        <li>Review assignments results</li>
       </ul>
     ]]>
     </change-notes>

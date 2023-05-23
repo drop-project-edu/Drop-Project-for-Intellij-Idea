@@ -13,8 +13,8 @@ import javax.swing.BorderFactory
 
 class ToolbarPanel(private var toolWindow: DropProjectToolWindow) : NonOpaquePanel() {
     private var actionToolbar: ActionToolbar
-    private var leftActionGroup: DefaultActionGroup
-    private var rightActionGroup: DefaultActionGroup
+    private var leftActionGroup = DefaultActionGroup()
+    private var rightActionGroup = DefaultActionGroup()
 
     @NonNls
     private var openBuildReportActionID: String = ""
@@ -23,13 +23,10 @@ class ToolbarPanel(private var toolWindow: DropProjectToolWindow) : NonOpaquePan
 
         layout = BorderLayout()//FlowLayout(FlowLayout.RIGHT)
         border = BorderFactory.createEmptyBorder()
-        leftActionGroup = DefaultActionGroup()
         actionToolbar = this.createLeftToolbar()
         actionToolbar.targetComponent = this
         add(actionToolbar.component, BorderLayout.WEST)
 
-
-        rightActionGroup = DefaultActionGroup()
         actionToolbar = this.createRightToolbar()
         actionToolbar.targetComponent = this
         add(actionToolbar.component, BorderLayout.EAST)

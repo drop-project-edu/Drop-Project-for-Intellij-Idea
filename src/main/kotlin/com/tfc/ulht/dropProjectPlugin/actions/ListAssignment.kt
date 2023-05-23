@@ -19,21 +19,24 @@ class ListAssignment(private var toolWindow: DropProjectToolWindow) {
         List::class.java,
         Assignment::class.java
     )
-    private val REQUEST_URL = "${toolWindow.globals.REQUEST_URL}/api/student/assignments/current"
-    private var assignmentList = listOf<Assignment>()
+    private val REQUEST_URL: String
+        get() {
+            return "${toolWindow.globals.REQUEST_URL}/api/student/assignments/current"
+        }
+    private var privateAssignments = listOf<Assignment>()
     private val moshi = Moshi.Builder().build()
     private val assignmentJsonAdapter: JsonAdapter<List<Assignment>> = moshi.adapter(type)
     private var status = 500
 
 
-    fun get() {
+    fun getPrivateAssignments() {
         val request = Request.Builder()
             .url(REQUEST_URL)
             .build()
         toolWindow.authentication.httpClient.newCall(request).execute().use { response ->
             status = response.code
             if (status == 200) {
-                assignmentList = assignmentJsonAdapter.fromJson(response.body!!.source())!!
+                privateAssignments = assignmentJsonAdapter.fromJson(response.body!!.source())!!
             }
 
 
@@ -57,7 +60,7 @@ class ListAssignment(private var toolWindow: DropProjectToolWindow) {
     private fun listAssignments(): List<AssignmentTableLine> {
         val assignments: ArrayList<AssignmentTableLine> = ArrayList()
 
-        for (assignment in assignmentList) {
+        for (assignment in privateAssignments) {
             val line = AssignmentTableLine()
 
 
