@@ -1,13 +1,11 @@
 package com.tfc.ulht.dropProjectPlugin.settings
 
 import com.intellij.openapi.options.Configurable
-import com.tfc.ulht.dropProjectPlugin.toolWindow.DropProjectToolWindow
 import org.jetbrains.annotations.Nls
 import javax.swing.JComponent
 
 class SettingsConfigurable : Configurable {
     private var mySettingsComponent: SettingsComponent? = null
-    private var toolWindowPanel: DropProjectToolWindow? = null
 
     @Nls(capitalization = Nls.Capitalization.Title)
     override fun getDisplayName(): String {

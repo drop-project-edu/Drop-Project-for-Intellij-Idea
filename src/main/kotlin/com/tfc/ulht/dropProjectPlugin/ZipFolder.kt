@@ -34,7 +34,7 @@ class ZipFolder(private val students: ArrayList<User>) {
             null
         } else {
 
-            val zipFile: ZipFile = ZipFile(newUploadFile)
+            val zipFile = ZipFile(newUploadFile)
 
             zipFile.addFolder(File(srcPath))
 

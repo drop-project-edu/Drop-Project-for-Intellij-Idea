@@ -15,10 +15,8 @@ import com.tfc.ulht.dropProjectPlugin.User
 import com.tfc.ulht.dropProjectPlugin.actions.ListAssignment
 import com.tfc.ulht.dropProjectPlugin.actions.PanelRoute
 import com.tfc.ulht.dropProjectPlugin.actions.SearchAssignment
-import com.tfc.ulht.dropProjectPlugin.assignmentComponents.AssignmentTableLine
 import com.tfc.ulht.dropProjectPlugin.assignmentComponents.ListTable
 import com.tfc.ulht.dropProjectPlugin.loginComponents.Authentication
-import com.tfc.ulht.dropProjectPlugin.loginComponents.CredentialsController
 import com.tfc.ulht.dropProjectPlugin.settings.SettingsState
 import com.tfc.ulht.dropProjectPlugin.toolWindow.panel.AssignmentTablePanel
 import com.tfc.ulht.dropProjectPlugin.toolWindow.panel.ToolbarPanel
@@ -29,7 +27,6 @@ import javax.swing.JPanel
 
 class DropProjectToolWindow(var project: Project) {
 
-    private var allAssignmentsState = ArrayList<AssignmentTableLine>()
     var studentsList = ArrayList<User>()
     var tableModel: AssignmentTableModel? = null
     var resultsTable: ListTable? = null
@@ -74,14 +71,6 @@ class DropProjectToolWindow(var project: Project) {
         }
 
 
-    }
-
-    private fun launchLogin() {
-        val credentials = CredentialsController().retrieveStoredCredentials("DropProject")
-        if (credentials != null) {
-            credentials.getPasswordAsString()
-                ?.let { credentials.userName?.let { it1 -> authentication.onStartAuthenticate(it1, it) } }
-        }
     }
 
     private fun readMetadata() {
