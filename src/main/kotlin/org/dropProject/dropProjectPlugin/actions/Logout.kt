@@ -5,7 +5,6 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.ui.Messages
 import org.dropProject.dropProjectPlugin.DefaultNotification
-import org.dropProject.dropProjectPlugin.loginComponents.CredentialsController
 import org.dropProject.dropProjectPlugin.toolWindow.DropProjectToolWindow
 
 class Logout(private val toolWindow: DropProjectToolWindow) :
@@ -23,8 +22,6 @@ class Logout(private val toolWindow: DropProjectToolWindow) :
                 toolWindow.globals.selectedAssignmentID = ""
                 DefaultNotification.notify(e.project, "You've been logged out")
 
-
-                CredentialsController().removeStoredCredentials("DropProject")
                 toolWindow.tableModel?.items = listOf()
                 toolWindow.resultsTable?.emptyText?.text = "Login to see your Assignments"
             }

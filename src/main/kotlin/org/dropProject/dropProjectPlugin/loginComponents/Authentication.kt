@@ -33,9 +33,6 @@ class Authentication(private val toolWindow: DropProjectToolWindow) {
 
     fun loginAuthenticate(username: String, token: String): Boolean {
         alreadyLoggedIn = request(username, token)
-        if (alreadyLoggedIn) {
-            CredentialsController().storeCredentials(username, token, "DropProject")
-        }
         return alreadyLoggedIn
     }
 
