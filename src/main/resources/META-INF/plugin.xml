@@ -44,7 +44,7 @@
                     factoryClass="org.dropProject.dropProjectPlugin.toolWindow.DropProjectToolWindowFactory"/>
         <statusBarWidgetFactory
                 implementation="org.dropProject.dropProjectPlugin.statusBarWidget.PluginStatusWidgetFactory"
-                order="after notificationsWidget"/>
+                order="after notificationsWidget" id="dropProjectStatusBar"/>
         <notificationGroup id="Build Report Notification" displayType="BALLOON"/>
         <notificationGroup id="Default Notification" displayType="BALLOON"/>
         <fileEditorProvider
