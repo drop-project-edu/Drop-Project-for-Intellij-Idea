@@ -2,8 +2,8 @@ plugins {
     id("java") // Java support
     alias(libs.plugins.kotlin) // Kotlin support
     alias(libs.plugins.gradleIntelliJPlugin) // Gradle IntelliJ Plugin
-    kotlin("kapt") version "1.9.10"
     id("org.jetbrains.kotlinx.kover") version "0.7.3"
+    id("com.google.devtools.ksp").version("1.9.10-1.0.13")
 
 }
 
@@ -18,7 +18,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("com.squareup.moshi:moshi:1.14.0")
-    kapt("com.squareup.moshi:moshi-kotlin-codegen:1.15.0")
+    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.15.0")
     implementation(group = "net.lingala.zip4j", name = "zip4j", version = "2.10.0")
     implementation("org.jetbrains:marketplace-zip-signer:0.1.8")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.0")
