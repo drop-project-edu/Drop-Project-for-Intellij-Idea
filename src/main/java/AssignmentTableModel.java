@@ -2,7 +2,7 @@ import com.intellij.icons.AllIcons;
 import com.intellij.ui.components.labels.BoldLabel;
 import com.intellij.util.ui.ColumnInfo;
 import com.intellij.util.ui.ListTableModel;
-import com.tfc.ulht.dropProjectPlugin.assignmentComponents.AssignmentTableLine;
+import org.dropProject.dropProjectPlugin.assignmentComponents.AssignmentTableLine;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

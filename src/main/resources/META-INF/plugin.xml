@@ -1,32 +1,33 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
     <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
-    <id>com.tfc.ulht.Drop-Project-for-Intellij-Idea</id>
+    <id>org.dropProject.Drop-Project-for-Intellij-Idea</id>
 
     <!-- Public plugin name should be written in Title Case.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
     <name>Drop Project</name>
 
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
-    <vendor email="baltazar1454@gmail.com" url="https://deisi.ulusofona.pt/">DEISI</vendor>
+    <vendor email="baltazar1454@gmail.com" url="https://deisi.ulusofona.pt/drop-project">Drop Project</vendor>
 
     <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
-     The new and Improved Drop Project Plugin!<br>
-     <ul>
+     The new and Improved Drop Project Plugin!<br><br>
+     Drop Project is an open-source automated assessment tool that checks student programming projects for correctness and quality<br><br>
+    This plugin was made in order to help students simplify the process of submitting and review code to <b>Drop Project</b> website, all-in-one!<br>
+    <ul>
         <li>Add assignments</li>
         <li>Check assignments details</li>
         <li>Submit assignments</li>
         <li>Review assignments results</li>
       </ul>
-    This plugin was made in order to help students simplify the process of submitting and review code to <b>Drop Project</b> website, all-in-one!
   ]]></description>
     <change-notes>
         <![CDATA[
       <ul>
-        <li><b>0.9.0</b> The new and Improved Drop Project Plugin!</li>
+        <li><b>0.9.1</b> The new and Improved Drop Project Plugin!</li>
         <li>Add assignments</li>
         <li>Assignments details access</li>
         <li>Submit assignments</li>
@@ -42,19 +43,19 @@
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow id="Drop Project" icon="MyIcons.logo" anchor="right" secondary="true"
-                    factoryClass="com.tfc.ulht.dropProjectPlugin.toolWindow.DropProjectToolWindowFactory"/>
+                    factoryClass="org.dropProject.dropProjectPlugin.toolWindow.DropProjectToolWindowFactory"/>
         <statusBarWidgetFactory
-                implementation="com.tfc.ulht.dropProjectPlugin.statusBarWidget.PluginStatusWidgetFactory"
+                implementation="org.dropProject.dropProjectPlugin.statusBarWidget.PluginStatusWidgetFactory"
                 order="after notificationsWidget"/>
         <notificationGroup id="Build Report Notification" displayType="BALLOON"/>
         <notificationGroup id="Default Notification" displayType="BALLOON"/>
         <fileEditorProvider
-                implementation="com.tfc.ulht.dropProjectPlugin.EditorTabProvider"/>
+                implementation="org.dropProject.dropProjectPlugin.EditorTabProvider"/>
         <applicationConfigurable parentId="tools"
-                                 instance="com.tfc.ulht.dropProjectPlugin.settings.SettingsConfigurable"
-                                 id="com.tfc.ulht.dropProjectPlugin.settings.SettingsConfigurable"
+                                 instance="org.dropProject.dropProjectPlugin.settings.SettingsConfigurable"
+                                 id="org.dropProject.dropProjectPlugin.settings.SettingsConfigurable"
                                  displayName="Drop Project Settings"/>
-        <applicationService serviceImplementation="com.tfc.ulht.dropProjectPlugin.settings.SettingsState"/>
+        <applicationService serviceImplementation="org.dropProject.dropProjectPlugin.settings.SettingsState"/>
     </extensions>
 
 
