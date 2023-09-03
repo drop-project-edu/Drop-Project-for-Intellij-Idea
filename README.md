@@ -1,13 +1,15 @@
 # Drop Project Plugin for Intellij Idea
 
-![[Static Badge](https://img.shields.io/badge/version-v0.9.2-blue)](https://img.shields.io/badge/version-v0.9.2-blue)
+![[Static Badge](https://img.shields.io/badge/version-v0.9.3-blue)](https://img.shields.io/badge/version-v0.9.3-blue)
 [![JetBrains plugins](https://img.shields.io/jetbrains/plugin/d/21870-drop-project)](https://img.shields.io/jetbrains/plugin/d/21870-drop-project)
 
 ## The new and Improved Drop Project Plugin!
 
-Drop Project is an open-source automated assessment tool that checks student programming projects for correctness and quality
+Drop Project is an open-source automated assessment tool that checks student programming projects for correctness and
+quality
 
-This plugin was made in order to help students simplify the process of submitting and review code to Drop Project website, all-in-one!
+This plugin was made in order to help students simplify the process of submitting and review code to Drop Project
+website, all-in-one!
 
     Add assignments
     Check assignments details
@@ -20,12 +22,14 @@ This plugin was made in order to help students simplify the process of submittin
 * Access to Drop Project Website
 
 ## How to get it
+
 * Access the IDE settings in File > Settings, or access directly through the settings icon in the upper right corner
 * Go to the Plugins section
 * Go to the Marketplace section in plugins and search for Drop Project
 * Select Install
 
 ## How to use
+
 * This plugin is mainly concentrated in a toolwindow, which is probably in the right panel of your IDE
 * Login with your credentials (Your name; Your Drop Project Token)
 * First icon in the toolbar is to add an assignment
