@@ -139,8 +139,8 @@ internal class UIBuildReport {
         val scrollPane = JBScrollPane(panel)
         val viewport: JViewport = scrollPane.viewport
         viewport.scrollMode = JViewport.SIMPLE_SCROLL_MODE
-        scrollPane.horizontalScrollBarPolicy = JBScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
-        scrollPane.verticalScrollBarPolicy = JBScrollPane.VERTICAL_SCROLLBAR_ALWAYS;
+        scrollPane.horizontalScrollBarPolicy = JBScrollPane.HORIZONTAL_SCROLLBAR_NEVER
+        scrollPane.verticalScrollBarPolicy = JBScrollPane.VERTICAL_SCROLLBAR_ALWAYS
         viewport.extentSize = Dimension(0, 0)
 
         return scrollPane
