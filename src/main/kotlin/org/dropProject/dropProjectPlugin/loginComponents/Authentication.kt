@@ -39,10 +39,10 @@ class Authentication(private val toolWindow: DropProjectToolWindow) {
         return alreadyLoggedIn
     }
 
-    fun onStartAuthenticate(username: String, token: String): Boolean {
+    /*fun onStartAuthenticate(username: String, token: String): Boolean {
         alreadyLoggedIn = request(username, token)
         return alreadyLoggedIn
-    }
+    }*/
 
     private fun request(username: String, token: String): Boolean {
         httpClient = OkHttpClient.Builder()
