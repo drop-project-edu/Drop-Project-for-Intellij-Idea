@@ -11,7 +11,7 @@ class ZipFolder(private val students: ArrayList<User>) {
 
     fun zipIt(e: AnActionEvent): String? {
         val projectDirectory = e.project?.let { FileEditorManager.getInstance(it).project.basePath.toString() }
-        val separator = System.getProperty("file.separator")
+        val separator = File.separator
         val newUploadFile = File("$projectDirectory${separator}projeto.zip")
         val authorsPath = "$projectDirectory${separator}AUTHORS.txt"
         val srcPath = "$projectDirectory${separator}src"

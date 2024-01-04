@@ -28,8 +28,9 @@
     <change-notes>
         <![CDATA[
       <ul>
-        <li><b>0.9.3</b>/li>
-        <li>New Build Report UI</li>
+        <li><b>0.9.4</b></li>
+        <li>Copy build report errors feature</li>
+        <li>Open in web build report feature</li>
       </ul>
     ]]>
     </change-notes>

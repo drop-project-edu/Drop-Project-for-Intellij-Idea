@@ -1,21 +1,27 @@
 package org.dropProject.dropProjectPlugin.submissionComponents
 
+import com.intellij.icons.AllIcons
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.panel
 import data.FullBuildReport
 import java.awt.Dimension
+import java.awt.Toolkit
+import java.awt.datatransfer.StringSelection
 import javax.swing.JViewport
 
 
-internal class UIBuildReport {
+internal class UIBuildReport(private val requestUrl: String) {
     fun buildComponents(buildReport: FullBuildReport, submissionNumber: Int?): JBScrollPane {
         val panel = panel {
             row {
-                label("Build Report").bold()
+                label("Build report").bold()
                 submissionNumber?.let {
                     comment("Submission: $submissionNumber")
                 }
+                browserLink("Open in Web", "$requestUrl/buildReport/$submissionNumber")
             }
             row {
                 comment("Assignment: ${buildReport.assignment!!.name}")
@@ -29,9 +35,9 @@ internal class UIBuildReport {
                     row {
                         when (summary.reportKey) {
                             "PS" -> {
-                                label("Project Structure")
+                                label("Project structure")
                                 if (summary.reportValue == "OK") {
-                                    comment("<icon src='AllIcons.Actions.Commit'>&nbsp;")
+                                    icon(AllIcons.General.InspectionsOK)
                                 } else {
                                     comment("<icon src='AllIcons.Actions.Suspend'>&nbsp;")
                                 }
@@ -40,27 +46,28 @@ internal class UIBuildReport {
                             "C" -> {
                                 label("Compilation")
                                 if (summary.reportValue == "OK") {
-                                    comment("<icon src='AllIcons.Actions.Commit'>&nbsp;")
+                                    icon(AllIcons.General.InspectionsOK)
                                 } else {
                                     comment("<icon src='AllIcons.Actions.Suspend'>&nbsp;")
                                 }
                             }
 
                             "TT" -> {
-                                label("Teacher Unit Tests")
+                                label("Teacher unit tests")
                                 if (summary.reportValue == "OK") {
-                                    comment("<icon src='AllIcons.Actions.Commit'>&nbsp;<b>${summary.reportProgress}/${summary.reportGoal}</b>")
+                                    comment("<icon src='AllIcons.General.InspectionsOK'>&nbsp;<b>${summary.reportProgress}/${summary.reportGoal}</b>")
                                 } else { //OK NOK ..?.. NULL??...CHECK THIS
                                     comment("<icon src='AllIcons.Actions.Suspend'>&nbsp;<b>${summary.reportProgress}/${summary.reportGoal}</b>")
                                 }
                             }
 
                             "CS" -> {
-                                label("Code Quality")
+                                label("Code quality")
                                 if (summary.reportValue == "OK") {
-                                    comment("<icon src='AllIcons.Actions.Commit'>&nbsp;")
+
+                                    icon(AllIcons.General.InspectionsOK)
                                 } else {
-                                    comment("<icon src='AllIcons.Actions.Suspend'>&nbsp;")
+                                    icon(AllIcons.Debugger.Db_no_suspend_breakpoint)
                                 }
                             }
                         }
@@ -73,6 +80,7 @@ internal class UIBuildReport {
                     psErr.forEachIndexed { index, error ->
                         group("Error $index") {
                             row {
+                                actionsButton(CopyAction(error))
                                 text(error)
                             }
                         }
@@ -90,8 +98,11 @@ internal class UIBuildReport {
                         if (error.isNotBlank()) {
                             group {
                                 row {
+                                    actionsButton(CopyAction(error))
                                     text(error)
+
                                 }
+
                             }
                         }
                     }
@@ -103,6 +114,7 @@ internal class UIBuildReport {
                     csErr.forEach { error ->
                         group {
                             row {
+                                actionsButton(CopyAction(error))
                                 text(error)
                             }
                         }
@@ -116,9 +128,12 @@ internal class UIBuildReport {
                         if (error.isNotBlank()) {
                             group {
                                 row {
+                                    val errorText = error.replace("<", "&lt;").replace("\n", "<br>")
+                                    actionsButton(CopyAction(errorText))
                                     text(
-                                        error.replace("<", "&lt;").replace("\n", "<br>")
+                                        errorText
                                     )
+
                                 }
                             }
                         }
@@ -146,5 +161,14 @@ internal class UIBuildReport {
         return scrollPane
     }
 
-
+    inner class CopyAction(private val textToCopy: String) :
+        DumbAwareAction("Copy Error", "Copy error", AllIcons.Actions.Copy) {
+        override fun actionPerformed(e: AnActionEvent) {
+            Toolkit.getDefaultToolkit().systemClipboard.setContents(
+                StringSelection(
+                    textToCopy
+                ), null
+            )
+        }
+    }
 }
