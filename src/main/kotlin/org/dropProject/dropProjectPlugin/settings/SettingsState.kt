@@ -24,7 +24,7 @@ class SettingsState : PersistentStateComponent<SettingsState> {
         }
     }
 
-    override fun getState(): SettingsState? {
+    override fun getState(): SettingsState {
         return this
     }
 

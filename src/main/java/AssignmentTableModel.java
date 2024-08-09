@@ -20,6 +20,7 @@ public class AssignmentTableModel extends ListTableModel<AssignmentTableLine> {
     static final String[] COLUMNS = {"", "Name", "Language", "Due Date", "Details"};
 
     public static ColumnInfo<AssignmentTableLine, String>[] generateColumnInfo() {
+        @SuppressWarnings("unchecked")
         ColumnInfo<AssignmentTableLine, String>[] columnInfos = new ColumnInfo[COLUMNS.length];
         AtomicInteger i = new AtomicInteger();
         Arrays.stream(COLUMNS).forEach(eachColumn -> {
