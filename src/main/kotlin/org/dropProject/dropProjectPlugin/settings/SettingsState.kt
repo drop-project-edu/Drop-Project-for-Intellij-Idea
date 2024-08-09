@@ -5,7 +5,6 @@ import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.util.xmlb.XmlSerializerUtil
-import javax.annotation.Nullable
 
 @State(
     name = "com.tfc.ulht.dropProjectPlugin.SettingsState",
@@ -25,8 +24,7 @@ class SettingsState : PersistentStateComponent<SettingsState> {
         }
     }
 
-    @Nullable
-    override fun getState(): SettingsState {
+    override fun getState(): SettingsState? {
         return this
     }
 

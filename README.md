@@ -5,11 +5,13 @@
 
 ## The new and Improved Drop Project Plugin!
 
+<!-- Plugin description -->
 Drop Project is an open-source automated assessment tool that checks student programming projects for correctness and
 quality
 
 This plugin was made in order to help students simplify the process of submitting and review code to Drop Project
 website, all-in-one!
+<!-- Plugin description end -->
 
     Add assignments
     Check assignments details

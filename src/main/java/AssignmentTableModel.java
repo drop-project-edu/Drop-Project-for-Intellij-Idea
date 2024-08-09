@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class AssignmentTableModel extends ListTableModel<AssignmentTableLine> {
-    public AssignmentTableModel(ColumnInfo @NotNull [] columnNames, @NotNull List<AssignmentTableLine> tableLines) {
+    public AssignmentTableModel(ColumnInfo[] columnNames, @NotNull List<AssignmentTableLine> tableLines) {
         super(columnNames, tableLines);
     }
 
