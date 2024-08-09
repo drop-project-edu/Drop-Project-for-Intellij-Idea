@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [0.9.5] - 2024-08-09
+
 ### Changed
 
 - Updated build configuration
@@ -14,3 +16,7 @@
 
 - Copy build report errors feature
 - Open in web build report feature
+
+[Unreleased]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.5...HEAD
+[0.9.5]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.4...v0.9.5
+[0.9.4]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/commits/v0.9.4

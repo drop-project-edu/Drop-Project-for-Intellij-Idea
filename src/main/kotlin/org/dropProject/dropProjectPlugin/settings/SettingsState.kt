@@ -7,7 +7,7 @@ import com.intellij.openapi.components.Storage
 import com.intellij.util.xmlb.XmlSerializerUtil
 
 @State(
-    name = "com.tfc.ulht.dropProjectPlugin.SettingsState",
+    name = "org.dropproject.dropProjectPlugin.SettingsState",
     storages = [Storage("DropProjectSettings.xml")]
 )
 class SettingsState : PersistentStateComponent<SettingsState> {
