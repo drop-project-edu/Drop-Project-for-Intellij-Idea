@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### Changed
+
+- The plugin is now compatible with Intellij IDEA 2024.2 and requires at least 2023.3
+- The server is now a drop down and users have to select one on their first login
+
 ## [0.9.5] - 2024-08-09
 
 ### Changed
