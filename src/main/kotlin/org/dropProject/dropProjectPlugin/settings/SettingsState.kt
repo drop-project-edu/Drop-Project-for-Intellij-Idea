@@ -12,7 +12,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 )
 class SettingsState : PersistentStateComponent<SettingsState> {
 
-    var serverURL: String = "https://deisi.ulusofona.pt/drop-project"
+    var serverURL: String = ""
     var username: String = ""
     var usernumber: String = ""
     var token: String = ""
@@ -32,7 +32,8 @@ class SettingsState : PersistentStateComponent<SettingsState> {
         XmlSerializerUtil.copyBean(state, this)
     }
 
-    fun updateValues(userName: String = "", userNumber: String = "", token: String = "") {
+    fun updateValues(serverUrl: String = "", userName: String = "", userNumber: String = "", token: String = "") {
+        this.serverURL = serverUrl
         this.username = userName
         this.usernumber = userNumber
         this.token = token

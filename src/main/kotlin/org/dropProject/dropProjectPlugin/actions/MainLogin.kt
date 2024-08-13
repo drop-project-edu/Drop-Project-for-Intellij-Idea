@@ -9,9 +9,9 @@ import org.dropProject.dropProjectPlugin.DefaultNotification
 import org.dropProject.dropProjectPlugin.loginComponents.Login
 import org.dropProject.dropProjectPlugin.toolWindow.DropProjectToolWindow
 
+
 class MainLogin(private var toolWindow: DropProjectToolWindow) :
     DumbAwareAction("Login", "Insert your credentials", AllIcons.General.User) {
-
 
     override fun actionPerformed(e: AnActionEvent) {
 
@@ -20,7 +20,7 @@ class MainLogin(private var toolWindow: DropProjectToolWindow) :
 
 
         if (!toolWindow.authentication.alreadyLoggedIn) {
-            Login(toolWindow)
+            Login(toolWindow).show()
 
             if (toolWindow.authentication.alreadyLoggedIn) {
                 AuthorsFile(toolWindow.studentsList).make(projectDirectory, false, e)

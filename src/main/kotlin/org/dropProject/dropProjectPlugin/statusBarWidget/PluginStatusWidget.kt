@@ -8,7 +8,7 @@ import com.intellij.openapi.wm.StatusBar
 import com.intellij.openapi.wm.StatusBarWidget
 import com.intellij.util.Consumer
 import com.intellij.util.concurrency.AppExecutorUtil
-import com.intellij.util.text.JBDateFormat
+import com.intellij.util.text.DateFormatUtil
 import java.awt.Component
 import java.awt.event.MouseEvent
 import java.util.concurrent.TimeUnit
@@ -34,7 +34,7 @@ class PluginStatusWidget : StatusBarWidget, StatusBarWidget.TextPresentation {
     override fun ID(): String = "DropProjectStatusWidget$idCount"
     override fun getPresentation(): StatusBarWidget.WidgetPresentation = this
     override fun getTooltipText(): String {
-        return JBDateFormat.getFormatter().formatDateTime(System.currentTimeMillis())
+        return DateFormatUtil.formatDateTime(System.currentTimeMillis())
     }
 
     override fun getText(): String {

@@ -1,6 +1,9 @@
 package org.dropProject.dropProjectPlugin.loginComponents
 
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.ComboBox
+import com.intellij.openapi.ui.DialogBuilder
+import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.uiDesigner.core.GridConstraints
 import com.intellij.uiDesigner.core.GridLayoutManager
 import com.intellij.uiDesigner.core.Spacer
@@ -19,8 +22,9 @@ import javax.swing.*
 class Login(private val toolWindow: DropProjectToolWindow) {
 
     private lateinit var mainpanel: JPanel
+    private lateinit var serverField: JComboBox<Server>
     private lateinit var nameField: JTextField
-    private lateinit var numberField: JTextField
+    private lateinit var useridField: JTextField
     private lateinit var tokenField: JPasswordField
     private lateinit var showCheckBox: JCheckBox
     private lateinit var addStudentButton: JButton
@@ -28,6 +32,7 @@ class Login(private val toolWindow: DropProjectToolWindow) {
     private lateinit var addNumberField: JTextField
     private lateinit var tokenPanel: JPanel
     private lateinit var numberPanel: JPanel
+    private lateinit var serverPanel: JPanel
     private lateinit var namePanel: JPanel
     private lateinit var tokenLinkPanel: JPanel
     private lateinit var tokenLinkLabel: JLabel
@@ -45,18 +50,68 @@ class Login(private val toolWindow: DropProjectToolWindow) {
 
     private var addCount = 0
 
-    init {
-        val opt = arrayOf("Log In", "Cancel")
-        //UIManager.put("OptionPane.minimumSize", Dimension(panel.width, panel.height))
-        val option = JOptionPane.showOptionDialog(
-            null, assemble(), "Drop Project Log In",
-            JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.DEFAULT_OPTION, null, opt, opt[0]
-        )
+    // for dropdown of servers
+    data class Server(val serverName: String, val serverUrl: String) {
+        override fun toString(): String {
+            return serverName
+        }
+    }
+
+    val servers = arrayOf(
+        Server("", ""), // Empty option
+        Server("Lusófona University", "https://deisi.ulusofona.pt/drop-project"),
+        Server("Drop Project Playground", "https://playground.dropproject.org/dp")
+    )
+
+    private fun validateRequiredFormFields(vararg fields: JTextField): Boolean {
+        val requiredFields = fields.asList()
+
+        for (field in requiredFields) {
+            if (field.text.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "${field.accessibleContext.accessibleName} is required.", "Validation Error", JOptionPane.ERROR_MESSAGE)
+                field.requestFocus()
+                return false
+            }
+        }
+        return true
+    }
+
+    fun show() {
+
+        val dialogBuilder = DialogBuilder().title("Drop Project Log In")
+        dialogBuilder.setCenterPanel(assemble())
+        val okActionDescriptor = DialogBuilder.OkActionDescriptor()
+        okActionDescriptor.setText("Log In")
+        dialogBuilder.setActionDescriptors(okActionDescriptor, DialogBuilder.CancelActionDescriptor())
+        dialogBuilder.setOkOperation {
+            if (validateRequiredFormFields(nameField, useridField, tokenField)) {
+                dialogBuilder.dialogWrapper.close(DialogWrapper.OK_EXIT_CODE);
+            }
+        }
+        val option = dialogBuilder.show()
+
+//        val opt = arrayOf("Log In", "Cancel")
+//        //UIManager.put("OptionPane.minimumSize", Dimension(panel.width, panel.height))
+//        val option = JOptionPane.showOptionDialog(
+//            null, assemble(), "Drop Project Log In",
+//            JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.DEFAULT_OPTION, null, opt, opt[0]
+//        )
 
         if (option == 0) {
+
+            // check server
+            val selectedServer = serverField.selectedItem as Server
+            if (selectedServer.serverName == "") {
+                JOptionPane.showMessageDialog(
+                    null, "Please select a server", "Error",
+                    JOptionPane.ERROR_MESSAGE
+                )
+                return
+            }
+
             //add student to list
             studentNameField.add(nameField)
-            studentNumberField.add(numberField)
+            studentNumberField.add(useridField)
             var empty = false
             if (addCount % 3 >= 1) {
                 if (addNameField.text.isEmpty() || addNumberField.text.isEmpty()) {
@@ -89,7 +144,7 @@ class Login(private val toolWindow: DropProjectToolWindow) {
 
     private fun manageSettingsChanges() {
         val settingsState = SettingsState.getInstance()
-        if (!(nameField.text.equals(settingsState.username) && numberField.text.equals(settingsState.usernumber) &&
+        if (!(nameField.text.equals(settingsState.username) && useridField.text.equals(settingsState.usernumber) &&
                     settingsState.token == String(tokenField.password))
         ) {
             val updateSettings = JOptionPane.showOptionDialog(
@@ -100,7 +155,7 @@ class Login(private val toolWindow: DropProjectToolWindow) {
                 0 -> {
                     //YES
                     settingsState
-                        .updateValues(nameField.text, numberField.text, String(tokenField.password))
+                        .updateValues(nameField.text, useridField.text, String(tokenField.password))
                 }
             }
         }
@@ -108,8 +163,9 @@ class Login(private val toolWindow: DropProjectToolWindow) {
 
     private fun fillFieldsFromSettings() {
         val settingsState = SettingsState.getInstance()
+        serverField.selectedItem = servers.find { it.serverUrl == settingsState.serverURL }
         nameField.text = settingsState.username
-        numberField.text = settingsState.usernumber
+        useridField.text = settingsState.usernumber
         tokenField.text = settingsState.token
     }
 
@@ -150,36 +206,29 @@ class Login(private val toolWindow: DropProjectToolWindow) {
     private fun assemble(): JPanel {
 
         mainpanel = JPanel()
-        mainpanel.layout = GridLayoutManager(8, 2, JBUI.emptyInsets(), -1, -1)
+        mainpanel.layout = GridLayoutManager(9, 2, JBUI.emptyInsets(), -1, -1)
+        val labelServer = JLabel("Server")
+        mainpanel.add(
+            labelServer,
+            GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+                GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED,
+                null, null, null, 0, false
+            )
+        )
         val label1 = JLabel()
         label1.text = "Name"
         mainpanel.add(
             label1,
-            GridConstraints(
-                0,
-                0,
-                1,
-                1,
-                GridConstraints.ANCHOR_WEST,
-                GridConstraints.FILL_NONE,
-                GridConstraints.SIZEPOLICY_FIXED,
-                GridConstraints.SIZEPOLICY_FIXED,
-                null,
-                null,
-                null,
-                0,
-                false
+            GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+                GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED,
+                null, null, null, 0, false
             )
         )
         val label2 = JLabel()
-        label2.text = "Number"
+        label2.text = "User Id"
         mainpanel.add(
             label2,
-            GridConstraints(
-                1,
-                0,
-                1,
-                1,
+            GridConstraints(2, 0, 1, 1,
                 GridConstraints.ANCHOR_WEST,
                 GridConstraints.FILL_NONE,
                 GridConstraints.SIZEPOLICY_FIXED,
@@ -195,11 +244,7 @@ class Login(private val toolWindow: DropProjectToolWindow) {
         label3.text = "Token"
         mainpanel.add(
             label3,
-            GridConstraints(
-                2,
-                0,
-                1,
-                1,
+            GridConstraints(3, 0, 1, 1,
                 GridConstraints.ANCHOR_WEST,
                 GridConstraints.FILL_NONE,
                 GridConstraints.SIZEPOLICY_FIXED,
@@ -216,7 +261,7 @@ class Login(private val toolWindow: DropProjectToolWindow) {
         mainpanel.add(
             tokenPanel,
             GridConstraints(
-                2,
+                3,
                 1,
                 1,
                 1,
@@ -232,6 +277,7 @@ class Login(private val toolWindow: DropProjectToolWindow) {
             )
         )
         tokenField = JPasswordField()
+        tokenField.accessibleContext.accessibleName = "Token"
         tokenPanel.add(
             tokenField,
             GridConstraints(
@@ -275,7 +321,7 @@ class Login(private val toolWindow: DropProjectToolWindow) {
         mainpanel.add(
             numberPanel,
             GridConstraints(
-                1,
+                2,
                 1,
                 1,
                 1,
@@ -290,9 +336,10 @@ class Login(private val toolWindow: DropProjectToolWindow) {
                 false
             )
         )
-        numberField = JTextField()
+        useridField = JTextField()
+        useridField.accessibleContext.accessibleName = "User Id"
         numberPanel.add(
-            numberField,
+            useridField,
             GridConstraints(
                 0,
                 0,
@@ -309,10 +356,11 @@ class Login(private val toolWindow: DropProjectToolWindow) {
                 false
             )
         )
-        namePanel = JPanel()
-        namePanel.layout = GridLayoutManager(1, 1, JBUI.emptyInsets(), -1, -1)
+
+        serverPanel = JPanel()
+        serverPanel.layout = GridLayoutManager(1, 1, JBUI.emptyInsets(), -1, -1)
         mainpanel.add(
-            namePanel,
+            serverPanel,
             GridConstraints(
                 0,
                 1,
@@ -329,7 +377,53 @@ class Login(private val toolWindow: DropProjectToolWindow) {
                 false
             )
         )
+
+        serverField = ComboBox(servers)
+        serverField.addActionListener {
+            val settings: SettingsState = SettingsState.getInstance()
+            settings.serverURL = (serverField.selectedItem as Server).serverUrl
+        }
+        serverPanel.add(
+            serverField,
+            GridConstraints(
+                0,
+                0,
+                1,
+                1,
+                GridConstraints.ANCHOR_WEST,
+                GridConstraints.FILL_HORIZONTAL,
+                GridConstraints.SIZEPOLICY_WANT_GROW,
+                GridConstraints.SIZEPOLICY_FIXED,
+                null,
+                Dimension(150, -1),
+                null,
+                0,
+                false
+            )
+        )
+
+        namePanel = JPanel()
+        namePanel.layout = GridLayoutManager(1, 1, JBUI.emptyInsets(), -1, -1)
+        mainpanel.add(
+            namePanel,
+            GridConstraints(
+                1,
+                1,
+                1,
+                1,
+                GridConstraints.ANCHOR_CENTER,
+                GridConstraints.FILL_BOTH,
+                GridConstraints.SIZEPOLICY_CAN_SHRINK or GridConstraints.SIZEPOLICY_CAN_GROW,
+                GridConstraints.SIZEPOLICY_CAN_SHRINK or GridConstraints.SIZEPOLICY_CAN_GROW,
+                null,
+                null,
+                null,
+                0,
+                false
+            )
+        )
         nameField = JTextField()
+        nameField.accessibleContext.accessibleName = "Name"
         namePanel.add(
             nameField,
             GridConstraints(
@@ -353,7 +447,7 @@ class Login(private val toolWindow: DropProjectToolWindow) {
         mainpanel.add(
             tokenLinkPanel,
             GridConstraints(
-                3,
+                4,
                 1,
                 1,
                 1,
@@ -470,7 +564,7 @@ class Login(private val toolWindow: DropProjectToolWindow) {
         mainpanel.add(
             addStudentPanel,
             GridConstraints(
-                4,
+                5,
                 1,
                 1,
                 1,
@@ -548,7 +642,7 @@ class Login(private val toolWindow: DropProjectToolWindow) {
         mainpanel.add(
             addNameLabel,
             GridConstraints(
-                4,
+                5,
                 0,
                 1,
                 1,
@@ -568,7 +662,7 @@ class Login(private val toolWindow: DropProjectToolWindow) {
         mainpanel.add(
             panel1,
             GridConstraints(
-                7,
+                8,
                 1,
                 1,
                 1,
@@ -589,7 +683,7 @@ class Login(private val toolWindow: DropProjectToolWindow) {
         mainpanel.add(
             add2ndStudentNameLabel,
             GridConstraints(
-                5,
+                6,
                 0,
                 1,
                 1,
@@ -609,7 +703,7 @@ class Login(private val toolWindow: DropProjectToolWindow) {
         mainpanel.add(
             add2ndStudentPanel,
             GridConstraints(
-                5,
+                6,
                 1,
                 1,
                 1,
@@ -696,7 +790,9 @@ class Login(private val toolWindow: DropProjectToolWindow) {
     private fun actionListeners() {
         tokenLinkLabel.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent) {
-                Desktop.getDesktop().browse(URI("${toolWindow.globals.REQUEST_URL}/personalToken"))
+                if (toolWindow.globals.REQUEST_URL != "") {
+                    Desktop.getDesktop().browse(URI("${toolWindow.globals.REQUEST_URL}/personalToken"))
+                }
             }
         })
         addStudentButton.addActionListener {

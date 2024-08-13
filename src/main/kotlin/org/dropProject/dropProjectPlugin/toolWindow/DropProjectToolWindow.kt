@@ -11,6 +11,7 @@ import com.intellij.ui.IdeBorderFactory
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.ui.SideBorder
 import com.intellij.ui.components.JBTabbedPane
+import com.intellij.ui.dsl.builder.actionButton
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBInsets
 import org.dropProject.dropProjectPlugin.DefaultNotification

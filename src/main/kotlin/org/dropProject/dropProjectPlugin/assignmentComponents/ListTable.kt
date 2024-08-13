@@ -2,12 +2,15 @@ package org.dropProject.dropProjectPlugin.assignmentComponents
 
 import com.intellij.ide.DataManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.ui.popup.JBPopupFactory
+import com.intellij.ui.SimpleTextAttributes
 import com.intellij.ui.awt.RelativePoint
 import com.intellij.ui.table.TableView
 import org.dropProject.dropProjectPlugin.DefaultNotification
 import org.dropProject.dropProjectPlugin.ProjectComponents
 import org.dropProject.dropProjectPlugin.actions.ForgetAssignment
+import org.dropProject.dropProjectPlugin.actions.MainLogin
 import org.dropProject.dropProjectPlugin.toolWindow.DropProjectToolWindow
 import java.awt.Cursor
 import java.awt.Dimension
@@ -45,7 +48,9 @@ class ListTable(private val toolWindow: DropProjectToolWindow) : TableView<Assig
             emptyText.text = "No Assignments"
 
         } else {
-            emptyText.text = "Login to see your Assignments"
+            emptyText.appendLine("Login to see your Assignments", SimpleTextAttributes.LINK_PLAIN_ATTRIBUTES, { actionEvent ->
+                ActionUtil.invokeAction(MainLogin(toolWindow), (actionEvent.source as MouseEvent).component, "", null, { print("done") })
+            })
         }
         addMouseListener(object : MouseAdapter() {
 

@@ -3,15 +3,14 @@
 ![[Static Badge](https://img.shields.io/badge/version-v0.9.4-blue)](https://img.shields.io/badge/version-v0.9.4-blue)
 [![JetBrains plugins](https://img.shields.io/jetbrains/plugin/d/21870-drop-project)](https://img.shields.io/jetbrains/plugin/d/21870-drop-project)
 
-## The new and Improved Drop Project Plugin!
-
 <!-- Plugin description -->
-Drop Project is an open-source automated assessment tool that checks student programming projects for correctness and
-quality
+[Drop Project](https://dropproject.org) is an open-source automated assessment tool that checks student programming projects for correctness and
+quality. Currently, it supports Java and Kotlin projects.
 
-This plugin was made in order to help students simplify the process of submitting and review code to Drop Project
-website, all-in-one!
+This plugin allows students to submit their projects directly from Intellij IDEA. They can also review the submission build results.
 <!-- Plugin description end -->
+
+## Features
 
     Add assignments
     Check assignments details
@@ -40,3 +39,10 @@ website, all-in-one!
 * The last icon is to log out
 * If you submit an assignment, a forth icon will appear which is used to check the buid report of your last submission
 * You can access some aditional plugin settings in the settings icon on the toolwindow top title
+
+## How to create a new version
+
+* Change the `pluginVersion` property on `gradle.properties`
+* Update, if necessary, the `pluginUntilBuild` property
+    * In this case, make sure to test the plugin in that Intellij version. Change the platformVersion property and execute `Run Plugin`.
+* Execute `Run Verifications`
