@@ -1,6 +1,6 @@
 # Drop Project Plugin for Intellij Idea
 
-![[Static Badge](https://img.shields.io/badge/version-v0.9.4-blue)](https://img.shields.io/badge/version-v0.9.4-blue)
+![[Static Badge](https://img.shields.io/badge/version-v0.9.4-blue)](https://img.shields.io/badge/version-v0.9.6-blue)
 [![JetBrains plugins](https://img.shields.io/jetbrains/plugin/d/21870-drop-project)](https://img.shields.io/jetbrains/plugin/d/21870-drop-project)
 
 <!-- Plugin description -->
@@ -42,7 +42,9 @@ This plugin allows students to submit their projects directly from Intellij IDEA
 
 ## How to create a new version
 
+* Update CHANGELOG.md - move all unreleased changes to the current version
 * Change the `pluginVersion` property on `gradle.properties`
 * Update, if necessary, the `pluginUntilBuild` property
     * In this case, make sure to test the plugin in that Intellij version. Change the platformVersion property and execute `Run Plugin`.
 * Execute `Run Verifications`
+* In github, create a release - this will trigger a github action to publish the plugin

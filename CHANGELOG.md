@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [0.9.6] - 2024-08-14
+
 ### Changed
 
 - The plugin is now compatible with Intellij IDEA 2024.2 and requires at least 2023.3
