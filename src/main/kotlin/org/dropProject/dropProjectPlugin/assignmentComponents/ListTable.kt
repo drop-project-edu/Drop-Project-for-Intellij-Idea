@@ -49,7 +49,7 @@ class ListTable(private val toolWindow: DropProjectToolWindow) : TableView<Assig
 
         } else {
             emptyText.appendLine("Login to see your Assignments", SimpleTextAttributes.LINK_PLAIN_ATTRIBUTES, { actionEvent ->
-                ActionUtil.invokeAction(MainLogin(toolWindow), (actionEvent.source as MouseEvent).component, "", null, { print("done") })
+                ActionUtil.invokeAction(MainLogin(toolWindow), (actionEvent.source as MouseEvent).component, "", null, null)
             })
         }
         addMouseListener(object : MouseAdapter() {

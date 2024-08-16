@@ -29,7 +29,7 @@ class SettingsComponent {
         mainPanel = FormBuilder.createFormBuilder()
             .addLabeledComponent(JBLabel("Server URL: "), serverURL, 1, false)
             .addLabeledComponent(JBLabel("Name: "), nameField, 1, false)
-            .addLabeledComponent(JBLabel("Number: "), numberField, 1, false)
+            .addLabeledComponent(JBLabel("User ID: "), numberField, 1, false)
             .addLabeledComponent(JBLabel("Token: "), tokenpanel, 1, false)
             .addComponentFillVertically(JPanel(), 0)
             .panel

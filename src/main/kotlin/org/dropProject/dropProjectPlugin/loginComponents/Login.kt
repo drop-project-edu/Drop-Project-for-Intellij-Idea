@@ -1,9 +1,8 @@
 package org.dropProject.dropProjectPlugin.loginComponents
 
+import com.intellij.CommonBundle
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.ComboBox
-import com.intellij.openapi.ui.DialogBuilder
-import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.openapi.ui.*
 import com.intellij.uiDesigner.core.GridConstraints
 import com.intellij.uiDesigner.core.GridLayoutManager
 import com.intellij.uiDesigner.core.Spacer
@@ -65,10 +64,11 @@ class Login(private val toolWindow: DropProjectToolWindow) {
 
     private fun validateRequiredFormFields(vararg fields: JTextField): Boolean {
         val requiredFields = fields.asList()
+        val project = toolWindow.project
 
         for (field in requiredFields) {
             if (field.text.trim().isEmpty()) {
-                JOptionPane.showMessageDialog(null, "${field.accessibleContext.accessibleName} is required.", "Validation Error", JOptionPane.ERROR_MESSAGE)
+                Messages.showMessageDialog(project, "${field.accessibleContext.accessibleName} is required.", CommonBundle.getErrorTitle(), Messages.getErrorIcon())
                 field.requestFocus()
                 return false
             }
@@ -77,6 +77,8 @@ class Login(private val toolWindow: DropProjectToolWindow) {
     }
 
     fun show() {
+
+        val project = toolWindow.project
 
         val dialogBuilder = DialogBuilder().title("Drop Project Log In")
         dialogBuilder.setCenterPanel(assemble())
@@ -102,10 +104,7 @@ class Login(private val toolWindow: DropProjectToolWindow) {
             // check server
             val selectedServer = serverField.selectedItem as Server
             if (selectedServer.serverName == "") {
-                JOptionPane.showMessageDialog(
-                    null, "Please select a server", "Error",
-                    JOptionPane.ERROR_MESSAGE
-                )
+                Messages.showMessageDialog(project, "Please select a server", CommonBundle.getErrorTitle(), Messages.getErrorIcon())
                 return
             }
 
@@ -132,12 +131,11 @@ class Login(private val toolWindow: DropProjectToolWindow) {
 
             }
 
-            if (empty) JOptionPane.showMessageDialog(
-                null, "Student info is empty", "Error",
-                JOptionPane.ERROR_MESSAGE
-            )
+            if (empty) {
+                Messages.showMessageDialog(project, "Student info is empty", CommonBundle.getErrorTitle(), Messages.getErrorIcon())
+            }
             else {
-                authenticate(toolWindow.project)
+                authenticate(project)
             }
         }
     }
@@ -147,16 +145,16 @@ class Login(private val toolWindow: DropProjectToolWindow) {
         if (!(nameField.text.equals(settingsState.username) && useridField.text.equals(settingsState.usernumber) &&
                     settingsState.token == String(tokenField.password))
         ) {
-            val updateSettings = JOptionPane.showOptionDialog(
-                null, "Do you want to update log-in settings for faster login?", "Drop Project Settings Update",
-                JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.DEFAULT_OPTION, null, arrayOf("Yes", "No"), null
-            )
-            when (updateSettings) {
-                0 -> {
-                    //YES
-                    settingsState
-                        .updateValues(nameField.text, useridField.text, String(tokenField.password))
-                }
+
+            val updateSettingsDialog = MessageDialogBuilder.yesNo("Drop Project Settings Update", "Do you want to update log-in settings for faster login?")
+            val result = updateSettingsDialog.ask(toolWindow.project)
+
+//            val updateSettings = JOptionPane.showOptionDialog(
+//                null, "Do you want to update log-in settings for faster login?", "Drop Project Settings Update",
+//                JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.DEFAULT_OPTION, null, arrayOf("Yes", "No"), null
+//            )
+            if (result) {
+                settingsState.updateValues((serverField.selectedItem as Server).serverUrl, nameField.text, useridField.text, String(tokenField.password))
             }
         }
     }
@@ -185,10 +183,7 @@ class Login(private val toolWindow: DropProjectToolWindow) {
             manageSettingsChanges()
 
         } else {
-            JOptionPane.showMessageDialog(
-                null, "Login credentials incorrect!", "Error!",
-                JOptionPane.ERROR_MESSAGE
-            )
+            Messages.showMessageDialog(project, "Login credentials incorrect!", CommonBundle.getErrorTitle(), Messages.getErrorIcon())
         }
     }
 
@@ -381,7 +376,7 @@ class Login(private val toolWindow: DropProjectToolWindow) {
         serverField = ComboBox(servers)
         serverField.addActionListener {
             val settings: SettingsState = SettingsState.getInstance()
-            settings.serverURL = (serverField.selectedItem as Server).serverUrl
+            settings.serverURL = (serverField.selectedItem as? Server)?.serverUrl ?: ""
         }
         serverPanel.add(
             serverField,
