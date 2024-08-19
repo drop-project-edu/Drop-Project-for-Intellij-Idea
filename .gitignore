@@ -40,3 +40,6 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### The IntelliJ Platform cache directory should be excluded from the version control system
+.intellijPlatform

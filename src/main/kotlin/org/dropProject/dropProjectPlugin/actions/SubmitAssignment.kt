@@ -3,9 +3,10 @@ package org.dropProject.dropProjectPlugin.actions
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.progress.ProgressIndicator
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.ui.Messages
@@ -22,12 +23,19 @@ import org.dropProject.dropProjectPlugin.ZipFolder
 import org.dropProject.dropProjectPlugin.submissionComponents.SubmissionReport
 import org.dropProject.dropProjectPlugin.toolWindow.DropProjectToolWindow
 import java.io.File
+import java.util.concurrent.CancellationException
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import javax.swing.JOptionPane
 
+
+private const val POLLING_FREQUENCY = 8L  // seconds
 
 class SubmitAssignment(private var toolWindow: DropProjectToolWindow) : DumbAwareAction(
     "Submit Selected Assignment", "Submit an assignment to Drop Project", AllIcons.Actions.Upload
 ) {
+
+    private val logger = Logger.getInstance(SubmitAssignment::class.java)
 
     private val REQUEST_URL: String
         get() {
@@ -35,7 +43,6 @@ class SubmitAssignment(private var toolWindow: DropProjectToolWindow) : DumbAwar
         }
     private var submissionId: SubmissionId? = null
     private var submissionResultsService = SubmissionReport(toolWindow)
-    private var previousCheckTime: Long = 0
 
     override fun actionPerformed(e: AnActionEvent) {
 
@@ -65,17 +72,61 @@ class SubmitAssignment(private var toolWindow: DropProjectToolWindow) : DumbAwar
             val request: Request = Request.Builder().url(REQUEST_URL).method("POST", body).build()
             val moshi = Moshi.Builder().build()
             val submissionJsonAdapter = moshi.adapter(SubmissionId::class.java)
+
+            logger.info("Calling API: ${REQUEST_URL}")
+
             toolWindow.authentication.httpClient.newCall(request).execute().use { response ->
+                logger.info("Received response: ${response}")
                 if (response.isSuccessful) {
                     if (response.code == 200) {
 
                         submissionId = submissionJsonAdapter.fromJson(response.body!!.source())
+                        logger.info("Set submission id: ${submissionId}")
                         DefaultNotification.notify(
                             e.project,
                             "<html>The submission from the assignment " + "<b>${toolWindow.globals.selectedAssignmentID}</b> has been submitted and is in validation. Please wait...</html>"
                         )
                         //DISABLE OPEN BUILD REPORT ACTION
                         toolWindow.globals.lastBuildReport = null
+
+                        val task = object : Task.Backgroundable(e.project, "Validating submission") {
+                            override fun run(indicator: ProgressIndicator) {
+
+                                logger.info("task::run called")
+
+                                indicator.isIndeterminate = true
+                                val executor = Executors.newSingleThreadScheduledExecutor()
+                                try {
+                                    val future = executor.scheduleAtFixedRate({
+                                        if (indicator.isCanceled) {
+                                            // Stop the task if it's canceled
+                                            logger.info("task::run was canceled by the user")
+                                            executor.shutdown()
+                                        } else if (submissionResultsService.checkResult(submissionId, e)) {
+                                            // Stop the task if the condition is met
+                                            submissionId = null
+                                            logger.info("task::run checkResult was true")
+                                            executor.shutdown()
+                                        }
+                                    }, 0, POLLING_FREQUENCY, TimeUnit.SECONDS)
+
+                                    // Wait for the task to complete (optional)
+                                    future.get()
+                                } catch (e: CancellationException) {
+                                    logger.trace("Task was canceled either because it finished or because the user cancelled")
+                                } catch (e: Exception) {
+                                    logger.error("An error occurred during task execution", e)
+                                } finally {
+                                    if (!executor.isShutdown) {
+                                        executor.shutdown()
+                                    }
+                                }
+                            }
+
+                        }
+
+                        logger.info("ProgressManager.getInstance().run(task)")
+                        ProgressManager.getInstance().run(task)
 
 
                     }
@@ -105,27 +156,6 @@ class SubmitAssignment(private var toolWindow: DropProjectToolWindow) : DumbAwar
 
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.BGT
-    }
-
-    override fun update(e: AnActionEvent) {
-        if (submissionId != null && (System.currentTimeMillis() - previousCheckTime > 8000)) {
-            val task = object : Task.Backgroundable(e.project, "Fetching build report") {
-                override fun run(p0: ProgressIndicator) {
-                    if (submissionResultsService.checkResult(submissionId, e)) {
-                        //ARRIVED
-                        submissionId = null
-                    }
-                    previousCheckTime = System.currentTimeMillis()
-                }
-
-            }
-            ApplicationManager.getApplication().invokeLater {
-                // Choose the BGT thread for updating the UI
-                task.asBackgroundable()
-                task.queue()
-            }
-
-        }
     }
 }
 

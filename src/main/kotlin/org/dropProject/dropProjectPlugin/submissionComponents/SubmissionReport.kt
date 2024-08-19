@@ -3,6 +3,7 @@ package org.dropProject.dropProjectPlugin.submissionComponents
 
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.wm.ToolWindowManager
 import com.squareup.moshi.JsonAdapter
@@ -15,6 +16,8 @@ import org.dropProject.dropProjectPlugin.toolWindow.DropProjectToolWindow
 
 
 class SubmissionReport(private val toolWindow: DropProjectToolWindow) {
+
+    private val logger = Logger.getInstance(SubmissionReport::class.java)
 
     private val REQUEST_URL: String
         get() {
@@ -32,10 +35,14 @@ class SubmissionReport(private val toolWindow: DropProjectToolWindow) {
                 .url("$REQUEST_URL/${submissionID.submissionNumber}")
                 .build()
 
+            logger.info("Calling API: $REQUEST_URL/${submissionID.submissionNumber}")
+
             toolWindow.authentication.httpClient.newCall(request).execute().use { response ->
                 fullBuildReport = submissionJsonAdapter.fromJson(response.body!!.source())!!
+                logger.info("Received response: ${fullBuildReport}")
             }
 
+            logger.info("Received response2: ${fullBuildReport}")
             if (fullBuildReport.error == null) {
                 BuildReportNotification(toolWindow.globals).notify(
                     e.project,

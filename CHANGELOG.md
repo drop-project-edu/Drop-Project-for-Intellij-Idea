@@ -6,6 +6,17 @@
 
 ### Changed
 
+- Improved the submission process, it now properly runs in the background, with a cancellable status bar
+showing progress
+
+### Fixed
+
+- Fixed an error when there wasn't any selected assignment
+
+## [0.9.6] - 2024-08-16
+
+### Changed
+
 - The plugin is now compatible with Intellij IDEA 2024.2 and requires at least 2023.3
 - The server is now a drop down and users have to select one on their first login
 
