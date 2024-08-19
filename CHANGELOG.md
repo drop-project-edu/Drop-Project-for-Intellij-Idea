@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+- Minor improvements
+
 ## [0.9.7-beta1] - 2024-08-19
 
 ### Changed

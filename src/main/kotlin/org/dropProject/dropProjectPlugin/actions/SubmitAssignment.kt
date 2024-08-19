@@ -89,7 +89,7 @@ class SubmitAssignment(private var toolWindow: DropProjectToolWindow) : DumbAwar
                         //DISABLE OPEN BUILD REPORT ACTION
                         toolWindow.globals.lastBuildReport = null
 
-                        val task = object : Task.Backgroundable(e.project, "Validating submission") {
+                        val task = object : Task.Backgroundable(e.project, "Validating submission...") {
                             override fun run(indicator: ProgressIndicator) {
 
                                 logger.info("task::run called")

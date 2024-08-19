@@ -1,6 +1,6 @@
 # Drop Project Plugin for Intellij Idea
 
-![[Static Badge](https://img.shields.io/badge/version-v0.9.4-blue)](https://img.shields.io/badge/version-v0.9.6-blue)
+![[Static Badge](https://img.shields.io/badge/version-v0.9.4-blue)](https://img.shields.io/badge/version-v0.9.7-blue)
 [![JetBrains plugins](https://img.shields.io/jetbrains/plugin/d/21870-drop-project)](https://img.shields.io/jetbrains/plugin/d/25078-drop-project)
 
 <!-- Plugin description -->
@@ -49,3 +49,7 @@ This plugin allows students to submit their projects directly from Intellij IDEA
 * Execute `Run Verifications`
 * Push to github. This will create a draft release.
 * Publish that release - this will trigger a github action that will publish the plugin to the marketplace.
+
+It may be wise to first publish the plugin in the beta channel. To do that, just append "-beta" to the version number (e.g. 0.9.7-beta)
+Notice that beta plugins don't show up in the marketplace by default. You have to add this custom plugin repository: 
+https://plugins.jetbrains.com/plugins/beta/list. To do this, go to settings > plugins > click the gear icon > Manage plugin repositories
