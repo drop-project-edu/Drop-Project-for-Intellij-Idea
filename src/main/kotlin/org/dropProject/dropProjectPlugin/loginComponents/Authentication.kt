@@ -1,8 +1,13 @@
 package org.dropProject.dropProjectPlugin.loginComponents
 
 import com.intellij.openapi.ui.Messages
+import com.intellij.openapi.util.NlsContexts
 import com.jetbrains.rd.util.use
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import okhttp3.*
+import org.apache.http.HttpStatus
 import org.dropProject.dropProjectPlugin.toolWindow.DropProjectToolWindow
 import java.io.IOException
 import java.net.ConnectException
@@ -11,6 +16,7 @@ import java.security.cert.X509Certificate
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
+
 
 class Authentication(private val toolWindow: DropProjectToolWindow) {
 
@@ -62,6 +68,20 @@ class Authentication(private val toolWindow: DropProjectToolWindow) {
             .build()
         try {
             httpClient.newCall(request).execute().use { response ->
+                if (response.code == HttpStatus.SC_UNAUTHORIZED) {
+                    val jsonStr = response.body?.string()
+                    val moshi = Moshi.Builder().build()
+                    val type = Types.newParameterizedType(MutableMap::class.java, String::class.java, Any::class.java)
+                    val jsonAdapter: JsonAdapter<Map<String, String>> = moshi.adapter(type)
+                    val result: Map<String, String>? = jsonAdapter.fromJson(jsonStr)
+                    if (result != null) {
+                        Messages.showMessageDialog(
+                            result["message"],
+                            "Authentication failed",
+                            Messages.getErrorIcon()
+                        )
+                    }
+                }
                 return response.isSuccessful
             }
         } catch (e: ConnectException) {

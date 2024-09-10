@@ -182,8 +182,6 @@ class Login(private val toolWindow: DropProjectToolWindow) {
             DefaultNotification.notify(project, "Login Successful")
             manageSettingsChanges()
 
-        } else {
-            Messages.showMessageDialog(project, "Login credentials incorrect!", CommonBundle.getErrorTitle(), Messages.getErrorIcon())
         }
     }
 

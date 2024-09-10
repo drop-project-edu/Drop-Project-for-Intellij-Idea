@@ -5,6 +5,8 @@
 ## [Unreleased]
 
 - Minor improvements
+- Shows a custom message when the token is expired
+
 
 ## [0.9.7-beta1] - 2024-08-19
 
