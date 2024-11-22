@@ -10,7 +10,6 @@
 - Shows a custom message when the token is expired
 - The plugin is now compatible with Intellij IDEA 2024.3
 
-
 ## [0.9.7-beta1] - 2024-08-19
 
 ### Changed
@@ -42,7 +41,8 @@ showing progress
 - Copy build report errors feature
 - Open in web build report feature
 
-[Unreleased]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.7-beta1...HEAD
+[Unreleased]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.8...HEAD
+[0.9.8]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.7-beta1...v0.9.8
 [0.9.7-beta1]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.6...v0.9.7-beta1
 [0.9.6]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.5...v0.9.6
 [0.9.5]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.4...v0.9.5
