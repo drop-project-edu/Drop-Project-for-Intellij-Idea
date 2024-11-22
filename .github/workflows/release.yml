@@ -7,6 +7,11 @@ on:
   release:
     types: [prereleased, released]
   workflow_dispatch:
+    inputs:
+      version:
+        description: "The version to be published"
+        required: true
+
 
 jobs:
 
@@ -38,7 +43,7 @@ jobs:
       - name: Fetch Sources
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.release.tag_name }}
+          ref: ${{ github.event.release.tag_name || github.event.inputs.version }}
 
       # Set up Java environment for the next steps
       - name: Setup Java
@@ -86,7 +91,7 @@ jobs:
       - name: Upload Release Asset
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload ${{ github.event.release.tag_name }} ./build/distributions/*
+        run: gh release upload ${{ github.event.release.tag_name || github.event.inputs.version }} ./build/distributions/*
 
       # Create a pull request
       - name: Create Pull Request
@@ -94,7 +99,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          VERSION="${{ github.event.release.tag_name }}"
+          VERSION="${{ github.event.release.tag_name || github.event.inputs.version }}"
           BRANCH="changelog-update-$VERSION"
           LABEL="release changelog"
 
