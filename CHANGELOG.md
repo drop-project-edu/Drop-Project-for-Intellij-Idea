@@ -6,6 +6,7 @@
 
 - Minor improvements
 - Shows a custom message when the token is expired
+- The plugin is now compatible with Intellij IDEA 2024.3
 
 
 ## [0.9.7-beta1] - 2024-08-19
