@@ -1,7 +1,7 @@
 package org.dropProject.dropProjectPlugin.toolWindow.panel
 
-import com.intellij.ide.plugins.newui.ListPluginComponent
 import com.intellij.openapi.actionSystem.*
+import com.intellij.ui.JBColor
 import com.intellij.ui.SearchTextField
 import com.intellij.ui.SimpleTextAttributes
 import com.intellij.ui.components.panels.NonOpaquePanel
@@ -34,7 +34,7 @@ class ToolbarSearchPanel(val e: AnActionEvent, private val toolWindow: DropProje
         assignmentSearchField = SearchTextField()
         assignmentSearchField.textEditor.emptyText.appendText(
             "Assignment ID",
-            SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN, ListPluginComponent.GRAY_COLOR)
+            SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN, JBColor.GRAY)
         )
         assignmentSearchField.addKeyboardListener(keyAdapter(e))
         add(assignmentSearchField)
