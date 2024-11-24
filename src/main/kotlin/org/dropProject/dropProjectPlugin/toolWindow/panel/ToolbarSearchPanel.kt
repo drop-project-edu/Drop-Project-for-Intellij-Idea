@@ -50,12 +50,18 @@ class ToolbarSearchPanel(val e: AnActionEvent, private val toolWindow: DropProje
         return object : KeyAdapter() {
             override fun keyPressed(e: KeyEvent) {
                 if (KeyEvent.VK_ENTER == e.keyCode) {
-                    SearchAssignment(
+                    val searchAssignmentAction = SearchAssignment(
                         assignmentIDField = assignmentSearchField,
                         toolWindow = toolWindow,
                         route = PanelRoute.SEARCH,
                         selectAssignment = true
-                    ).actionPerformed(event)
+                    )
+
+                    ActionManager.getInstance().tryToExecute(searchAssignmentAction,
+                        event.inputEvent,
+                        null,
+                        ActionPlaces.TOOLBAR,
+                        true);
                 }
             }
         }
