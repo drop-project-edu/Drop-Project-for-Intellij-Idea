@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+- Improved handling of server errors during submissions, including scenarios like “aborted by timeout”
+- Automatically include README.txt or README.md files in submissions, if present.
+- Redesigned the assignment instructions UI to align seamlessly with the current theme.
+- Fixed an issue where images were not displayed in the assignment instructions; they now render correctly.
+
 ## [0.9.8] - 2024-11-22
 
 - Minor improvements
