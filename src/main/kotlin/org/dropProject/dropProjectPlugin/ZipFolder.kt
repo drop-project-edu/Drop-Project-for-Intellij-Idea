@@ -14,6 +14,8 @@ class ZipFolder(private val students: ArrayList<User>) {
         val separator = File.separator
         val newUploadFile = File("$projectDirectory${separator}projeto.zip")
         val authorsPath = "$projectDirectory${separator}AUTHORS.txt"
+        val readMeTxtPath = "$projectDirectory${separator}README.txt"
+        val readMeMdPath = "$projectDirectory${separator}README.md"
         val srcPath = "$projectDirectory${separator}src"
         val testsFilesPath = "$projectDirectory${separator}test-files"
 
@@ -41,6 +43,14 @@ class ZipFolder(private val students: ArrayList<User>) {
             if (File(testsFilesPath).exists()) {
                 // Add the "test-files" folder on the existing zip
                 zipFile.addFolder(File(testsFilesPath))
+            }
+
+            if (File(readMeTxtPath).exists()) {
+                zipFile.addFile(File(readMeTxtPath))
+            }
+
+            if (File(readMeMdPath).exists()) {
+                zipFile.addFile(File(readMeMdPath))
             }
 
             newUploadFile.path
