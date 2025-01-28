@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [0.9.9] - 2025-01-28
+
 - Improved handling of server errors during submissions, including scenarios like “aborted by timeout”
 - Automatically include README.txt or README.md files in submissions, if present.
 - Redesigned the assignment instructions UI to align seamlessly with the current theme.
@@ -46,7 +48,8 @@ showing progress
 - Copy build report errors feature
 - Open in web build report feature
 
-[Unreleased]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.8...HEAD
+[Unreleased]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.9...HEAD
+[0.9.9]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.8...v0.9.9
 [0.9.8]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.7-beta1...v0.9.8
 [0.9.7-beta1]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.6...v0.9.7-beta1
 [0.9.6]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.5...v0.9.6
