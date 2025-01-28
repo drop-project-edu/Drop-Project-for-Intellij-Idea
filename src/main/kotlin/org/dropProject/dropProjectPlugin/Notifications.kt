@@ -37,4 +37,15 @@ class BuildReportNotification(private var globals: Globals) {
             .addAction(ShowFullBuildReport(fullBuildReport, submissionNum, dropProjectToolWindow))
             .notify(project)
     }
+
+    fun notifyError(
+        @Nullable project: Project?,
+        error: String?
+    ) {
+
+        NotificationGroupManager.getInstance()
+            .getNotificationGroup("Build Report Notification")
+            .createNotification("Error validating submission: $error", NotificationType.ERROR)
+            .notify(project)
+    }
 }

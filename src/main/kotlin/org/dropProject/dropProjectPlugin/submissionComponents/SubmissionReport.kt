@@ -23,7 +23,7 @@ class SubmissionReport(private val toolWindow: DropProjectToolWindow) {
         get() {
             return "${toolWindow.globals.REQUEST_URL}/api/student/submissions"
         }
-    private lateinit var fullBuildReport: FullBuildReport
+    private var fullBuildReport: FullBuildReport? = null
     private val moshi = Moshi.Builder().build()
     private val submissionJsonAdapter: JsonAdapter<FullBuildReport> = moshi.adapter(FullBuildReport::class.java)
 
@@ -38,19 +38,24 @@ class SubmissionReport(private val toolWindow: DropProjectToolWindow) {
             logger.info("Calling API: $REQUEST_URL/${submissionID.submissionNumber}")
 
             toolWindow.authentication.httpClient.newCall(request).execute().use { response ->
-                fullBuildReport = submissionJsonAdapter.fromJson(response.body!!.source())!!
-                logger.info("Received response: ${fullBuildReport}")
+                if (response.code != 202) {  // Http code 202 (ACCEPTED) means it is still validating the submission
+                    fullBuildReport = submissionJsonAdapter.fromJson(response.body!!.source())!!
+                }
             }
 
-            logger.info("Received response2: ${fullBuildReport}")
-            if (fullBuildReport.error == null) {
-                BuildReportNotification(toolWindow.globals).notify(
-                    e.project,
-                    fullBuildReport,
-                    submissionNum = submissionID,
-                    dropProjectToolWindow = toolWindow
-                )
-                return true
+            if (fullBuildReport != null) {
+                if (fullBuildReport!!.error == null) {
+                    BuildReportNotification(toolWindow.globals).notify(
+                        e.project,
+                        fullBuildReport!!,
+                        submissionNum = submissionID,
+                        dropProjectToolWindow = toolWindow
+                    )
+                    return true
+                } else {
+                    BuildReportNotification(toolWindow.globals).notifyError(e.project, fullBuildReport!!.error)
+                    return true
+                }
             }
 
         }
