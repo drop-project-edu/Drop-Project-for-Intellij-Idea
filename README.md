@@ -1,6 +1,6 @@
 # Drop Project Plugin for Intellij Idea
 
-![[Static Badge](https://img.shields.io/badge/version-v0.9.4-blue)](https://img.shields.io/badge/version-v0.9.8-blue)
+![[Static Badge](https://img.shields.io/badge/version-v0.9.4-blue)](https://img.shields.io/badge/version-v0.9.9-blue)
 [![JetBrains plugins](https://img.shields.io/jetbrains/plugin/d/21870-drop-project)](https://img.shields.io/jetbrains/plugin/d/25078-drop-project)
 
 <!-- Plugin description -->
