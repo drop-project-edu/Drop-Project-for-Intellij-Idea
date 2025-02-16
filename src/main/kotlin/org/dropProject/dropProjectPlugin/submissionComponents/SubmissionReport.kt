@@ -31,6 +31,9 @@ class SubmissionReport(private val toolWindow: DropProjectToolWindow) {
 
         if (submissionID != null) {
 
+            // reset fullBuildReport
+            fullBuildReport = null
+
             val request = Request.Builder()
                 .url("$REQUEST_URL/${submissionID.submissionNumber}")
                 .build()
@@ -51,11 +54,10 @@ class SubmissionReport(private val toolWindow: DropProjectToolWindow) {
                         submissionNum = submissionID,
                         dropProjectToolWindow = toolWindow
                     )
-                    return true
                 } else {
                     BuildReportNotification(toolWindow.globals).notifyError(e.project, fullBuildReport!!.error)
-                    return true
                 }
+                return true
             }
 
         }

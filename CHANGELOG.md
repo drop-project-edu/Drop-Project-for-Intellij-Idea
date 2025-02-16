@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+- Fixed an issue where the plugin was always showing the first build report instead of the last (issue #8)
+
 ## [0.9.9] - 2025-01-28
 
 - Improved handling of server errors during submissions, including scenarios like “aborted by timeout”
