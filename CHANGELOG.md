@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [0.9.12] - 2025-05-18
+
 - When adding two different assignments, the second assignment was being identified as duplicate of the first one
 
 ## [0.9.11] - 2025-05-18
@@ -60,7 +62,8 @@ showing progress
 - Copy build report errors feature
 - Open in web build report feature
 
-[Unreleased]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.11...HEAD
+[Unreleased]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.12...HEAD
+[0.9.12]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.11...v0.9.12
 [0.9.11]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.10...v0.9.11
 [0.9.10]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.9...v0.9.10
 [0.9.9]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.8...v0.9.9
