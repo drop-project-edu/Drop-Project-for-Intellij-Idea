@@ -43,7 +43,7 @@ class SearchAssignment(
     private var errorCode: Int? = null
 
     override fun actionPerformed(e: AnActionEvent) {
-        if (assignmentIDField != null && assignmentID == null) {
+        if (assignmentIDField != null) {
             assignmentID = assignmentIDField.text
         }
         val assignmentAdded = searchAndUpdateAssignmentList()

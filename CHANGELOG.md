@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+- When adding two different assignments, the second assignment was being identified as duplicate of the first one
+
 ## [0.9.11] - 2025-05-18
 
 - The plugin doesn't overwrite the AUTHORS.txt file anymore
