@@ -10,8 +10,13 @@ class AuthorsFile(private val students: ArrayList<User>) {
 
     fun make(projectDirectory: String?, silentMode: Boolean, e: AnActionEvent) {
 
-
         val authors = File("$projectDirectory${File.separator}AUTHORS.txt")
+
+        if (authors.exists()) {
+            if (!silentMode)
+                DefaultNotification.notify(e.project, "AUTHORS file already exists so I will not modify it")
+            return
+        }
 
         if (authors.delete()) {
             if (!silentMode)

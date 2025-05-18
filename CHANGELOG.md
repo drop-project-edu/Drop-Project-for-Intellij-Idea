@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+- The plugin doesn't overwrite the AUTHORS.txt file anymore
+- The build report now shows the student unit tests results (issue #10)
+- The plugin is now compatible with Intellij IDEA 2025.1
+
 ## [0.9.10] - 2025-02-16
 
 - Fixed an issue where the plugin was always showing the first build report instead of the last (issue #8)

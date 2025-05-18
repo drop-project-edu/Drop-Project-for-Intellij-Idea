@@ -53,6 +53,17 @@ internal class UIBuildReport(private val requestUrl: String) {
                                 }
                             }
 
+                            "ST" -> {
+                                label("Student unit tests")
+                                if (summary.reportValue == "OK") {
+                                    comment("<icon src='AllIcons.General.InspectionsOK'>&nbsp;<b>${summary.reportProgress}/${summary.reportGoal}</b>")
+                                } else if (summary.reportValue == "NOK") {
+                                    comment("<icon src='AllIcons.Actions.Suspend'>&nbsp;<b>${summary.reportProgress}/${summary.reportGoal}</b>")
+                                } else {
+                                    comment("<icon src='AllIcons.Gutter.Mnemonic'>&nbsp;<b>&nbsp;${summary.reportProgress}/${summary.reportGoal} (${summary.reportValue})</b>")
+                                }
+                            }
+
                             "TT" -> {
                                 label("Teacher unit tests")
                                 if (summary.reportValue == "OK") {
