@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [0.9.11] - 2025-05-18
+
 - The plugin doesn't overwrite the AUTHORS.txt file anymore
 - The build report now shows the student unit tests results (issue #10)
 - The plugin is now compatible with Intellij IDEA 2025.1
@@ -56,7 +58,8 @@ showing progress
 - Copy build report errors feature
 - Open in web build report feature
 
-[Unreleased]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.10...HEAD
+[Unreleased]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.11...HEAD
+[0.9.11]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.10...v0.9.11
 [0.9.10]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.9...v0.9.10
 [0.9.9]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.8...v0.9.9
 [0.9.8]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.7-beta1...v0.9.8
