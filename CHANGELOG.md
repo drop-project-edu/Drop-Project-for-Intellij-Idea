@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+- The plugin is now compatible with Intellij IDEA 2025.3
+
 ## [0.9.12] - 2025-05-18
 
 - When adding two different assignments, the second assignment was being identified as duplicate of the first one
