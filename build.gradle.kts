@@ -17,8 +17,8 @@ group = providers.gradleProperty("pluginGroup").get()
 version = providers.gradleProperty("pluginVersion").get()
 
 // Set the JVM language level used to build the project.
+// jvmToolchain is intentionally omitted: IntelliJ Platform Gradle Plugin 2.16+ sets it automatically.
 kotlin {
-    jvmToolchain(21)
     compilerOptions {
         freeCompilerArgs.add("-Xjvm-default=all")
     }
