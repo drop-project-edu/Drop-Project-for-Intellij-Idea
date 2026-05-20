@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [0.9.14] - 2026-05-20
+
 - The plugin is now compatible with Intellij IDEA 2026.1
 
 ## [0.9.13] - 2026-02-17
@@ -68,14 +70,15 @@ showing progress
 - Copy build report errors feature
 - Open in web build report feature
 
-[Unreleased]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.13...HEAD
-[0.9.13]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.12...v0.9.13
-[0.9.12]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.11...v0.9.12
-[0.9.11]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.10...v0.9.11
-[0.9.10]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.9...v0.9.10
-[0.9.9]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.8...v0.9.9
-[0.9.8]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.7-beta1...v0.9.8
-[0.9.7-beta1]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.6...v0.9.7-beta1
-[0.9.6]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.5...v0.9.6
-[0.9.5]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.4...v0.9.5
-[0.9.4]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/commits/v0.9.4
+[Unreleased]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/0.9.14...HEAD
+[0.9.14]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/0.9.13...0.9.14
+[0.9.13]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/0.9.12...0.9.13
+[0.9.12]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/0.9.11...0.9.12
+[0.9.11]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/0.9.10...0.9.11
+[0.9.10]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/0.9.9...0.9.10
+[0.9.9]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/0.9.8...0.9.9
+[0.9.8]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/0.9.7-beta1...0.9.8
+[0.9.7-beta1]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/0.9.6...0.9.7-beta1
+[0.9.6]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/0.9.5...0.9.6
+[0.9.5]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/0.9.4...0.9.5
+[0.9.4]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/commits/0.9.4
