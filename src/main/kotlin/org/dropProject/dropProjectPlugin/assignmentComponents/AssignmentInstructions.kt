@@ -12,7 +12,7 @@ import com.intellij.ui.scale.JBUIScale.scale
 import com.intellij.util.ui.*
 import data.AssignmentInstructionsFormat
 import org.dropProject.dropProjectPlugin.VirtualFile
-import java.net.URL
+import java.net.URI
 import javax.swing.JEditorPane
 import javax.swing.UIManager
 import javax.swing.text.html.HTMLDocument
@@ -81,7 +81,7 @@ class AssignmentInstructions(
                 isFocusable = true  // to allow copy&paste
             }
 
-            val baseUrl = URL("$requestUrl/upload/")
+            val baseUrl = URI("$requestUrl/upload/").toURL()
             val doc = editor.document as HTMLDocument
             doc.base = baseUrl
 

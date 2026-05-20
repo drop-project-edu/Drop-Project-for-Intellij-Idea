@@ -69,7 +69,7 @@ class ListAssignment(private var toolWindow: DropProjectToolWindow) {
             if (assignment.dueDate.isNullOrEmpty()) {
                 line.dueDate = "No due date"
             } else {
-                line.dueDate = assignment.dueDate.toString()
+                line.dueDate = assignment.dueDate
             }
             line.id_notVisible = assignment.id
             line.radioButton = JBRadioButton()

@@ -9,7 +9,7 @@ plugins {
     alias(libs.plugins.changelog) // Gradle Changelog Plugin
     alias(libs.plugins.qodana) // Gradle Qodana Plugin
     alias(libs.plugins.kover) // Gradle Kover Plugin
-    id("com.google.devtools.ksp").version("1.9.24-1.0.20")
+    id("com.google.devtools.ksp").version("2.3.4")
 
 }
 
@@ -19,6 +19,9 @@ version = providers.gradleProperty("pluginVersion").get()
 // Set the JVM language level used to build the project.
 kotlin {
     jvmToolchain(21)
+    compilerOptions {
+        freeCompilerArgs.add("-Xjvm-default=all")
+    }
 }
 
 // Configure project's dependencies
@@ -38,7 +41,7 @@ dependencies {
 
     // IntelliJ Platform Gradle Plugin Dependencies Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html
     intellijPlatform {
-        create(providers.gradleProperty("platformType"), providers.gradleProperty("platformVersion"))
+        intellijIdea(providers.gradleProperty("platformVersion").get())
 
         // Plugin Dependencies. Uses `platformBundledPlugins` property from the gradle.properties file for bundled IntelliJ Platform plugins.
         bundledPlugins(providers.gradleProperty("platformBundledPlugins").map { it.split(',') })
@@ -49,7 +52,7 @@ dependencies {
         implementation("com.squareup.okhttp3:okhttp:4.12.0")
         implementation("com.squareup.moshi:moshi:1.15.0")
         ksp("com.squareup.moshi:moshi-kotlin-codegen:1.15.0")
-        implementation(group = "net.lingala.zip4j", name = "zip4j", version = "2.11.3")
+        implementation("net.lingala.zip4j:zip4j:2.11.3")
         implementation("org.jetbrains:marketplace-zip-signer:0.1.24")
         implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.0")
         implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.1")

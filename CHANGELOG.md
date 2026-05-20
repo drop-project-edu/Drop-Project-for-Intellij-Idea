@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+- The plugin is now compatible with Intellij IDEA 2026.1
+
 ## [0.9.13] - 2026-02-17
 
 - The plugin is now compatible with Intellij IDEA 2025.3
