@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [0.9.15] - 2026-09-16
+
 - The plugin now tells the server which version it is, and asks you to update it when the server no longer supports that version, instead of just failing to login
 - The login window now accepts the URL of a server that is not on the list, which is how you reach a Drop Project that is not Lusófona's or the Playground
 - Assignments that expect a Maven project can now be submitted from the plugin: the pom.xml is included in the submission
@@ -76,7 +78,8 @@ showing progress
 - Copy build report errors feature
 - Open in web build report feature
 
-[Unreleased]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.14...HEAD
+[Unreleased]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.15...HEAD
+[0.9.15]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.14...v0.9.15
 [0.9.14]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.13...v0.9.14
 [0.9.13]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.12...v0.9.13
 [0.9.12]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.11...v0.9.12
