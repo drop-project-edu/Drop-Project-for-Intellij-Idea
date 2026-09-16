@@ -13,6 +13,7 @@ import data.Assignment
 import data.AssignmentInfoResponse
 import okhttp3.Request
 import org.dropProject.dropProjectPlugin.DefaultNotification
+import org.dropProject.dropProjectPlugin.PluginVersionCheck
 import org.dropProject.dropProjectPlugin.ProjectComponents
 import org.dropProject.dropProjectPlugin.assignmentComponents.AssignmentTableLine
 import org.dropProject.dropProjectPlugin.settings.SettingsState
@@ -53,11 +54,18 @@ class SearchAssignment(
             )
     }
 
-    private fun searchAssignment() {
+    /**
+     * Looks the assignment up, answering false when the server refused to serve this version of the plugin,
+     * which the student was already told about and which leaves nothing to report about the assignment.
+     */
+    private fun searchAssignment(): Boolean {
         assignment = null
         val request = Request.Builder().url("$REQUEST_URL/${assignmentID!!.trim()}").build()
 
         toolWindow.authentication.httpClient.newCall(request).execute().use { response ->
+            if (PluginVersionCheck.reportIfOutdated(response, toolWindow.project)) {
+                return false
+            }
             if (response.code == 200) {
                 val assignmentInfoResponse = assignmentJsonAdapter.fromJson(response.body!!.source())!!
                 assignment = assignmentInfoResponse.assignment
@@ -66,13 +74,16 @@ class SearchAssignment(
                 errorCode = response.code
             }
         }
+        return true
     }
 
     fun searchAndUpdateAssignmentList(): String? {
         if (assignmentID!!.isEmpty()) {
             return null
         }
-        searchAssignment()
+        if (!searchAssignment()) {
+            return null
+        }
 
         if (assignment != null) {
 
