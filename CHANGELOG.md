@@ -6,6 +6,7 @@
 
 - The plugin now tells the server which version it is, and asks you to update it when the server no longer supports that version, instead of just failing to login
 - Assignments that expect a Maven project can now be submitted from the plugin: the pom.xml is included in the submission
+- Files deleted from the project are no longer submitted again, which happened because each submission was added to the zip of the previous one
 
 ## [0.9.14] - 2026-05-20
 

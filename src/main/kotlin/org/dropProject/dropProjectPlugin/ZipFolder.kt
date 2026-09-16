@@ -50,12 +50,13 @@ class ZipFolder(
             AuthorsFile(students).make(projectDirectory, true, e)
         }
 
-        // Add AUTHORS.txt to a new zip
-        ZipFile(newUploadFile)
-            .addFile(File(authorsPath))
+        // the zip of the previous submission is replaced, and not added to: adding to it would keep whatever
+        // the student has deleted since, and submit files that are no longer in the project
+        newUploadFile.delete()
 
         val zipFile = ZipFile(newUploadFile)
 
+        zipFile.addFile(File(authorsPath))
         zipFile.addFolder(File(srcPath))
 
         if (submissionStructure == SubmissionStructure.MAVEN) {
