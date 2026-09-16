@@ -1,6 +1,7 @@
 package org.dropProject.dropProjectPlugin.loginComponents
 
 import com.intellij.CommonBundle
+import com.intellij.ide.BrowserUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.*
 import com.intellij.uiDesigner.core.GridConstraints
@@ -11,17 +12,17 @@ import org.dropProject.dropProjectPlugin.DefaultNotification
 import org.dropProject.dropProjectPlugin.User
 import org.dropProject.dropProjectPlugin.settings.SettingsState
 import org.dropProject.dropProjectPlugin.toolWindow.DropProjectToolWindow
-import java.awt.Desktop
+import java.awt.Cursor
 import java.awt.Dimension
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
-import java.net.URI
 import javax.swing.*
 
 class Login(private val toolWindow: DropProjectToolWindow) {
 
     private lateinit var mainpanel: JPanel
     private lateinit var serverField: JComboBox<Server>
+    private lateinit var customServerField: JTextField
     private lateinit var nameField: JTextField
     private lateinit var useridField: JTextField
     private lateinit var tokenField: JPasswordField
@@ -56,11 +57,31 @@ class Login(private val toolWindow: DropProjectToolWindow) {
         }
     }
 
+    /**
+     * The entry that lets a server that is not on the list be reached: another school's, or one being run
+     * locally while the plugin or the server itself is being worked on.
+     */
+    private val customServer = Server("Other (enter URL)", "")
+
     val servers = arrayOf(
         Server("", ""), // Empty option
         Server("Lusófona University", "https://deisi.ulusofona.pt/drop-project"),
-        Server("Drop Project Playground", "https://playground.dropproject.org/dp")
+        Server("Drop Project Playground", "https://playground.dropproject.org/dp"),
+        customServer
     )
+
+    /**
+     * The server to talk to: the one picked from the dropdown, or the url typed next to it when the pick is
+     * [customServer]. Blank when nothing has been chosen.
+     */
+    private fun selectedServerUrl(): String {
+        val selected = serverField.selectedItem as? Server ?: return ""
+        return if (selected == customServer) {
+            customServerField.text.trim().removeSuffix("/")
+        } else {
+            selected.serverUrl
+        }
+    }
 
     private fun validateRequiredFormFields(vararg fields: JTextField): Boolean {
         val requiredFields = fields.asList()
@@ -102,11 +123,14 @@ class Login(private val toolWindow: DropProjectToolWindow) {
         if (option == 0) {
 
             // check server
-            val selectedServer = serverField.selectedItem as Server
-            if (selectedServer.serverName == "") {
-                Messages.showMessageDialog(project, "Please select a server", CommonBundle.getErrorTitle(), Messages.getErrorIcon())
+            val serverUrl = selectedServerUrl()
+            if (serverUrl.isEmpty()) {
+                Messages.showMessageDialog(project, "Please select a server, or enter the URL of one",
+                    CommonBundle.getErrorTitle(), Messages.getErrorIcon())
                 return
             }
+            // the login request is made against whatever is in the settings, so the choice lands there first
+            SettingsState.getInstance().serverURL = serverUrl
 
             //add student to list
             studentNameField.add(nameField)
@@ -154,14 +178,21 @@ class Login(private val toolWindow: DropProjectToolWindow) {
 //                JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.DEFAULT_OPTION, null, arrayOf("Yes", "No"), null
 //            )
             if (result) {
-                settingsState.updateValues((serverField.selectedItem as Server).serverUrl, nameField.text, useridField.text, String(tokenField.password))
+                settingsState.updateValues(selectedServerUrl(), nameField.text, useridField.text, String(tokenField.password))
             }
         }
     }
 
     private fun fillFieldsFromSettings() {
         val settingsState = SettingsState.getInstance()
-        serverField.selectedItem = servers.find { it.serverUrl == settingsState.serverURL }
+        val knownServer = servers.find { it.serverUrl.isNotEmpty() && it.serverUrl == settingsState.serverURL }
+        if (knownServer != null) {
+            serverField.selectedItem = knownServer
+        } else if (settingsState.serverURL.isNotEmpty()) {
+            // a url that is not on the list was used last time, so it is offered again instead of being lost
+            serverField.selectedItem = customServer
+            customServerField.text = settingsState.serverURL
+        }
         nameField.text = settingsState.username
         useridField.text = settingsState.usernumber
         tokenField.text = settingsState.token
@@ -351,7 +382,7 @@ class Login(private val toolWindow: DropProjectToolWindow) {
         )
 
         serverPanel = JPanel()
-        serverPanel.layout = GridLayoutManager(1, 1, JBUI.emptyInsets(), -1, -1)
+        serverPanel.layout = GridLayoutManager(1, 2, JBUI.emptyInsets(), -1, -1)
         mainpanel.add(
             serverPanel,
             GridConstraints(
@@ -372,9 +403,12 @@ class Login(private val toolWindow: DropProjectToolWindow) {
         )
 
         serverField = ComboBox(servers)
+        customServerField = JTextField()
+        customServerField.toolTipText = "e.g. http://localhost:8080"
+        customServerField.isVisible = false
         serverField.addActionListener {
-            val settings: SettingsState = SettingsState.getInstance()
-            settings.serverURL = (serverField.selectedItem as? Server)?.serverUrl ?: ""
+            customServerField.isVisible = serverField.selectedItem == customServer
+            serverPanel.revalidate()
         }
         serverPanel.add(
             serverField,
@@ -389,6 +423,25 @@ class Login(private val toolWindow: DropProjectToolWindow) {
                 GridConstraints.SIZEPOLICY_FIXED,
                 null,
                 Dimension(150, -1),
+                null,
+                0,
+                false
+            )
+        )
+
+        serverPanel.add(
+            customServerField,
+            GridConstraints(
+                0,
+                1,
+                1,
+                1,
+                GridConstraints.ANCHOR_WEST,
+                GridConstraints.FILL_HORIZONTAL,
+                GridConstraints.SIZEPOLICY_WANT_GROW,
+                GridConstraints.SIZEPOLICY_FIXED,
+                null,
+                Dimension(200, -1),
                 null,
                 0,
                 false
@@ -781,11 +834,19 @@ class Login(private val toolWindow: DropProjectToolWindow) {
     }
 
     private fun actionListeners() {
+        tokenLinkLabel.cursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
         tokenLinkLabel.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent) {
-                if (toolWindow.globals.REQUEST_URL != "") {
-                    Desktop.getDesktop().browse(URI("${toolWindow.globals.REQUEST_URL}/personalToken"))
+                // the token belongs to the server being logged in to, which is the one picked right above,
+                // and not the one of whatever login came before this one
+                val serverUrl = selectedServerUrl()
+                if (serverUrl.isEmpty()) {
+                    Messages.showMessageDialog(toolWindow.project,
+                        "Please select a server, or enter the URL of one, before asking it for a token",
+                        CommonBundle.getErrorTitle(), Messages.getErrorIcon())
+                    return
                 }
+                BrowserUtil.browse("$serverUrl/personalToken")
             }
         })
         addStudentButton.addActionListener {
