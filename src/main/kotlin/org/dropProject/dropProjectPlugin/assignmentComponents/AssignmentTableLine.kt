@@ -2,6 +2,7 @@ package org.dropProject.dropProjectPlugin.assignmentComponents
 
 import com.intellij.ui.components.JBRadioButton
 import data.Instructions
+import data.SubmissionStructure
 
 
 class AssignmentTableLine {
@@ -12,6 +13,9 @@ class AssignmentTableLine {
     lateinit var id_notVisible: String
     lateinit var radioButton: JBRadioButton
     var instructions: Instructions? = null
+
+    /** what the submission has to look like, which is what the zip is built from */
+    var submissionStructure: SubmissionStructure = SubmissionStructure.COMPACT
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

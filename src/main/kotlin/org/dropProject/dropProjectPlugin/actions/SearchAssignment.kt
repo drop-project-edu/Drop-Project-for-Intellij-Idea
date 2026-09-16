@@ -10,6 +10,7 @@ import com.jetbrains.rd.util.use
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import data.Assignment
+import data.SubmissionStructure
 import data.AssignmentInfoResponse
 import okhttp3.Request
 import org.dropProject.dropProjectPlugin.DefaultNotification
@@ -159,6 +160,7 @@ class SearchAssignment(
 
         line.name = assignment!!.name
         line.language = assignment!!.language
+        line.submissionStructure = SubmissionStructure.of(assignment!!.submissionStructure)
         if (assignment!!.dueDate.isNullOrEmpty()) {
             line.dueDate = "No due date"
         } else {

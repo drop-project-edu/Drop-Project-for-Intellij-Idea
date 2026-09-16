@@ -7,6 +7,7 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import data.Assignment
+import data.SubmissionStructure
 import okhttp3.Request
 import org.dropProject.dropProjectPlugin.PluginVersionCheck
 import org.dropProject.dropProjectPlugin.assignmentComponents.AssignmentTableLine
@@ -70,6 +71,7 @@ class ListAssignment(private var toolWindow: DropProjectToolWindow) {
 
             line.name = assignment.name
             line.language = assignment.language
+            line.submissionStructure = SubmissionStructure.of(assignment.submissionStructure)
             if (assignment.dueDate.isNullOrEmpty()) {
                 line.dueDate = "No due date"
             } else {

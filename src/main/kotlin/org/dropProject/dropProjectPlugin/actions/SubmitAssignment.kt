@@ -13,6 +13,7 @@ import com.intellij.openapi.ui.Messages
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
+import data.SubmissionStructure
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.Request
@@ -62,7 +63,12 @@ class SubmitAssignment(private var toolWindow: DropProjectToolWindow) : DumbAwar
             // If assignment has been choosen, upload zip file
             //first save all documents
             FileDocumentManager.getInstance().saveAllDocuments()
-            val uploadFilePath = ZipFolder(toolWindow.studentsList).zipIt(e) ?: return
+            // the zip is built the way the selected assignment expects it. A line is always selected by the
+            // time a submission can be made, and falling back to the structure the plugin has always used
+            // keeps a submission possible if it ever is not
+            val submissionStructure = toolWindow.globals.selectedLine?.submissionStructure
+                ?: SubmissionStructure.COMPACT
+            val uploadFilePath = ZipFolder(toolWindow.studentsList, submissionStructure).zipIt(e) ?: return
 
             val body: RequestBody = MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart(
                 "file",
