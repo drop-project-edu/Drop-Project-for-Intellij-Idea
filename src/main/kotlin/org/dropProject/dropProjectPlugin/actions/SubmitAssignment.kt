@@ -19,6 +19,7 @@ import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import org.dropProject.dropProjectPlugin.DefaultNotification
+import org.dropProject.dropProjectPlugin.PluginVersionCheck
 import org.dropProject.dropProjectPlugin.ZipFolder
 import org.dropProject.dropProjectPlugin.submissionComponents.SubmissionReport
 import org.dropProject.dropProjectPlugin.toolWindow.DropProjectToolWindow
@@ -77,6 +78,9 @@ class SubmitAssignment(private var toolWindow: DropProjectToolWindow) : DumbAwar
 
             toolWindow.authentication.httpClient.newCall(request).execute().use { response ->
                 logger.info("Received response: ${response}")
+                if (PluginVersionCheck.reportIfOutdated(response, e.project)) {
+                    return
+                }
                 if (response.isSuccessful) {
                     if (response.code == 200) {
 

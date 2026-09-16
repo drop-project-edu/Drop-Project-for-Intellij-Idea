@@ -8,6 +8,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import okhttp3.*
 import org.apache.http.HttpStatus
+import org.dropProject.dropProjectPlugin.PluginVersionCheck
 import org.dropProject.dropProjectPlugin.toolWindow.DropProjectToolWindow
 import java.io.IOException
 import java.net.ConnectException
@@ -20,7 +21,9 @@ import javax.net.ssl.X509TrustManager
 
 class Authentication(private val toolWindow: DropProjectToolWindow) {
 
-    var httpClient = OkHttpClient()
+    var httpClient = OkHttpClient.Builder()
+        .addInterceptor(PluginVersionCheck.userAgentInterceptor)
+        .build()
     var alreadyLoggedIn = false
         set(value) {
             field = value
@@ -61,6 +64,7 @@ class Authentication(private val toolWindow: DropProjectToolWindow) {
                         .build()
                 }
             })
+            .addInterceptor(PluginVersionCheck.userAgentInterceptor)
             .ignoreAllSSLErrors()
             .build()
         val request = Request.Builder()
@@ -68,6 +72,11 @@ class Authentication(private val toolWindow: DropProjectToolWindow) {
             .build()
         try {
             httpClient.newCall(request).execute().use { response ->
+                // this is the first call the plugin makes, so an outdated plugin is told so when the student
+                // logs in, instead of only when they try to submit
+                if (PluginVersionCheck.reportIfOutdated(response, toolWindow.project)) {
+                    return false
+                }
                 if (response.code == HttpStatus.SC_UNAUTHORIZED) {
                     val jsonStr = response.body?.string()
                     val moshi = Moshi.Builder().build()

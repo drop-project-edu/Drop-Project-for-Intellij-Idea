@@ -8,6 +8,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import data.Assignment
 import okhttp3.Request
+import org.dropProject.dropProjectPlugin.PluginVersionCheck
 import org.dropProject.dropProjectPlugin.assignmentComponents.AssignmentTableLine
 import org.dropProject.dropProjectPlugin.toolWindow.DropProjectToolWindow
 import java.lang.reflect.Type
@@ -34,6 +35,9 @@ class ListAssignment(private var toolWindow: DropProjectToolWindow) {
             .url(REQUEST_URL)
             .build()
         toolWindow.authentication.httpClient.newCall(request).execute().use { response ->
+            if (PluginVersionCheck.reportIfOutdated(response, toolWindow.project)) {
+                return
+            }
             status = response.code
             if (status == 200) {
                 privateAssignments = assignmentJsonAdapter.fromJson(response.body!!.source())!!

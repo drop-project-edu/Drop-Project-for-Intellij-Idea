@@ -11,6 +11,7 @@ import com.squareup.moshi.Moshi
 import data.FullBuildReport
 import okhttp3.Request
 import org.dropProject.dropProjectPlugin.BuildReportNotification
+import org.dropProject.dropProjectPlugin.PluginVersionCheck
 import org.dropProject.dropProjectPlugin.actions.SubmissionId
 import org.dropProject.dropProjectPlugin.toolWindow.DropProjectToolWindow
 
@@ -41,6 +42,10 @@ class SubmissionReport(private val toolWindow: DropProjectToolWindow) {
             logger.info("Calling API: $REQUEST_URL/${submissionID.submissionNumber}")
 
             toolWindow.authentication.httpClient.newCall(request).execute().use { response ->
+                // there is no report coming, so the polling stops here
+                if (PluginVersionCheck.reportIfOutdated(response, e.project)) {
+                    return true
+                }
                 if (response.code != 202) {  // Http code 202 (ACCEPTED) means it is still validating the submission
                     fullBuildReport = submissionJsonAdapter.fromJson(response.body!!.source())!!
                 }
