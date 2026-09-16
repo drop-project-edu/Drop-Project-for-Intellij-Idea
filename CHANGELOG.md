@@ -7,6 +7,7 @@
 - The plugin now tells the server which version it is, and asks you to update it when the server no longer supports that version, instead of just failing to login
 - The login window now accepts the URL of a server that is not on the list, which is how you reach a Drop Project that is not Lusófona's or the Playground
 - Assignments that expect a Maven project can now be submitted from the plugin: the pom.xml is included in the submission
+- A project structure error is now shown as one error with its details underneath, instead of one numbered error per line, and the errors are numbered from 1
 - Files deleted from the project are no longer submitted again, which happened because each submission was added to the zip of the previous one
 
 ## [0.9.14] - 2026-05-20

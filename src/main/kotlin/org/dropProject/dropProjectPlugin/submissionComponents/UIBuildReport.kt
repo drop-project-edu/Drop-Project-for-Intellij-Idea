@@ -88,12 +88,13 @@ internal class UIBuildReport(private val requestUrl: String) {
             }
             //PROJECT STRUCTURE
             buildReport.structureErrors?.let { psErr ->
-                collapsibleGroup("Project Structure Errors (${psErr.size})") {
-                    psErr.forEachIndexed { index, error ->
-                        group("Error $index") {
+                val errors = groupStructureErrors(psErr)
+                collapsibleGroup("Project Structure Errors (${errors.size})") {
+                    errors.forEachIndexed { index, error ->
+                        group("Error ${index + 1}") {
                             row {
-                                actionsButton(CopyAction(error))
-                                text(error)
+                                actionsButton(CopyAction(error.joinToString(System.lineSeparator())))
+                                text(error.first() + error.drop(1).joinToString("") { "<br>&nbsp;&nbsp;$it" })
                             }
                         }
                     }
@@ -171,6 +172,29 @@ internal class UIBuildReport(private val requestUrl: String) {
         viewport.extentSize = Dimension(0, 0)
 
         return scrollPane
+    }
+
+    /**
+     * Puts each structure error back together with the lines that belong to it.
+     *
+     * The server reports a structure error as several entries: the message, and then one indented line for
+     * each detail it names, e.g. "the pom.xml is missing the parent element" followed by the parent that was
+     * expected. Read as a flat list, those details look like errors of their own, and a single problem is
+     * shown as four.
+     *
+     * @return one list per error, holding its message and then its details
+     */
+    private fun groupStructureErrors(structureErrors: List<String>): List<List<String>> {
+        val errors = mutableListOf<MutableList<String>>()
+        for (line in structureErrors) {
+            val isDetail = line.isNotEmpty() && line.first().isWhitespace()
+            if (isDetail && errors.isNotEmpty()) {
+                errors.last().add(line.trim())
+            } else {
+                errors.add(mutableListOf(line.trim()))
+            }
+        }
+        return errors
     }
 
     inner class CopyAction(private val textToCopy: String) :
