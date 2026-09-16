@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+- The plugin now tells the server which version it is, and asks you to update it when the server no longer supports that version, instead of just failing to login
+
 ## [0.9.14] - 2026-05-20
 
 - The plugin is now compatible with Intellij IDEA 2026.1
