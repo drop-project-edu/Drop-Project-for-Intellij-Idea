@@ -125,6 +125,8 @@ intellijPlatform {
 changelog {
     groups.empty()
     repositoryUrl = providers.gradleProperty("pluginRepositoryUrl")
+    // the releases are tagged v0.9.14, and without this the compare links are built from the bare version
+    versionPrefix = "v"
 }
 
 // Configure Gradle Kover Plugin - read more: https://github.com/Kotlin/kotlinx-kover#configuration
