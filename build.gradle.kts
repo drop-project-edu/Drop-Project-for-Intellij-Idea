@@ -17,11 +17,21 @@ group = providers.gradleProperty("pluginGroup").get()
 version = providers.gradleProperty("pluginVersion").get()
 
 // Set the JVM language level used to build the project.
-// jvmToolchain is intentionally omitted: IntelliJ Platform Gradle Plugin 2.16+ sets it automatically.
+// Compile with JDK 25 (needed to read the 2026.2 platform classes) but emit Java 21 bytecode,
+// so the plugin still loads on IDEs running on Java 21 (pluginSinceBuild).
+// jvmTarget is set on the tasks because the IntelliJ Platform Gradle Plugin overrides the extension value.
 kotlin {
+    jvmToolchain(25)
     compilerOptions {
         freeCompilerArgs.add("-Xjvm-default=all")
     }
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    options.release = 21
+}
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    compilerOptions.jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
 }
 
 // Configure project's dependencies

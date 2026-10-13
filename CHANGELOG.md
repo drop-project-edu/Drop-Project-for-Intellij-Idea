@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+- The plugin can be installed again in IntelliJ IDEA 2024.2 to 2025.3, which failed in 0.9.16 with "Java runtime only recognizes class file version up to 65.0"
+
 ## [0.9.16] - 2026-10-08
 
 - The plugin is now compatible with Intellij IDEA 2026.2
