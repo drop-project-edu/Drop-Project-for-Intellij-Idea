@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [0.9.17] - 2026-10-13
+
 - The plugin can be installed again in IntelliJ IDEA 2024.2 to 2025.3, which failed in 0.9.16 with "Java runtime only recognizes class file version up to 65.0"
 
 ## [0.9.16] - 2026-10-08
@@ -84,7 +86,8 @@ showing progress
 - Copy build report errors feature
 - Open in web build report feature
 
-[Unreleased]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.16...HEAD
+[Unreleased]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.17...HEAD
+[0.9.17]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.16...v0.9.17
 [0.9.16]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.15...v0.9.16
 [0.9.15]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.14...v0.9.15
 [0.9.14]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.13...v0.9.14
