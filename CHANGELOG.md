@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+- The assignment list loads again when one of the assignments has no package, which failed with "Non-null value 'packageName' was null"
+
 ## [0.9.17] - 2026-10-13
 
 - The plugin can be installed again in IntelliJ IDEA 2024.2 to 2025.3, which failed in 0.9.16 with "Java runtime only recognizes class file version up to 65.0"

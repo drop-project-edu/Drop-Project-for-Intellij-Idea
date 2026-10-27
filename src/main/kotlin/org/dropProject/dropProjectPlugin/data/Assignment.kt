@@ -31,7 +31,7 @@ enum class SubmissionStructure {
 data class Assignment(
     val id: String,
     val name: String,
-    val packageName: String,
+    val packageName: String?,
     val dueDate: String?,
     val submissionMethod: String,
     val language: String,
