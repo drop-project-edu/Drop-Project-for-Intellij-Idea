@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [0.9.18] - 2026-10-27
+
 - The assignment list loads again when one of the assignments has no package, which failed with "Non-null value 'packageName' was null"
 
 ## [0.9.17] - 2026-10-13
@@ -88,7 +90,8 @@ showing progress
 - Copy build report errors feature
 - Open in web build report feature
 
-[Unreleased]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.17...HEAD
+[Unreleased]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.18...HEAD
+[0.9.18]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.17...v0.9.18
 [0.9.17]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.16...v0.9.17
 [0.9.16]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.15...v0.9.16
 [0.9.15]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.14...v0.9.15
