@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+- The plugin is now compatible with IntelliJ IDEA 2026.3
+
 ## [0.9.18] - 2026-10-27
 
 - The assignment list loads again when one of the assignments has no package, which failed with "Non-null value 'packageName' was null"

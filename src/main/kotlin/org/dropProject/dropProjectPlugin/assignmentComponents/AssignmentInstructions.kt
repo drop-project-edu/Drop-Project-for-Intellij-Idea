@@ -1,6 +1,5 @@
 package org.dropProject.dropProjectPlugin.assignmentComponents
 
-import com.intellij.lang.documentation.DocumentationSettings
 import com.intellij.openapi.editor.impl.EditorCssFontResolver
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
@@ -87,7 +86,7 @@ class AssignmentInstructions(
 
             editor.margin = JBUI.insets(0, 10, 10, 10)
             val jbScrollPane = JBScrollPane(editor)
-            val editorManager = project?.let { FileEditorManager.getInstance(it) }
+            val editorManager = project?.getService(FileEditorManager::class.java)
             val virtualFile = VirtualFile("Assignment Details", jbScrollPane)
             editorManager?.openFile(virtualFile, true)
         } else {

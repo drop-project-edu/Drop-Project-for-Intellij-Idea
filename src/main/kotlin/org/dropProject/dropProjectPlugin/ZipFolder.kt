@@ -2,7 +2,6 @@ package org.dropProject.dropProjectPlugin
 
 
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.fileEditor.FileEditorManager
 import data.SubmissionStructure
 import net.lingala.zip4j.ZipFile
 import java.io.File
@@ -22,7 +21,7 @@ class ZipFolder(
 ) {
 
     fun zipIt(e: AnActionEvent): String? {
-        val projectDirectory = e.project?.let { FileEditorManager.getInstance(it).project.basePath.toString() }
+        val projectDirectory = e.project?.basePath.toString()
         val separator = File.separator
         val newUploadFile = File("$projectDirectory${separator}projeto.zip")
         val authorsPath = "$projectDirectory${separator}AUTHORS.txt"
