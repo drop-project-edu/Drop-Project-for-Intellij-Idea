@@ -2,7 +2,6 @@ package org.dropProject.dropProjectPlugin.actions
 
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.DumbAwareAction
 import org.dropProject.dropProjectPlugin.AuthorsFile
 import org.dropProject.dropProjectPlugin.DefaultNotification
@@ -16,7 +15,7 @@ class MainLogin(private var toolWindow: DropProjectToolWindow) :
     override fun actionPerformed(e: AnActionEvent) {
 
 
-        val projectDirectory = e.project?.let { FileEditorManager.getInstance(it).project.basePath.toString() }
+        val projectDirectory = e.project?.basePath.toString()
 
 
         if (!toolWindow.authentication.alreadyLoggedIn) {
