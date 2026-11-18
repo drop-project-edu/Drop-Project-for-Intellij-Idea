@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [0.9.19] - 2026-11-18
+
 - The plugin is now compatible with IntelliJ IDEA 2026.3
 
 ## [0.9.18] - 2026-10-27
@@ -92,7 +94,8 @@ showing progress
 - Copy build report errors feature
 - Open in web build report feature
 
-[Unreleased]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.18...HEAD
+[Unreleased]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.19...HEAD
+[0.9.19]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.18...v0.9.19
 [0.9.18]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.17...v0.9.18
 [0.9.17]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.16...v0.9.17
 [0.9.16]: https://github.com/drop-project-edu/Drop-Project-for-Intellij-Idea/compare/v0.9.15...v0.9.16
